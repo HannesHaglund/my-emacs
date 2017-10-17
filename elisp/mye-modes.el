@@ -19,6 +19,8 @@
 (apply-tab-settings)
 (infer-indentation-style)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(setq show-paren-delay 0)
+(show-paren-mode 1)
 
 ;; c-mode
 ;; Company c mode
