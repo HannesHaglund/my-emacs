@@ -19,10 +19,10 @@ Return a list of installed packages or nil for every skipped package."
   (mapcar
    (lambda (package)
      (if (package-installed-p package)
-         nil
+         package
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
-           (package-install package)
-         package)))
+           ((package-install package) (package))
+         nil)))
    packages))
 
 ;; make sure to have downloaded archive description.
@@ -42,3 +42,6 @@ Return a list of installed packages or nil for every skipped package."
 (require 'whitespace)
 (setq whitespace-style '(face tabs lines-tail))
 (global-whitespace-mode t)
+
+(if (car (ensure-package-installed 'dumb-jump))
+    (dumb-jump-mode))
