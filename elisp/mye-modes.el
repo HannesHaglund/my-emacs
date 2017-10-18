@@ -20,5 +20,10 @@
 (infer-indentation-style)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;; c-mode
+;; Company c mode
+(setq c-default-style "linux"
+      c-basic-offset 3)
+
 ;; prog-mode
 (add-hook 'prog-mode-hook 'linum-mode)
