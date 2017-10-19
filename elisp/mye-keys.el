@@ -6,7 +6,7 @@
   (let (value)
     (dotimes (i 10 value)
       (scroll-up-line)
-      (next-line))))
+      (previous-line))))
 
 (defun scroll-down-bind ()
   "Scroll 10 lines down."
@@ -14,7 +14,7 @@
   (let (value)
     (dotimes (i 10 value)
       (scroll-down-line)
-      (previous-line))))
+      (next-line))))
 
 (defun wind-bck ()
   "Change window."
@@ -59,8 +59,8 @@
   (let ((map (make-sparse-keymap)))
     ;; KEY BIND LIST
     (define-key map (kbd "M-g") 'goto-line)
-    (define-key map (kbd "C-z") 'scroll-up-bind)
-    (define-key map (kbd "M-z") 'scroll-down-bind)
+    (define-key map (kbd "M-p") 'scroll-up-bind)
+    (define-key map (kbd "M-n") 'scroll-down-bind)
     (define-key map (kbd "C-,") 'other-window)
     (define-key map (kbd "C-.") 'wind-bck)
     (define-key map (kbd "C-;") 'other-frame)
