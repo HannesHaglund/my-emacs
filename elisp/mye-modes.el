@@ -1,5 +1,3 @@
-(provide 'mye-modes)
-
 ;; src: https://www.emacswiki.org/emacs/NoTabs
 (defun infer-indentation-style ()
   ;; if our source file uses tabs, we use tabs, if spaces spaces, and if
@@ -27,3 +25,5 @@
 
 ;; prog-mode
 (add-hook 'prog-mode-hook 'linum-mode)
+
+(provide 'mye-modes)

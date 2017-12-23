@@ -1,5 +1,3 @@
-(provide 'mye-visuals)
-
 ;; Theme
 (load-theme 'wombat t)
 
@@ -24,3 +22,5 @@
 ;; Full screen on startup
 (custom-set-variables
 	'(initial-frame-alist (quote ((fullscreen . maximized)))))
+
+(provide 'mye-visuals)

@@ -1,5 +1,3 @@
-(provide 'mye-keys)
-
 (defun scroll-up-bind ()
   "Scroll 10 lines up."
   (interactive)
@@ -80,3 +78,5 @@
   :lighter " my-keys")
 
 (my-keys-minor-mode 1)
+
+(provide 'mye-keys)
