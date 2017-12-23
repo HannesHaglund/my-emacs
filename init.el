@@ -9,3 +9,4 @@
 
 ;; Misc
 (defalias 'yes-or-no-p 'y-or-n-p)
+(setenv "PAGER" "cat") ;; Hack to get git log and the like to work
