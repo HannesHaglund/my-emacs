@@ -19,6 +19,9 @@
 ;; No menu bar
 (menu-bar-mode -1)
 
+;; No scroll bar
+(scroll-bar-mode -1)
+
 ;; Full screen on startup
 (custom-set-variables
 	'(initial-frame-alist (quote ((fullscreen . maximized)))))
