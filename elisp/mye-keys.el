@@ -1,3 +1,5 @@
+(require 'mye-debug-prints)
+
 (defun scroll-down-bind ()
   "Scroll 10 lines down."
   (interactive)
@@ -35,7 +37,7 @@
     (define-key map (kbd "C-,") 'other-window)
     (define-key map (kbd "C-.") 'wind-bck)
     (define-key map (kbd "C-;") 'other-frame)
-    (define-key map (kbd "C-/") 'advertised-undo)
+    (define-key map (kbd "C-/") 'debug-print-insert)
     map)
   "my-keys-minor-mode keymap.")
 
