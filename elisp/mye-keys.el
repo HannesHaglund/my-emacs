@@ -1,15 +1,15 @@
-(provide 'mye-keys)
+(require 'mye-debug-prints)
 
-(defun scroll-up-bind ()
-  "Scroll 10 lines up."
+(defun scroll-down-bind ()
+  "Scroll 10 lines down."
   (interactive)
   (let (value)
     (dotimes (i 10 value)
       (scroll-up-line)
       (previous-line))))
 
-(defun scroll-down-bind ()
-  "Scroll 10 lines down."
+(defun scroll-up-bind ()
+  "Scroll 10 lines up."
   (interactive)
   (let (value)
     (dotimes (i 10 value)
@@ -27,33 +27,6 @@
   (indent-according-to-mode)
   (next-line))
 
-;; src https://www.emacswiki.org/emacs/MarkCommands
-(defun mark-current-word (&optional arg allow-extend)
-  "Put point at beginning of current word, set mark at end."
-  (interactive "p\np")
-  (setq arg (if arg arg 1))
-  (if (and allow-extend
-           (or (and (eq last-command this-command) (mark t))
-               (region-active-p)))
-      (set-mark
-       (save-excursion
-         (when (< (mark) (point))
-           (setq arg (- arg)))
-         (goto-char (mark))
-         (forward-word arg)
-         (point)))
-    (let ((wbounds (bounds-of-thing-at-point 'word)))
-      (unless (consp wbounds)
-        (error "No word at point"))
-      (if (>= arg 0)
-          (goto-char (car wbounds))
-        (goto-char (cdr wbounds)))
-      (push-mark (save-excursion
-                   (forward-word arg)
-                   (point)))
-      (activate-mark))))
-
-
 ;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
@@ -64,8 +37,7 @@
     (define-key map (kbd "C-,") 'other-window)
     (define-key map (kbd "C-.") 'wind-bck)
     (define-key map (kbd "C-;") 'other-frame)
-    (define-key map (kbd "C-/") 'advertised-undo)
-    (define-key map (kbd "C-:") 'mark-current-word)
+    (define-key map (kbd "C-/") 'debug-print-insert)
     map)
   "my-keys-minor-mode keymap.")
 
@@ -80,3 +52,5 @@
   :lighter " my-keys")
 
 (my-keys-minor-mode 1)
+
+(provide 'mye-keys)

@@ -43,5 +43,4 @@ Return a list of installed packages or nil for every skipped package."
 (setq whitespace-style '(face tabs lines-tail))
 (global-whitespace-mode t)
 
-(if (car (ensure-package-installed 'dumb-jump))
-    (dumb-jump-mode))
+(provide 'mye-external-packages)
