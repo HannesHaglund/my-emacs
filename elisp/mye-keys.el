@@ -3,16 +3,17 @@
   (interactive)
   (let (value)
     (dotimes (i 10 value)
-      (scroll-up-line)
-      (previous-line))))
+      ;; Dont know why this is reversed
+      (scroll-up-line))))
 
 (defun scroll-up-bind ()
   "Scroll 10 lines up."
   (interactive)
   (let (value)
     (dotimes (i 10 value)
-      (scroll-down-line)
-      (next-line))))
+      ;; Dont know why this is reversed
+      (scroll-down-line))))
+
 
 (defun wind-bck ()
   "Change window."
