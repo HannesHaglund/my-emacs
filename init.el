@@ -9,6 +9,5 @@
 
 ;; Misc
 (defalias 'yes-or-no-p 'y-or-n-p)
-(add-hook 'before-save-hook 'debug-print-update-current-buffer)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setenv "PAGER" "cat") ;; Hack to get git log and the like to work
