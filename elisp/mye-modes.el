@@ -25,6 +25,9 @@
 (setq c-default-style "linux"
       c-basic-offset 3)
 
+;; Wurst mode
+(require 'wurstscript-mode)
+
 ;; prog-mode
 (add-hook 'prog-mode-hook 'linum-mode)
 
