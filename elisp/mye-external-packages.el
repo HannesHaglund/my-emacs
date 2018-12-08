@@ -14,30 +14,36 @@
 ;; src: https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 (defun ensure-package-installed (&rest packages)
   "Assure every package is installed, ask for installation if it’s not.
-
 Return a list of installed packages or nil for every skipped package."
   (mapcar
    (lambda (package)
      (if (package-installed-p package)
          package
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
-           ((package-install package) (package))
+;           (progn (call-interactively 'package-install t (vector package)) (package))
+           (progn (package-install package) package)
          nil)))
    packages))
 
-;; make sure to have downloaded archive description.
-;; Or use package-archive-contents as suggested by Nicolas Dudebout
+(package-initialize)
+
+(setup-melpa)
+
+(unless package-archive-contents
+  (package-refresh-contents))
 (or (file-exists-p package-user-dir)
     (package-refresh-contents))
 
-(setup-melpa)
 
 ;; =====================================
 ;; PACKAGES
 ;; =====================================
 
-(if (>= emacs-major-version 24.4)
-    (ensure-package-installed 'magit))
+(ensure-package-installed 'helm)
+(ensure-package-installed 'helm-ag)
+(ensure-package-installed 'dumb-jump)
+
+(helm-mode t)
 
 (require 'whitespace)
 (setq whitespace-style '(face tabs lines-tail))

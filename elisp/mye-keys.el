@@ -30,12 +30,24 @@
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
     ;; KEY BIND LIST
-    (define-key map (kbd "M-g") 'goto-line)
+    ;; Common
     (define-key map (kbd "M-p") 'scroll-up-bind)
     (define-key map (kbd "M-n") 'scroll-down-bind)
     (define-key map (kbd "C-,") 'other-window)
     (define-key map (kbd "C-.") 'wind-bck)
     (define-key map (kbd "C-;") 'other-frame)
+    ;; Repo navigation
+    (define-key map (kbd "M-g M-l") 'goto-line)
+    (define-key map (kbd "M-g M-g") 'dumb-jump-go)
+    (define-key map (kbd "M-g M-h") 'dumb-jump-go-other-window)
+    (define-key map (kbd "M-g M-b") 'dumb-jump-back)
+    (define-key map (kbd "M-g M-r") 'helm-do-ag-project-root)
+    (define-key map (kbd "M-g M-t") 'helm-do-ag)
+    ;; Helm override
+    (define-key map (kbd "M-x") 'helm-M-x)
+    (define-key map (kbd "C-x b") 'helm-buffers-list)
+    (define-key map (kbd "C-x C-b") 'helm-buffers-list)
+    (define-key map (kbd "C-x C-f") 'helm-find-files)
     map)
   "my-keys-minor-mode keymap.")
 
