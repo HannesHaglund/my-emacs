@@ -17,8 +17,8 @@
              (x-keywords '("package" "import" "break" "continue" "class" "extends"
                            "public" "private" "protected" "constant" "function" "override"
                            "returns" "return" "switch" "case" "default" "for" "init"
-                           "destroy" "new" "while" "begin" "array" "skip"
-                           "enum" "abstract" "interface" "implements" "module"
+                           "construct" "destroy" "new" "while" "begin" "array" "skip"
+                           "enum" "abstract" "interface" "implements" "module" "static"
                            "tuple" "castTo" "instanceof" "this" "initlater"
                            "ondestroy" "not" "and" "or" "mod" "div" "else"
                            "end" "let" "var" "if"
@@ -41,6 +41,9 @@
         (x-constants-regexp (regexp-opt x-constants 'words))
         (x-warnings-regexp (concat
                             "\\("
+                            ;; elseif and elif is not legal syntax. Easy to forget.
+                            "elseif\\|elif"
+                            "\\|"
                             ;; vec2 should always be used instead
                             "location"
                             "\\|"
