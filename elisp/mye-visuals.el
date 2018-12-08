@@ -1,8 +1,5 @@
 ;; Theme
-(load-theme 'wombat t)
-
-;; Brighter cursor
-(set-cursor-color "#eeeeee")
+(load-theme 'adwaita t)
 
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
@@ -24,6 +21,6 @@
 
 ;; Full screen on startup
 (custom-set-variables
-	'(initial-frame-alist (quote ((fullscreen . maximized)))))
+ '(initial-frame-alist (quote ((fullscreen . maximized)))))
 
 (provide 'mye-visuals)
