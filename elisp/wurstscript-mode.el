@@ -305,7 +305,8 @@
   (setq font-lock-defaults '((wurstscript-font-lock-keywords)))
   (setq-local indent-line-function #'wurstscriptp-indent-line)
   (local-set-key (kbd "RET") 'wurstscriptp-new-line)
-  (local-set-key (kbd "C-j") 'wurstscriptp-new-line))
+  (local-set-key (kbd "C-j") 'wurstscriptp-new-line)
+  (local-set-key (kbd "C-c C-b") 'wurstscript-build))
 
 (add-to-list 'auto-mode-alist '("\\.wurst\\'" . wurstscript-mode))
 
