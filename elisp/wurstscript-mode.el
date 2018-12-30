@@ -161,28 +161,73 @@
   (indent-relative t))
 
 ;; ================================================================
-;; Compilation
+;; Config
+;; ================================================================
+
+(when (not (boundp 'wurstscript-conf-wurstjar-path))
+  (setq wurstscript-conf-wurstjar-path nil))
+
+(when (not (boundp 'wurstscript-conf-wc3-path))
+  (setq wurstscript-conf-wc3-path nil))
+
+(message "TODO REMOVE ME")
+(setq wurstscript-conf-wurstjar-path
+      "/media/hagge/749EE4459EE4018A/Users/Hagge/.wurst/wurstscript.jar")
+
+;; ================================================================
+;; Globals
 ;; ================================================================
 
 (setq wurstscriptp-build-last-args
-      "-stacktraces -runcompiletimefunctions -injectobjects ")
+      "-stacktraces -runcompiletimefunctions -injectobjects")
 (setq wurstscriptp-build-last-project nil)
 
+;; ================================================================
+;; Compilation: Building
+;; ================================================================
+
+(defun wurstscriptp-wurstjar-path (project-root-or-child-path)
+  (if wurstscript-conf-wurstjar-path wurstscript-conf-wurstjar-path
+    ;; ELSE
+    (wurstscriptp-value-from-vscode-settings
+     "wurst.wurstJar"
+     project-root-or-child-path)))
+
+(defun wurstscriptp-wc3-path (project-root-or-child-path)
+  (if wurstscript-conf-wc3-path wurstscript-conf-wc3-path
+    ;; ELSE
+    (wurstscriptp-value-from-vscode-settings
+     "wurst.wc3path"
+     project-root-or-child-path)))
+
 (defun wurstscriptp-project-root (project-root-or-child-path)
-  (locate-dominating-file
-   project-root-or-child-path
-   "map.w3x"))
-   ;; (lambda (dir)
-   ;;   (directory-files dir nil ".*\\.w3x")) ))
+  (or (locate-dominating-file
+       project-root-or-child-path
+       (lambda (dir)
+         (and
+          (directory-files dir nil ".*\.w3x")
+          (directory-files dir nil "\.vscode")
+          (directory-files dir nil "wurst"))))
+      (error (concat
+              "Unable to find a wurst directory from "
+              project-root-or-child-path))))
 
 (defun wurstscriptp-build-dir (project-root-or-child-path)
-  (concat (wurstscriptp-project-root project-root-or-child-path) "_build/"))
+  (if (wurstscriptp-project-root project-root-or-child-path)
+      (concat (wurstscriptp-project-root project-root-or-child-path) "_build/")
+    nil))
 
-;; (defun wurstscriptp-map-file (project-root-or-child-path)
-;;   (car (directory-files
-;;         (wurstscriptp-project-root project-root-or-child-path)
-;;         t
-;;         ".*\.w3x")))
+(defun wurstscriptp-extract-legal-map-file (map-files)
+  (if (string-match-p ".*build-map.w3x" (car map-files))
+      (wurstscriptp-extract-legal-map-file (cdr map-files))
+    (car map-files)))
+
+(defun wurstscriptp-map-file (project-root-or-child-path)
+  (wurstscriptp-extract-legal-map-file
+   (directory-files
+    (wurstscriptp-project-root project-root-or-child-path)
+    t
+    ".*\.w3x")))
 
 (defun wurstscriptp-vscode-settings-content (project-root-or-child-path)
   (with-temp-buffer
@@ -194,16 +239,12 @@
 (defun wurstscriptp-value-from-vscode-settings (value project-root-or-child-path)
   (let ((contents (wurstscriptp-vscode-settings-content project-root-or-child-path)))
     (let ((prefix (concat "\"" value "\": \"")))
-      (substring contents
-                 (+ (length prefix)
-                    (string-match-p prefix contents))
-                 ;; Find first endline after prefix match
-                 (string-match-p "\"," contents (string-match-p prefix contents))))))
-
-(defun wurstscriptp-wurstjar-path (project-root-or-child-path)
-  (wurstscriptp-value-from-vscode-settings
-   "wurst.wurstJar"
-   project-root-or-child-path))
+      (convert-standard-filename
+       (substring contents
+                  (+ (length prefix)
+                     (string-match-p prefix contents))
+                  ;; Find first endline after prefix match
+                  (string-match-p "\"," contents (string-match-p prefix contents)))))))
 
 (defun wurstscriptp-commonj-path (project-root-or-child-path)
   (concat (file-name-directory
@@ -215,24 +256,30 @@
            (wurstscriptp-wurstjar-path project-root-or-child-path))
           "blizzard.j"))
 
-(defun wurstscriptp-wc3-path (project-root-or-child-path)
-  (wurstscriptp-value-from-vscode-settings
-   "wurst.wc3path"
-   project-root-or-child-path))
-
 (defun replace-in-string (what with in)
   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 
 (defun wurstscriptp-do-build-command (cmd project-root)
   (let ((cmd-fixed (replace-in-string "/" "\\" (concat cmd " &"))))
-   (message cmd-fixed)
     (async-shell-command cmd-fixed "*Wurstscript Build Output*")
     (with-current-buffer "*Wurstscript Build Output*"
       (insert (concat "\n(output from: '" cmd-fixed "')\n\n"))
-      (goto-char (point-max))))
-  (let ((proc (get-buffer-process "*Wurstscript Build Output*")))
-    (when (process-live-p proc)
-      (set-process-sentinel proc #'wurstscriptp-finalize-sentinel))))
+      (goto-char (point-max)))))
+
+(defun wurstscriptp-start-process (program &rest program-args)
+  (with-current-buffer "*Wurstscript Build Output*"
+    (erase-buffer)
+    (insert (concat
+             ">> "
+             program
+             " "
+             (string-join program-args " ")
+            "\n\n")))
+  (apply #'start-process
+         "wurstscript"
+         "*Wurstscript Build Output*"
+         program
+         program-args))
 
 (defun wurstscriptp-finalize-sentinel (process signal)
   (when (memq (process-status process) '(exit signal))
@@ -257,8 +304,10 @@
     (when (not (file-directory-p build-dir))
       (mkdir build-dir t))
     (copy-file
-     (concat (wurstscriptp-project-root project-root-or-child-path) "map.w3x")
+     (wurstscriptp-map-file project-root-or-child-path)
      (concat (wurstscriptp-project-root project-root-or-child-path) "build-map.w3x") t)
+    (message "Build dir: %s" build-dir)
+    (message "BJ: %s" (wurstscriptp-blizzardj-path project-root-or-child-path))
     (copy-file
      (wurstscriptp-blizzardj-path project-root-or-child-path)
      (concat build-dir "blizzard.j") t)
@@ -271,30 +320,73 @@
   (setq wurstscriptp-build-last-project project-dir)
   (setq wurstscriptp-build-last-args arguments)
   (let ((build-dir (wurstscriptp-prepare-build-dir project-dir)))
-    (let ((cmd (concat
-                "java -jar "
-                (wurstscriptp-wurstjar-path project-dir)
-                " "
-                arguments
-                " "
-                build-dir "blizzard.j"
-                " "
-                build-dir "common.j"
-                " "
-                (wurstscriptp-project-root project-dir) "build-map.w3x"
-                ;build-dir "map.w3x"
-                )))
-      (wurstscriptp-do-build-command cmd project-dir))))
+    (apply #'wurstscriptp-start-process
+           "java"
+           (append
+
+            (list
+             "-jar"
+             (wurstscriptp-wurstjar-path project-dir))
+
+            (split-string arguments " " t)
+
+            (list
+             (concat build-dir "blizzard.j")
+             (concat build-dir "common.j")
+             (concat (wurstscriptp-project-root project-dir) "build-map.w3x")))))
+
+  (let ((proc (get-buffer-process "*Wurstscript Build Output*")))
+    (when (process-live-p proc)
+      (set-process-sentinel proc #'wurstscriptp-finalize-sentinel))))
+
 
 (defun wurstscript-build (project-dir arguments)
   (interactive (list
                 (read-directory-name "Build project: "
-                                     (or (wurstscriptp-project-root (buffer-file-name))
+                                     (or (wurstscriptp-project-root
+                                          (file-name-directory
+                                           (buffer-file-name)))
                                          wurstscriptp-build-last-project
                                          default-directory))
                 (read-string "Command line arguments: "
                              wurstscriptp-build-last-args)))
   (wurstscriptp-build project-dir arguments))
+
+;; ================================================================
+;; Compilation: Running
+;; ================================================================
+
+(defun wurstscriptp-run (map-path windowed)
+  (wurstscriptp-do-build-command
+   (concat
+    "\""
+    (concat
+     (wurstscriptp-wc3-path (file-name-directory map-path))
+     "\\Warcraft III.exe")
+    "\""
+    (if windowed " -window " " ")
+    "-loadfile "
+    "\""
+    (replace-in-string "/" "\\" map-path)
+    "\"")
+   (file-name-directory map-path)))
+
+(defun wurstscript-run (map-path)
+  (interactive (list
+                (read-file-name "Run map: "
+                                nil     ; DIR
+                                nil     ; DEFAULT-FILENAME
+                                t       ; MUSTMATCH
+                                ;; INITIAL
+                                (or (if (wurstscriptp-build-dir default-directory)
+                                        (concat
+                                         (wurstscriptp-build-dir default-directory)
+                                         "build-map.w3x")
+                                      nil)
+                                    wurstscriptp-run-last-map
+                                    default-directory))))
+  (message "MAP: %s" map-path)
+  (wurstscriptp-run map-path t))
 
 ;; ================================================================
 ;; Finalization
