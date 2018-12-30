@@ -69,6 +69,13 @@
 ;; Indentation
 ;; ================================================================
 
+(setq wurstscriptp-class-regexp "\\(^[[:space:]]*\\(public \\|private \\)?class\\)")
+(setq wurstscriptp-function-regexp (concat "\\(^[[:space:]]*\\"
+                         "(public \\|private \\|"
+                         "protected \\|override \\|static \\)*"
+                         "function [[:word:]]*(.*)\\)"))
+
+
 (defun wurstscriptp-additional-number-of-indents ()
   ;; Are we on the first line in the file? If so, return false
   (if (= (line-number-at-pos) 1) 0
@@ -92,14 +99,11 @@
         ;; Otherwise, check if this line is syntactically relevaant
         (if (looking-at (concat
                          ;; Class declarations
-                         "\\(^[[:space:]]*\\(public \\|private \\)?class\\)\\|"
+                         wurstscriptp-class-regexp "\\|"
                          ;; Enum declarations
                          "\\(^[[:space:]]*\\(public \\|private \\)?enum\\)\\|"
                          ;; Function declarations
-                         "\\(^[[:space:]]*\\"
-                         "(public \\|private \\|"
-                         "protected \\|override \\|static \\)*"
-                         "function [[:word:]]*(.*)\\)\\|"
+                         wurstscriptp-function-regexp "\\|"
                          ;; If
                          "\\(^[[:space:]]*if \\)\\|"
                          ;; Else
@@ -169,10 +173,6 @@
 
 (when (not (boundp 'wurstscript-conf-wc3-path))
   (setq wurstscript-conf-wc3-path nil))
-
-(message "TODO REMOVE ME")
-(setq wurstscript-conf-wurstjar-path
-      "/media/hagge/749EE4459EE4018A/Users/Hagge/.wurst/wurstscript.jar")
 
 ;; ================================================================
 ;; Globals
@@ -306,8 +306,6 @@
     (copy-file
      (wurstscriptp-map-file project-root-or-child-path)
      (concat (wurstscriptp-project-root project-root-or-child-path) "build-map.w3x") t)
-    (message "Build dir: %s" build-dir)
-    (message "BJ: %s" (wurstscriptp-blizzardj-path project-root-or-child-path))
     (copy-file
      (wurstscriptp-blizzardj-path project-root-or-child-path)
      (concat build-dir "blizzard.j") t)
@@ -385,7 +383,6 @@
                                       nil)
                                     wurstscriptp-run-last-map
                                     default-directory))))
-  (message "MAP: %s" map-path)
   (wurstscriptp-run map-path t))
 
 ;; ================================================================
