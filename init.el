@@ -146,6 +146,13 @@ Return a list of installed packages or nil for every skipped package."
 (custom-set-variables
  '(initial-frame-alist (quote ((fullscreen . maximized)))))
 
+;; Whitespace
+(require 'whitespace)
+(setq whitespace-style '(face tabs lines-tail))
+(set-face-background 'whitespace-line "#FFC0C0")
+(set-face-foreground 'whitespace-line nil)
+(global-whitespace-mode t)
+
 ;; ================================================================
 ;; Languages
 ;; ================================================================
