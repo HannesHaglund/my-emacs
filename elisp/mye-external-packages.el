@@ -20,20 +20,14 @@ Return a list of installed packages or nil for every skipped package."
      (if (package-installed-p package)
          package
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
-;           (progn (call-interactively 'package-install t (vector package)) (package))
-           (progn (package-install package) package)
+           (progn (package-refresh-contents)
+                  (package-install package)
+                  package)
          nil)))
    packages))
 
 (package-initialize)
-
 (setup-melpa)
-
-(unless package-archive-contents
-  (package-refresh-contents))
-(or (file-exists-p package-user-dir)
-    (package-refresh-contents))
-
 
 ;; =====================================
 ;; PACKAGES
@@ -41,9 +35,11 @@ Return a list of installed packages or nil for every skipped package."
 
 (ensure-package-installed 'helm)
 (ensure-package-installed 'helm-ag)
+(helm-mode t)
+
 (ensure-package-installed 'dumb-jump)
 
-(helm-mode t)
+(ensure-package-installed 'multiple-cursors)
 
 (require 'whitespace)
 (setq whitespace-style '(face tabs lines-tail))

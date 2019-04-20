@@ -14,7 +14,6 @@
       ;; Dont know why this is reversed
       (scroll-down-line))))
 
-
 (defun wind-bck ()
   "Change window."
   (interactive)
@@ -48,6 +47,11 @@
     (define-key map (kbd "C-x b") 'helm-buffers-list)
     (define-key map (kbd "C-x C-b") 'helm-buffers-list)
     (define-key map (kbd "C-x C-f") 'helm-find-files)
+    ;; Multiple cursors
+    (define-key map (kbd "C-S-c C-S-c") 'mc/edit-lines)
+    (define-key map (kbd "C->") 'mc/mark-next-like-this)
+    (define-key map (kbd "C-<") 'mc/mark-previous-like-this)
+    (define-key map (kbd "C-c C-<") 'mc/mark-all-like-this)
     map)
   "my-keys-minor-mode keymap.")
 
