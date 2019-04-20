@@ -113,7 +113,7 @@ Return a list of installed packages or nil for every skipped package."
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
   :init-value t
-  :lighter " my-keys")
+  :lighter " My-Keys")
 
 (my-keys-minor-mode 1)
 
@@ -188,4 +188,6 @@ Return a list of installed packages or nil for every skipped package."
 ;; ================================================================
 (defalias 'yes-or-no-p 'y-or-n-p)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-(require 'mye-no-mouse)                 ; Disables mouse
+;; Disable mouse
+(require 'mye-no-mouse)
+(disable-mouse-mode 1)
