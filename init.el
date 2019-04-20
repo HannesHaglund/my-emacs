@@ -42,12 +42,21 @@ Return a list of installed packages or nil for every skipped package."
 (helm-mode t)
 
 (ensure-package-installed 'dumb-jump)
-
 (ensure-package-installed 'multiple-cursors)
+
+(ensure-package-installed 'projectile)
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+(ensure-package-installed 'helm-projectile)
+(require 'helm-projectile)
+(helm-projectile-on)
 
 ;; ================================================================
 ;; Key binds
 ;; ================================================================
+
 (defun scroll-down-bind ()
   "Scroll 10 lines down."
   (interactive)
