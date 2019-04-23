@@ -48,6 +48,8 @@ Return a list of installed packages or nil for every skipped package."
 (projectile-mode +1)
 (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(require 'subr-x) ; Tags generation from projectile crashes otherwise
+
 
 (ensure-package-installed 'helm-projectile)
 (require 'helm-projectile)
@@ -89,28 +91,25 @@ Return a list of installed packages or nil for every skipped package."
   (let ((map (make-sparse-keymap)))
     ;; KEY BIND LIST
     ;; Common
-    (define-key map (kbd "M-p") 'scroll-up-bind)
-    (define-key map (kbd "M-n") 'scroll-down-bind)
-    (define-key map (kbd "C-,") 'other-window)
-    (define-key map (kbd "C-.") 'wind-bck)
-    (define-key map (kbd "C-;") 'other-frame)
-    ;; Repo navigation
-    (define-key map (kbd "M-g M-l") 'goto-line)
-    (define-key map (kbd "M-g M-g") 'dumb-jump-go)
-    (define-key map (kbd "M-g M-h") 'dumb-jump-go-other-window)
-    (define-key map (kbd "M-g M-b") 'dumb-jump-back)
-    (define-key map (kbd "M-g M-r") 'helm-do-ag-project-root)
-    (define-key map (kbd "M-g M-t") 'helm-do-ag)
+    (define-key map (kbd "M-p")   'scroll-up-bind)
+    (define-key map (kbd "M-n")   'scroll-down-bind)
+    (define-key map (kbd "C-,")   'other-window)
+    (define-key map (kbd "C-.")   'wind-bck)
+    (define-key map (kbd "C-;")   'other-frame)
+    (define-key map (kbd "C-/")   'dabbrev-completion)
+    (define-key map (kbd "M-/")   'complete-tag)
+    (define-key map (kbd "C-M-.") 'helm-etags-select)
+    (define-key map (kbd "M-g")   'goto-line)
     ;; Helm override
-    (define-key map (kbd "M-x") 'helm-M-x)
-    (define-key map (kbd "C-x b") 'helm-buffers-list)
+    (define-key map (kbd "M-x")     'helm-M-x)
+    (define-key map (kbd "C-x b")   'helm-buffers-list)
     (define-key map (kbd "C-x C-b") 'helm-buffers-list)
     (define-key map (kbd "C-x C-f") 'helm-find-files)
     ;; Multiple cursors
     (define-key map (kbd "C-S-c C-S-c") 'mc/edit-lines)
-    (define-key map (kbd "C->") 'mc/mark-next-like-this)
-    (define-key map (kbd "C-<") 'mc/mark-previous-like-this)
-    (define-key map (kbd "C-c C-<") 'mc/mark-all-like-this)
+    (define-key map (kbd "C->")         'mc/mark-next-like-this)
+    (define-key map (kbd "C-<")         'mc/mark-previous-like-this)
+    (define-key map (kbd "C-S-c C-<")   'mc/mark-all-like-this)
     map)
   "my-keys-minor-mode keymap.")
 
@@ -136,8 +135,9 @@ Return a list of installed packages or nil for every skipped package."
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
 
-;; linum mode in code buffers
+;; linum and column in prog mode
 (add-hook 'prog-mode-hook 'linum-mode)
+(add-hook 'prog-mode-hook 'column-number-mode)
 
 ;; visual line mode
 (global-visual-line-mode t)
