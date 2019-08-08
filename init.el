@@ -15,7 +15,10 @@
                  "http://melpa-stable.milkbox.net/packages/") t)
   (when (< emacs-major-version 24)
     ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))))
+    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+  (when (>= emacs-major-version 24)
+      (package-initialize)
+      (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)))
 
 ;; src:
 ;; https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
@@ -38,8 +41,12 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Fetch them
 (ensure-package-installed 'helm)
-(ensure-package-installed 'helm-ag)
 (helm-mode t)
+(setq helm-buffer-max-length nil)
+
+(ensure-package-installed 'helm-xref)
+(require 'helm-xref)
+(setq xref-show-xrefs-function 'helm-xref-show-xrefs)
 
 (ensure-package-installed 'dumb-jump)
 (ensure-package-installed 'multiple-cursors)
@@ -49,11 +56,25 @@ Return a list of installed packages or nil for every skipped package."
 (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (require 'subr-x) ; Tags generation from projectile crashes otherwise
-
+(setq projectile-use-git-grep t)
+(setq projectile-enable-caching t)
+(setq projectile-indexing-method 'alien)
+(add-to-list 'projectile-globally-ignored-directories "Build")
 
 (ensure-package-installed 'helm-projectile)
 (require 'helm-projectile)
 (helm-projectile-on)
+
+(ensure-package-installed 'helm-ag)
+;; Note: Requires the user to manually install rg
+(setq helm-ag-fuzzy-match t)
+(setq helm-ag-base-command "rg --no-heading")
+(when (eq system-type 'windows-nt)
+  (setq helm-ag-base-command "rg --no-heading --vimgrep")
+  ;; Note: On Windows, you will need to add the ripgrep executable to this path
+  (add-to-list 'exec-path "C:\\Program Files\\ripgrep"))
+
+(ensure-package-installed 'expand-region)
 
 ;; ================================================================
 ;; Key binds
@@ -91,25 +112,33 @@ Return a list of installed packages or nil for every skipped package."
   (let ((map (make-sparse-keymap)))
     ;; KEY BIND LIST
     ;; Common
-    (define-key map (kbd "M-p")   'scroll-up-bind)
-    (define-key map (kbd "M-n")   'scroll-down-bind)
-    (define-key map (kbd "C-,")   'other-window)
-    (define-key map (kbd "C-.")   'wind-bck)
-    (define-key map (kbd "C-;")   'other-frame)
-    (define-key map (kbd "C-/")   'dabbrev-completion)
-    (define-key map (kbd "M-/")   'complete-tag)
-    (define-key map (kbd "C-M-.") 'helm-etags-select)
-    (define-key map (kbd "M-g")   'goto-line)
-    ;; Helm override
-    (define-key map (kbd "M-x")     'helm-M-x)
-    (define-key map (kbd "C-x b")   'helm-buffers-list)
-    (define-key map (kbd "C-x C-b") 'helm-buffers-list)
-    (define-key map (kbd "C-x C-f") 'helm-find-files)
+    (define-key map (kbd "M-p")         'scroll-up-bind)
+    (define-key map (kbd "M-n")         'scroll-down-bind)
+    (define-key map (kbd "C-,")         'other-window)
+    (define-key map (kbd "C-.")         'wind-bck)
+    (define-key map (kbd "C-;")         'other-frame)
+    (define-key map (kbd "C-/")         'dabbrev-completion)
+    (define-key map (kbd "M-/")         'complete-tag)
+    (define-key map (kbd "C-M-.")       'helm-etags-select)
+    (define-key map (kbd "M-g")         'goto-line)
+    ;; Helm
+    (define-key map (kbd "M-x")         'helm-M-x)
+    (define-key map (kbd "C-x b")       'helm-buffers-list)
+    (define-key map (kbd "C-x C-b")     'helm-buffers-list)
+    (define-key map (kbd "C-x C-f")     'helm-find-files)
+    (define-key map (kbd "C-c C-y")     'helm-show-kill-ring)
+    ;; Helm Swoop
+    (define-key map (kbd "M-i")         'helm-do-ag-this-file)
+    (define-key map (kbd "M-I")         'helm-ag-pop-stack)
+    (define-key map (kbd "C-c M-i")     'helm-do-ag-buffers)
+    (define-key map (kbd "C-c p s s")   'helm-do-ag-project-root)
     ;; Multiple cursors
     (define-key map (kbd "C-S-c C-S-c") 'mc/edit-lines)
     (define-key map (kbd "C->")         'mc/mark-next-like-this)
     (define-key map (kbd "C-<")         'mc/mark-previous-like-this)
     (define-key map (kbd "C-S-c C-<")   'mc/mark-all-like-this)
+    ;; Expand region
+    (define-key map (kbd "C-=")         'er/expand-region)
     map)
   "my-keys-minor-mode keymap.")
 
@@ -150,10 +179,6 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; No scroll bar
 (scroll-bar-mode -1)
-
-;; Full screen on startup
-(custom-set-variables
- '(initial-frame-alist (quote ((fullscreen . maximized)))))
 
 ;; Whitespace
 (require 'whitespace)
@@ -200,6 +225,34 @@ Return a list of installed packages or nil for every skipped package."
 (add-hook 'prog-mode-hook 'linum-mode)
 
 ;; ================================================================
+;; Useful interactive functions
+;; ================================================================
+
+;; Source: https://emacs.stackexchange.com/questions/24459/revert-all-open-buffers-and-ignore-errors
+(defun revert-all-file-buffers ()
+  "Refresh all open file buffers without confirmation.
+Buffers in modified (not yet saved) state in emacs will not be reverted. They
+will be reverted though if they were modified outside emacs.
+Buffers visiting files which do not exist any more or are no longer readable
+will be killed."
+  (interactive)
+  (dolist (buf (buffer-list))
+    (let ((filename (buffer-file-name buf)))
+      ;; Revert only buffers containing files, which are not modified;
+      ;; do not try to revert non-file buffers like *Messages*.
+      (when (and filename
+                 (not (buffer-modified-p buf)))
+        (if (file-readable-p filename)
+            ;; If the file exists and is readable, revert the buffer.
+            (with-current-buffer buf
+              (revert-buffer :ignore-auto :noconfirm :preserve-modes))
+          ;; Otherwise, kill the buffer.
+          (let (kill-buffer-query-functions) ; No query done when killing buffer
+            (kill-buffer buf)
+            (message "Killed non-existing/unreadable file buffer: %s" filename))))))
+  (message "Finished reverting buffers containing unmodified files."))
+
+;; ================================================================
 ;; Misc.
 ;; ================================================================
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -207,3 +260,7 @@ Return a list of installed packages or nil for every skipped package."
 ;; Disable mouse
 (require 'mye-no-mouse)
 (disable-mouse-mode 1)
+(setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
+
+(setq dabbrev-case-fold-search nil)
+(setq dabbrev-upcase-means-case-search t)
