@@ -301,6 +301,12 @@ will be killed."
         (set-buffer-modified-p nil)
         t))))
 
+;; source: https://stackoverflow.com/questions/3417438/close-all-buffers-besides-the-current-one-in-emacs
+(defun kill-other-buffers ()
+  (interactive)
+  (mapc 'kill-buffer (cdr (buffer-list (current-buffer)))))
+
+
 ;; ================================================================
 ;; Misc.
 ;; ================================================================
