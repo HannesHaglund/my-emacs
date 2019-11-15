@@ -39,21 +39,26 @@ Return a list of installed packages or nil for every skipped package."
 (package-initialize)
 (setup-melpa)
 
-;; Fetch them
+;; ----------------------------------------------------------------
+;; helm
+;; ----------------------------------------------------------------
 (ensure-package-installed 'helm)
 (helm-mode t)
 (setq helm-buffer-max-length nil)
 
+;; ----------------------------------------------------------------
+;; helm-xref
+;; ----------------------------------------------------------------
 (ensure-package-installed 'helm-xref)
 (require 'helm-xref)
 (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
 
-(ensure-package-installed 'dumb-jump)
-(ensure-package-installed 'multiple-cursors)
-
+;; ----------------------------------------------------------------
+;; projectile
+;; ----------------------------------------------------------------
 (ensure-package-installed 'projectile)
 (projectile-mode +1)
-(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "s-p")   'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (require 'subr-x) ; Tags generation from projectile crashes otherwise
 (setq projectile-use-git-grep t)
@@ -61,10 +66,16 @@ Return a list of installed packages or nil for every skipped package."
 (setq projectile-indexing-method 'alien)
 (add-to-list 'projectile-globally-ignored-directories "Build")
 
+;; ----------------------------------------------------------------
+;; helm-projectile
+;; ----------------------------------------------------------------
 (ensure-package-installed 'helm-projectile)
 (require 'helm-projectile)
 (helm-projectile-on)
 
+;; ----------------------------------------------------------------
+;; helm-ag
+;; ----------------------------------------------------------------
 (ensure-package-installed 'helm-ag)
 ;; Note: Requires the user to manually install rg
 (setq helm-ag-fuzzy-match t)
@@ -74,6 +85,10 @@ Return a list of installed packages or nil for every skipped package."
   ;; Note: On Windows, you will need to add the ripgrep executable to this path
   (add-to-list 'exec-path "C:\\Program Files\\ripgrep"))
 
+;; ----------------------------------------------------------------
+;; misc.
+;; ----------------------------------------------------------------
+(ensure-package-installed 'multiple-cursors)
 (ensure-package-installed 'expand-region)
 
 ;; ================================================================
