@@ -111,34 +111,41 @@ Return a list of installed packages or nil for every skipped package."
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
     ;; KEY BIND LIST
+
     ;; Common
     (define-key map (kbd "M-p")         'scroll-up-bind)
     (define-key map (kbd "M-n")         'scroll-down-bind)
     (define-key map (kbd "C-,")         'other-window)
     (define-key map (kbd "C-.")         'wind-bck)
     (define-key map (kbd "C-;")         'other-frame)
-    (define-key map (kbd "C-/")         'dabbrev-completion)
-    (define-key map (kbd "M-/")         'complete-tag)
-    (define-key map (kbd "C-M-.")       'helm-etags-select)
     (define-key map (kbd "M-g")         'goto-line)
+    (define-key map (kbd "C-=")         'er/expand-region)
+
+    ;; Completion
+    (define-key map (kbd "C-/")         'helm-dabbrev)
+    (define-key map (kbd "C-?")         'dabbrev-completion) ; C-Shift-/
+    (define-key map (kbd "M-/")         'complete-tag)
+    (define-key map (kbd "M-?")         'helm-etags-select)  ; M-Shift-/
+
     ;; Helm
     (define-key map (kbd "M-x")         'helm-M-x)
     (define-key map (kbd "C-x b")       'helm-buffers-list)
     (define-key map (kbd "C-x C-b")     'helm-buffers-list)
     (define-key map (kbd "C-x C-f")     'helm-find-files)
     (define-key map (kbd "C-c C-y")     'helm-show-kill-ring)
+
     ;; Helm Swoop
     (define-key map (kbd "M-i")         'helm-do-ag-this-file)
     (define-key map (kbd "M-I")         'helm-ag-pop-stack)
     (define-key map (kbd "C-c M-i")     'helm-do-ag-buffers)
     (define-key map (kbd "C-c p s s")   'helm-do-ag-project-root)
+
     ;; Multiple cursors
     (define-key map (kbd "C-S-c C-S-c") 'mc/edit-lines)
     (define-key map (kbd "C->")         'mc/mark-next-like-this)
     (define-key map (kbd "C-<")         'mc/mark-previous-like-this)
     (define-key map (kbd "C-S-c C-<")   'mc/mark-all-like-this)
-    ;; Expand region
-    (define-key map (kbd "C-=")         'er/expand-region)
+
     map)
   "my-keys-minor-mode keymap.")
 
