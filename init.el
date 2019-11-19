@@ -145,6 +145,10 @@ Return a list of installed packages or nil for every skipped package."
     (define-key map (kbd "M-g")         'goto-line)
     (define-key map (kbd "C-=")         'er/expand-region)
 
+    ;; Align
+    (define-key map (kbd "C-c a a")     'align)
+    (define-key map (kbd "C-c a r")     'align-regexp)
+
     ;; Completion
     (define-key map (kbd "C-/")         'helm-dabbrev)
     (define-key map (kbd "C-?")         'dabbrev-completion) ; C-Shift-/
