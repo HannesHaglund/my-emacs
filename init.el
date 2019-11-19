@@ -86,9 +86,19 @@ Return a list of installed packages or nil for every skipped package."
   (add-to-list 'exec-path "C:\\Program Files\\ripgrep"))
 
 ;; ----------------------------------------------------------------
-;; misc.
+;; multiple-cursors
 ;; ----------------------------------------------------------------
 (ensure-package-installed 'multiple-cursors)
+
+(defun mc/clear-cmds-to-run ()
+  (interactive)
+  (setq mc/cmds-to-run-once nil)
+  (setq mc/cmds-to-run-for-all nil))
+
+;; ----------------------------------------------------------------
+;; misc.
+;; ----------------------------------------------------------------
+(ensure-package-installed 'magit)
 (ensure-package-installed 'expand-region)
 
 ;; ================================================================
@@ -125,7 +135,6 @@ Return a list of installed packages or nil for every skipped package."
 ;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
-    ;; KEY BIND LIST
 
     ;; Common
     (define-key map (kbd "M-p")         'scroll-up-bind)
