@@ -100,6 +100,7 @@ Return a list of installed packages or nil for every skipped package."
 ;; ----------------------------------------------------------------
 (ensure-package-installed 'magit)
 (ensure-package-installed 'expand-region)
+(ensure-package-installed 'mwim)
 
 ;; ================================================================
 ;; Key binds
@@ -132,11 +133,57 @@ Return a list of installed packages or nil for every skipped package."
   (indent-according-to-mode)
   (next-line))
 
+(setq beginning-of-code-line-or-bugger-original-point nil)
+(setq beginning-of-code-line-or-buffer-times-pressed 0)
+(defun beginning-of-code-line-or-buffer ()
+  "Move point to beginning of code, line or buffer depending on times pressed."
+  (interactive)
+  (when (not (eq last-command this-command))
+    (setq beginning-of-code-line-or-bugger-original-point nil)
+    (setq beginning-of-code-line-or-buffer-times-pressed 0))
+  (when beginning-of-code-line-or-bugger-original-point
+    (goto-char beginning-of-code-line-or-bugger-original-point)
+    (setq beginning-of-code-line-or-bugger-original-point nil))
+  (setq beginning-of-code-line-or-buffer-times-pressed
+        (+ beginning-of-code-line-or-buffer-times-pressed 1))
+  (if (eq beginning-of-code-line-or-buffer-times-pressed 1)
+      (beginning-of-line-text)
+    (if (eq beginning-of-code-line-or-buffer-times-pressed 2)
+        (beginning-of-line)
+      (when (eq beginning-of-code-line-or-buffer-times-pressed 3)
+        (setq beginning-of-code-line-or-bugger-original-point (point))
+        (goto-char (point-min))
+        (setq beginning-of-code-line-or-buffer-times-pressed 0)))))
+
+(setq end-of-code-line-or-bugger-original-point nil)
+(setq end-of-code-line-or-buffer-times-pressed 0)
+(defun end-of-code-line-or-buffer ()
+  "Move point to end of code, line or buffer depending on times pressed."
+  (interactive)
+  (when (not (eq last-command this-command))
+    (setq end-of-code-line-or-bugger-original-point nil)
+    (setq end-of-code-line-or-buffer-times-pressed 0))
+  (when end-of-code-line-or-bugger-original-point
+    (goto-char end-of-code-line-or-bugger-original-point)
+    (setq end-of-code-line-or-bugger-original-point nil))
+  (setq end-of-code-line-or-buffer-times-pressed
+        (+ end-of-code-line-or-buffer-times-pressed 1))
+  (if (eq end-of-code-line-or-buffer-times-pressed 1)
+      (mwim-end)
+    (if (eq end-of-code-line-or-buffer-times-pressed 2)
+        (end-of-line)
+      (when (eq end-of-code-line-or-buffer-times-pressed 3)
+        (setq end-of-code-line-or-bugger-original-point (point))
+        (goto-char (point-max))
+        (setq end-of-code-line-or-buffer-times-pressed 0)))))
+
 ;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
 
     ;; Common
+    (define-key map (kbd "C-a")         'beginning-of-code-line-or-buffer)
+    (define-key map (kbd "C-e")         'end-of-code-line-or-buffer)
     (define-key map (kbd "M-p")         'scroll-up-bind)
     (define-key map (kbd "M-n")         'scroll-down-bind)
     (define-key map (kbd "C-,")         'other-window)
