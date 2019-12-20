@@ -306,6 +306,9 @@ Return a list of installed packages or nil for every skipped package."
 ;; prog-mode
 (add-hook 'prog-mode-hook 'linum-mode)
 
+;; octave-mode
+(add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+
 ;; ================================================================
 ;; Useful interactive functions
 ;; ================================================================
