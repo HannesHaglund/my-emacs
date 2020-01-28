@@ -288,26 +288,45 @@ Return a list of installed packages or nil for every skipped package."
   (setq tab-width 4)
   (setq default-tab-width 4))
 
-;; All modes
 (apply-tab-settings)
 (infer-indentation-style)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq show-paren-delay 0)
 (show-paren-mode 1)
+(add-hook 'prog-mode-hook 'linum-mode)
 
+;; ----------------------------------------------------------------
 ;; c-mode
-;; Company c mode
+;; ----------------------------------------------------------------
 (setq c-default-style "linux"
       c-basic-offset 3)
 
+;; ----------------------------------------------------------------
 ;; Wurst mode
+;; ----------------------------------------------------------------
 (require 'wurstscript-mode)
 
-;; prog-mode
-(add-hook 'prog-mode-hook 'linum-mode)
-
+;; ----------------------------------------------------------------
 ;; octave-mode
+;; ----------------------------------------------------------------
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+;; Src: https://emacs.stackexchange.com/questions/15164/commented-lines-shoot-off-to-column-32-in-octave-mode
+;; (slightly modified)
+(setq octave-mode-hook
+      (lambda () (progn (setq octave-comment-char ?%)
+                        (setq comment-start "%")
+                        (setq indent-tabs-mode nil)
+                        (setq comment-add 0)
+                        (setq tab-width 4)
+                        (setq tab-stop-list (number-sequence 4 200 4))
+                        (setq octave-block-offset 4)
+                        (defun octave-indent-comment ()
+                          "A function for `smie-indent-functions' (which see)."
+                          (save-excursion
+                            (back-to-indentation)
+                            (cond
+                             ((octave-in-string-or-comment-p) nil)
+                             ((looking-at-p "\\(\\s<\\)\\1\\{2,\\}") 0)))))))
 
 ;; ================================================================
 ;; Useful interactive functions
