@@ -119,6 +119,7 @@ Return a list of installed packages or nil for every skipped package."
 (ensure-package-installed 'expand-region)
 (ensure-package-installed 'mwim)
 
+
 ;; ================================================================
 ;; Key binds
 ;; ================================================================
@@ -194,6 +195,21 @@ Return a list of installed packages or nil for every skipped package."
         (goto-char (point-max))
         (setq end-of-code-line-or-buffer-times-pressed 0)))))
 
+(defun align-each (regexp)
+  (interactive "sRegexp: ")
+  (align-regexp
+   (if (use-region-p) (region-beginning) (point-min))
+   (if (use-region-p) (region-end)       (point-max))
+   (concat "\\(\\s-*\\)" regexp)
+   1
+   align-default-spacing
+   1))
+
+(defun helm-do-ag-this-saved-file ()
+  (interactive)
+  (save-buffer)
+  (helm-do-ag-this-file))
+
 ;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
@@ -207,11 +223,12 @@ Return a list of installed packages or nil for every skipped package."
     (define-key map (kbd "C-.")         'wind-bck)
     (define-key map (kbd "C-;")         'other-frame)
     (define-key map (kbd "M-g")         'goto-line)
-    (define-key map (kbd "C-=")         'er/expand-region)
+    (define-key map (kbd "C-j")         'er/expand-region)
 
     ;; Align
     (define-key map (kbd "C-c a a")     'align)
     (define-key map (kbd "C-c a r")     'align-regexp)
+    (define-key map (kbd "C-c a e")     'align-each)
 
     ;; Completion
     (define-key map (kbd "C-/")         'helm-dabbrev)
@@ -225,10 +242,13 @@ Return a list of installed packages or nil for every skipped package."
     (define-key map (kbd "C-x C-b")     'helm-buffers-list)
     (define-key map (kbd "C-x C-f")     'helm-find-files)
     (define-key map (kbd "C-c C-y")     'helm-show-kill-ring)
+    (define-key map (kbd "C-h h")       'helm-apropos)
+    (define-key map (kbd "C-h f")       'helm-apropos)
+    (define-key map (kbd "C-h v")       'helm-apropos)
 
     ;; Helm Swoop
-    (define-key map (kbd "M-i")         'helm-do-ag-this-file)
     (define-key map (kbd "M-I")         'helm-ag-pop-stack)
+    (define-key map (kbd "M-i")         'helm-do-ag-this-saved-file)
     (define-key map (kbd "C-c M-i")     'helm-do-ag-buffers)
     (define-key map (kbd "C-c p s s")   'helm-do-ag-project-root)
 
