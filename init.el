@@ -100,6 +100,19 @@ Return a list of installed packages or nil for every skipped package."
   (setq mc/cmds-to-run-for-all nil))
 
 ;; ----------------------------------------------------------------
+;; restart-emacs
+;; ----------------------------------------------------------------
+(ensure-package-installed 'restart-emacs)
+(setq restart-emacs-restore-frames nil)
+
+(defun restart-emacs-keep-frames ()
+  "Same as (restart-emacs) but restore the frame to current context"
+  (interactive)
+  (setq restart-emacs-restore-frames t)
+  (restart-emacs)
+  (setq restart-emacs-restore-frames nil))
+
+;; ----------------------------------------------------------------
 ;; misc.
 ;; ----------------------------------------------------------------
 (ensure-package-installed 'magit)
