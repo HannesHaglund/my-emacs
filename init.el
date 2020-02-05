@@ -77,8 +77,12 @@ Return a list of installed packages or nil for every skipped package."
 ;; helm-ag
 ;; ----------------------------------------------------------------
 (ensure-package-installed 'helm-ag)
-;; Note: Requires the user to manually install rg
+
+(setq helm-ag-use-temp-buffer t)
+(setq helm-ag-insert-at-point t)
 (setq helm-ag-fuzzy-match t)
+
+;; Note: Requires the user to manually install rg
 (setq helm-ag-base-command "rg --no-heading")
 (when (eq system-type 'windows-nt)
   (setq helm-ag-base-command "rg --no-heading --vimgrep")
