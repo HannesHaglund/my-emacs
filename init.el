@@ -445,12 +445,17 @@ will be killed."
 ;; ================================================================
 ;; Misc.
 ;; ================================================================
-(defalias 'yes-or-no-p 'y-or-n-p)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Dabbrev settings
+(setq dabbrev-case-fold-search nil)
+(setq dabbrev-upcase-means-case-search t)
+
 ;; Disable mouse
 (require 'mye-no-mouse)
 (disable-mouse-mode 1)
-(setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
 
-(setq dabbrev-case-fold-search nil)
-(setq dabbrev-upcase-means-case-search t)
+;; Other
+(defalias 'yes-or-no-p 'y-or-n-p)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(setq ring-bell-function 'ignore)                     ; Disable warning sounds
+(setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
