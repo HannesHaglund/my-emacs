@@ -127,18 +127,12 @@ Return a list of installed packages or nil for every skipped package."
 (defun scroll-down-bind ()
   "Scroll 10 lines down."
   (interactive)
-  (let (value)
-    (dotimes (i 10 value)
-      ;; Dont know why this is reversed
-      (scroll-up-line))))
+  (scroll-up-line 10))
 
 (defun scroll-up-bind ()
   "Scroll 10 lines up."
   (interactive)
-  (let (value)
-    (dotimes (i 10 value)
-      ;; Dont know why this is reversed
-      (scroll-down-line))))
+  (scroll-down-line 10))
 
 (defun wind-bck ()
   "Change window."
