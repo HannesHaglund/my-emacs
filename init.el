@@ -118,6 +118,7 @@ Return a list of installed packages or nil for every skipped package."
 (ensure-package-installed 'magit)
 (ensure-package-installed 'expand-region)
 (ensure-package-installed 'mwim)
+(ensure-package-installed 'goto-chg)
 
 
 ;; ================================================================
@@ -218,6 +219,7 @@ Return a list of installed packages or nil for every skipped package."
     (define-key map (kbd "C-;")         'other-frame)
     (define-key map (kbd "M-g")         'goto-line)
     (define-key map (kbd "C-j")         'er/expand-region)
+    (define-key map (kbd "C-c c")       'goto-last-change)
 
     ;; Align
     (define-key map (kbd "C-c a a")     'align)
@@ -298,7 +300,9 @@ Return a list of installed packages or nil for every skipped package."
 (setq whitespace-style '(face tabs lines-tail))
 (set-face-background 'whitespace-line "#FFC0C0")
 (set-face-foreground 'whitespace-line nil)
+(setq whitespace-line-column 120)
 (global-whitespace-mode t)
+
 
 ;; ================================================================
 ;; Languages
