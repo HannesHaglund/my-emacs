@@ -113,6 +113,28 @@ Return a list of installed packages or nil for every skipped package."
   (setq restart-emacs-restore-frames nil))
 
 ;; ----------------------------------------------------------------
+;; company-mode
+;; ----------------------------------------------------------------
+(ensure-package-installed 'company)
+(ensure-package-installed 'company-fuzzy)
+(require 'company)
+
+(define-key company-active-map (kbd "C-n") 'company-select-next)
+(define-key company-active-map (kbd "C-p") 'company-select-previous)
+(define-key company-search-map (kbd "C-n") 'company-select-next)
+(define-key company-search-map (kbd "C-p") 'company-select-previous)
+
+(setq company-dabbrev-downcase nil)
+(setq company-idle-delay 0.2)
+(setq company-eclim-auto-save nil)
+
+(global-company-fuzzy-mode 1)
+(setq company-fuzzy-prefix-ontop t)
+
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+;; ----------------------------------------------------------------
 ;; misc.
 ;; ----------------------------------------------------------------
 (ensure-package-installed 'magit)
@@ -226,11 +248,8 @@ Return a list of installed packages or nil for every skipped package."
     (define-key map (kbd "C-c a r")     'align-regexp)
     (define-key map (kbd "C-c a e")     'align-each)
 
-    ;; Completion
-    (define-key map (kbd "C-/")         'helm-dabbrev)
-    (define-key map (kbd "C-?")         'dabbrev-completion) ; C-Shift-/
-    (define-key map (kbd "M-/")         'complete-tag)
-    (define-key map (kbd "M-?")         'helm-etags-select)  ; M-Shift-/
+    ;; Company
+    (define-key map (kbd "C-/")         'company-manual-begin)
 
     ;; Helm
     (define-key map (kbd "M-x")         'helm-M-x)
