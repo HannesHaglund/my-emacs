@@ -374,6 +374,7 @@ Return a list of installed packages or nil for every skipped package."
                         (setq tab-width 4)
                         (setq tab-stop-list (number-sequence 4 200 4))
                         (setq octave-block-offset 4)
+                        (define-key octave-mode-map (kbd "M-.") 'xref-find-definitions)
                         (defun octave-indent-comment ()
                           "A function for `smie-indent-functions' (which see)."
                           (save-excursion
@@ -381,6 +382,7 @@ Return a list of installed packages or nil for every skipped package."
                             (cond
                              ((octave-in-string-or-comment-p) nil)
                              ((looking-at-p "\\(\\s<\\)\\1\\{2,\\}") 0)))))))
+
 
 ;; ================================================================
 ;; Useful interactive functions
