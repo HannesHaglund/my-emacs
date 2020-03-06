@@ -328,7 +328,8 @@ Return a list of installed packages or nil for every skipped package."
 ;; src: https://www.emacswiki.org/emacs/NoTabs
 (defun infer-indentation-style ()
   ;; if our source file uses tabs, we use tabs, if spaces spaces, and if
-  ;; neither, we use the current indent-tabs-mode
+  ;; neither, we use the indent-tabs-mode nil
+  (setq indent-tabs-mode nil)
   (let ((space-count (how-many "^  " (point-min) (point-max)))
         (tab-count (how-many "^\t" (point-min) (point-max))))
     (if (> space-count tab-count) (setq indent-tabs-mode nil))
@@ -341,11 +342,11 @@ Return a list of installed packages or nil for every skipped package."
   (setq default-tab-width 4))
 
 (apply-tab-settings)
-(infer-indentation-style)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq show-paren-delay 0)
 (show-paren-mode 1)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'prog-mode-hook 'linum-mode)
+(add-hook 'prog-mode-hook 'infer-indentation-style)
 
 ;; ----------------------------------------------------------------
 ;; c-mode
