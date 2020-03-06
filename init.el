@@ -125,12 +125,11 @@ Return a list of installed packages or nil for every skipped package."
 (define-key company-search-map (kbd "C-p") 'company-select-previous)
 
 (setq company-dabbrev-downcase nil)
-(setq company-idle-delay 0.2)
+(setq company-idle-delay 0.4)
 (setq company-eclim-auto-save nil)
 
 (global-company-fuzzy-mode 1)
 (setq company-fuzzy-prefix-ontop t)
-
 
 (add-hook 'after-init-hook 'global-company-mode)
 
@@ -141,7 +140,6 @@ Return a list of installed packages or nil for every skipped package."
 (ensure-package-installed 'expand-region)
 (ensure-package-installed 'mwim)
 (ensure-package-installed 'goto-chg)
-
 
 ;; ================================================================
 ;; Key binds
@@ -387,6 +385,23 @@ Return a list of installed packages or nil for every skipped package."
 ;; ================================================================
 ;; Useful interactive functions
 ;; ================================================================
+
+(defun overwrite-emacs-d (repo-dir)
+  "Overwrite contents in ~/.emacs.d/ with the contents of the my-emacs repository."
+  (interactive (list (read-directory-name "my-emacs directory: "
+                                          ;; folder of init.el buffer if it exists, or nil
+                                          (let ((init-el-buffer (get-buffer "init.el")))
+                                            (if init-el-buffer
+                                                (file-name-directory (buffer-file-name init-el-buffer))
+                                              nil)))))
+  (let ((emacs-d "~/.emacs.d")
+        (init-el "~/.emacs.d/init.el")
+        (elisp "~/.emacs.d/elisp"))
+    (when (file-directory-p elisp)   (delete-directory elisp t t))
+    (when (file-exists-p    init-el) (delete-file      init-el))
+    (copy-directory (expand-file-name "elisp"   repo-dir) elisp t t nil)
+    (copy-file      (expand-file-name "init.el" repo-dir) init-el t t t t)
+    (message (concat "Wrote " repo-dir " to " emacs-d))))
 
 ;; Source: https://emacs.stackexchange.com/questions/24459/revert-all-open-buffers-and-ignore-errors
 (defun revert-all-file-buffers ()

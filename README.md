@@ -3,10 +3,12 @@ My personalized .emacs.
 
 ## "Installation"
 
-Running
+Open the init.el buffer in emacs and run the following:
 
 ```
-python3 install.py
+M-x eval-buffer
+M-x overwrite-emacs-d
+M-x restart-emacs
 ```
 
-Will overwrite the relevant files in ~/.emacs.d.
+This will overwrite the relevant files in ~/.emacs.d and restart emacs.
