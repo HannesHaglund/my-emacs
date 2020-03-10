@@ -391,6 +391,12 @@ Return a list of installed packages or nil for every skipped package."
 ;; Useful interactive functions
 ;; ================================================================
 
+(defun shell-command-to-kill-ring (cmd)
+  (interactive "sShell command: ")
+  (let ((output (shell-command-to-string cmd)))
+    (message (concat "Shell output:\n" output))
+    (kill-new output)))
+
 (defun overwrite-emacs-d (repo-dir)
   "Overwrite contents in ~/.emacs.d/ with the contents of the my-emacs repository."
   (interactive (list (read-directory-name "my-emacs directory: "
