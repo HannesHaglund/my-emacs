@@ -202,6 +202,16 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
 (add-hook 'after-init-hook 'global-company-mode)
 
 ;; ----------------------------------------------------------------
+;; wgrep
+;; ----------------------------------------------------------------
+(ensure-package-installed 'wgrep)
+(ensure-package-installed 'wgrep-helm)
+(require 'wgrep)
+(require 'wgrep-helm)
+(setq wgrep-auto-save-buffer t)
+(setq wgrep-enable-key "\C-c\C-e")
+
+;; ----------------------------------------------------------------
 ;; misc.
 ;; ----------------------------------------------------------------
 (ensure-package-installed 'magit)
