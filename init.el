@@ -119,13 +119,17 @@ Return a list of installed packages or nil for every skipped package."
 (ensure-package-installed 'company-fuzzy)
 (require 'company)
 
-(define-key company-active-map (kbd "C-n") 'company-select-next)
-(define-key company-active-map (kbd "C-p") 'company-select-previous)
-(define-key company-search-map (kbd "C-n") 'company-select-next)
-(define-key company-search-map (kbd "C-p") 'company-select-previous)
+(define-key company-active-map (kbd "SPC")                 nil)
+(define-key company-active-map (kbd "<return>")            nil)
+(define-key company-active-map (kbd "RET")                 nil)
+(define-key company-active-map (kbd "<tab>")              'company-complete-selection)
+(define-key company-active-map (read-kbd-macro "<C-tab>") 'company-select-next)
+(define-key company-active-map (read-kbd-macro "<S-tab>") 'company-select-previous)
+(define-key company-search-map (read-kbd-macro "<C-tab>") 'company-select-next)
+(define-key company-search-map (read-kbd-macro "<S-tab>") 'company-select-previous)
 
 (setq company-dabbrev-downcase nil)
-(setq company-idle-delay 0.4)
+(setq company-idle-delay 0.1)
 (setq company-eclim-auto-save nil)
 
 (global-company-fuzzy-mode 1)
