@@ -59,26 +59,6 @@ Return a list of installed packages or nil for every skipped package."
 (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
 
 ;; ----------------------------------------------------------------
-;; projectile
-;; ----------------------------------------------------------------
-(ensure-package-installed 'projectile)
-(projectile-mode +1)
-(define-key projectile-mode-map (kbd "s-p")   'projectile-command-map)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(require 'subr-x) ; Tags generation from projectile crashes otherwise
-(setq projectile-use-git-grep t)
-(setq projectile-enable-caching t)
-(setq projectile-indexing-method 'alien)
-(add-to-list 'projectile-globally-ignored-directories "Build")
-
-;; ----------------------------------------------------------------
-;; helm-projectile
-;; ----------------------------------------------------------------
-(ensure-package-installed 'helm-projectile)
-(require 'helm-projectile)
-(helm-projectile-on)
-
-;; ----------------------------------------------------------------
 ;; helm-ag
 ;; ----------------------------------------------------------------
 (ensure-package-installed 'helm-ag)
@@ -93,6 +73,58 @@ Return a list of installed packages or nil for every skipped package."
   (setq helm-ag-base-command "rg --no-heading --vimgrep")
   ;; Note: On Windows, you will need to add the ripgrep executable to this path
   (add-to-list 'exec-path "C:\\Program Files\\ripgrep"))
+
+;; ----------------------------------------------------------------
+;; helm-projectile
+;; ----------------------------------------------------------------
+(ensure-package-installed 'projectile)
+(projectile-mode +1)
+(projectile-global-mode)
+(require 'subr-x) ; Tags generation from projectile crashes otherwise
+(setq projectile-use-git-grep t)
+(setq projectile-enable-caching t)
+(setq projectile-indexing-method 'alien)
+(add-to-list 'projectile-globally-ignored-directories "Build")
+
+(ensure-package-installed 'helm-projectile)
+(require 'helm-projectile)
+(helm-projectile-on)
+
+(defhydra hydra-projectile (:color teal
+                            :hint nil)
+  "
+     PROJECTILE: %(projectile-project-root)
+
+     Find File            Search/Tags          Buffers                Cache
+------------------------------------------------------------------------------------------
+  _f_: file            _a_: ag                _i_: Ibuffer           _c_: clear cache
+_s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove known project
+  _r_: recent file     _t_: update gtags    _s-k_: kill all buffers  _X_: cleanup non-existing
+  _d_: dir             _o_: multi-occur                          ^^^^_z_: cache current
+"
+  ("a"   helm-do-ag-project-root)
+  ("g"   helm-projectile-grep)
+  ("b"   helm-projectile-switch-to-buffer)
+  ("c"   projectile-invalidate-cache)
+  ("f"   helm-projectile-find-file)
+  ("s-f" helm-projectile-find-file-dwim)
+  ("d"   helm-projectile-find-dir)
+  ("t"   ggtags-update-tags)
+  ("s-t" ggtags-update-tags)
+  ("i"   projectile-ibuffer)
+  ("K"   projectile-kill-buffers)
+  ("s-k" projectile-kill-buffers)
+  ("m"   projectile-multi-occur)
+  ("o"   projectile-multi-occur)
+  ("s-p" helm-projectile-switch-project "switch project")
+  ("p"   helm-projectile-switch-project)
+  ("s"   helm-projectile-switch-project)
+  ("r"   helm-projectile-recentf)
+  ("x"   projectile-remove-known-project)
+  ("X"   projectile-cleanup-known-projects)
+  ("z"   projectile-cache-current-file)
+  ("`"   hydra-projectile-other-window/body "other window")
+  ("q"   nil "cancel" :color blue))
 
 ;; ----------------------------------------------------------------
 ;; multiple-cursors
@@ -303,6 +335,9 @@ Return a list of installed packages or nil for every skipped package."
 
     ;; Multiple cursors
     (define-key map (kbd "C-c m")       'hydra-multiple-cursors/body)
+
+    ;; Projectile
+    (define-key map (kbd "C-c p")       'hydra-projectile/body)
 
     map)
   "my-keys-minor-mode keymap.")
