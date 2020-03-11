@@ -67,12 +67,16 @@ Return a list of installed packages or nil for every skipped package."
 (setq helm-ag-insert-at-point t)
 (setq helm-ag-fuzzy-match t)
 
-;; Note: Requires the user to manually install rg
-(setq helm-ag-base-command "rg --no-heading")
 (when (eq system-type 'windows-nt)
+  ;; Always use rg
   (setq helm-ag-base-command "rg --no-heading --vimgrep")
-  ;; Note: On Windows, you will need to add the ripgrep executable to this path
+  ;; You will need to add the ripgrep executable to this path
   (add-to-list 'exec-path "C:\\Program Files\\ripgrep"))
+
+(when (eq system-type 'gnu/linux)
+  ;; Use rg if available
+  (when (string= "" (shell-command-to-string "hash rg"))
+    (setq helm-ag-base-command "rg --no-heading")))
 
 ;; ----------------------------------------------------------------
 ;; helm-projectile
