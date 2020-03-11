@@ -308,7 +308,7 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
 
 (defhydra hydra-grep (:color teal :hint nil)
   "
-     In buffers           In project             Navigation
+   ^^In buffers         ^^In project           ^^navigation
 ---------------------------------------------------------------------
   _t_: this buffer     _a_: ag                _s_: stack pop
   _b_: all buffers     _g_: git grep
@@ -389,6 +389,41 @@ elisp eval-...
   ( "d" eval-defun  "defun" )
   ( "q" nil         "cancel"))
 
+(defhydra hydra-macro (:hint nil :color pink :pre
+                             (when defining-kbd-macro
+                                 (kmacro-end-macro 1)))
+  "
+  ^Create-Cycle^   ^^Basic^          ^Insert^        ^Save^          ^Edit^
+╭─────────────────────────────────────────────────────────────────────────╯
+     ^_i_^           [_e_] execute    [_n_] insert    [_b_] name      [_,_] previous
+     ^^↑^^           [_d_] delete     [_t_] set       [_K_] key       [_._] last
+ _j_ ←   → _l_       [_o_] edit       [_a_] add       [_x_] register
+     ^^↓^^           [_r_] region     [_f_] format    [_B_] defun
+     ^_k_^           [_m_] step
+    ^^   ^^          [_s_] swap
+"
+  ("j" kmacro-start-macro :color blue)
+  ("l" kmacro-end-or-call-macro-repeat)
+  ("i" kmacro-cycle-ring-previous)
+  ("k" kmacro-cycle-ring-next)
+  ("r" apply-macro-to-region-lines)
+  ("d" kmacro-delete-ring-head)
+  ("e" kmacro-end-or-call-macro-repeat)
+  ("o" kmacro-edit-macro-repeat)
+  ("m" kmacro-step-edit-macro)
+  ("s" kmacro-swap-ring)
+  ("n" kmacro-insert-counter)
+  ("t" kmacro-set-counter)
+  ("a" kmacro-add-counter)
+  ("f" kmacro-set-format)
+  ("b" kmacro-name-last-macro)
+  ("K" kmacro-bind-to-key)
+  ("B" insert-kbd-macro)
+  ("x" kmacro-to-register)
+  ("," kmacro-edit-macro)
+  ("." edit-kbd-macro)
+  ("q" nil :color blue))
+
 ;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
@@ -408,10 +443,12 @@ elisp eval-...
     (define-key map (kbd "C-x r")       'hydra-registers/body)
     (define-key map (kbd "C-c a")       'hydra-align/body)
     (define-key map (kbd "C-c m")       'hydra-multiple-cursors/body)
+    (define-key map (kbd "C-c o")       'hydra-macro/body)
     (define-key map (kbd "C-c p")       'hydra-projectile/body)
     (define-key map (kbd "C-c s")       'hydra-swedish/body)
     (define-key map (kbd "C-c r")       'hydra-rectangle/body)
     (define-key map (kbd "C-c e")       'hydra-eval/body)
+    (define-key map (kbd "C-c g")       'hydra-grep/body)
 
     ;; Company
     (define-key map (kbd "C-/")         'company-manual-begin)
