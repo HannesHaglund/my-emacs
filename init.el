@@ -342,6 +342,15 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
   ("v" helm-register "view registers")
   ("q" nil "cancel"))
 
+(defhydra hydra-swedish (:color pink :hint nil)
+  ("["  (insert "å") "å")
+  ("{"  (insert "Å"))
+  (";"  (insert "ö") "ö")
+  (":"  (insert "Ö"))
+  ("'"  (insert "ä") "ä")
+  ("\"" (insert "Ä"))
+  ("q" nil "cancel"))
+
 ;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
@@ -357,11 +366,12 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
     (define-key map (kbd "M-g")         'goto-line)
     (define-key map (kbd "C-j")         'er/expand-region)
 
-    ;; Registers
+    ;; Misc hydras
     (define-key map (kbd "C-x r")       'hydra-registers/body)
-
-    ;; Align
     (define-key map (kbd "C-c a")       'hydra-align/body)
+    (define-key map (kbd "C-c m")       'hydra-multiple-cursors/body)
+    (define-key map (kbd "C-c p")       'hydra-projectile/body)
+    (define-key map (kbd "C-c s")       'hydra-swedish/body)
 
     ;; Company
     (define-key map (kbd "C-/")         'company-manual-begin)
@@ -380,12 +390,6 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
     (define-key map (kbd "M-I")         'helm-ag-pop-stack)
     (define-key map (kbd "M-i")         'helm-do-ag-this-saved-file)
     (define-key map (kbd "C-c M-i")     'helm-do-ag-buffers)
-
-    ;; Multiple cursors
-    (define-key map (kbd "C-c m")       'hydra-multiple-cursors/body)
-
-    ;; Projectile
-    (define-key map (kbd "C-c p")       'hydra-projectile/body)
 
     map)
   "my-keys-minor-mode keymap.")
