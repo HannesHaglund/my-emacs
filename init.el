@@ -215,7 +215,6 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
 (ensure-package-installed 'magit)
 (ensure-package-installed 'expand-region)
 (ensure-package-installed 'mwim)
-(ensure-package-installed 'goto-chg)
 
 ;; ================================================================
 ;; Key binds
@@ -357,7 +356,6 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
     (define-key map (kbd "C-;")         'other-frame)
     (define-key map (kbd "M-g")         'goto-line)
     (define-key map (kbd "C-j")         'er/expand-region)
-    (define-key map (kbd "C-c c")       'goto-last-change)
 
     ;; Registers
     (define-key map (kbd "C-x r")       'hydra-registers/body)
