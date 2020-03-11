@@ -81,6 +81,7 @@ Return a list of installed packages or nil for every skipped package."
 (projectile-mode +1)
 (projectile-global-mode)
 (require 'subr-x) ; Tags generation from projectile crashes otherwise
+(setq projectile-switch-project-action 'projectile-dired)
 (setq projectile-use-git-grep t)
 (setq projectile-enable-caching t)
 (setq projectile-indexing-method 'alien)
@@ -95,7 +96,7 @@ Return a list of installed packages or nil for every skipped package."
   "
      PROJECTILE: %(projectile-project-root)
 
-     Find File            Search/Tags          Buffers                Cache
+     Find File            Search/Tags            Buffers                Cache
 ------------------------------------------------------------------------------------------
   _f_: file            _a_: ag                _i_: Ibuffer           _c_: clear cache
 _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove known project
@@ -114,11 +115,8 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
   ("i"   projectile-ibuffer)
   ("K"   projectile-kill-buffers)
   ("s-k" projectile-kill-buffers)
-  ("m"   projectile-multi-occur)
   ("o"   projectile-multi-occur)
-  ("s-p" helm-projectile-switch-project "switch project")
-  ("p"   helm-projectile-switch-project)
-  ("s"   helm-projectile-switch-project)
+  ("p"   helm-projectile-switch-project "switch project")
   ("r"   helm-projectile-recentf)
   ("x"   projectile-remove-known-project)
   ("X"   projectile-cleanup-known-projects)
@@ -303,6 +301,48 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
   (save-buffer)
   (helm-do-ag-this-file))
 
+(defhydra hydra-align (:color teal :hint nil)
+  ("a" align        "align")
+  ("r" align-regexp "align-regexp")
+  ("e" align-each   "align-each")
+  ("q" nil          "cancel" :color blue))
+
+(defhydra hydra-grep (:color teal :hint nil)
+  "
+     In buffers           In project             Navigation
+---------------------------------------------------------------------
+  _t_: this buffer     _a_: ag                _s_: stack pop
+  _b_: all buffers     _g_: git grep
+"
+  ("t" helm-do-ag-this-saved-file)
+  ("a" helm-do-ag-project-root)
+  ("g" helm-projectile-grep)
+  ("b" helm-do-ag-buffers)
+  ("s" helm-ag-pop-stack)
+  ("q" nil "cancel" :color blue))
+
+(defhydra hydra-registers (:color blue :hint nil)
+  "
+   ^^Point                ^^Text           ^^Macros
+-------------------------------------------------------------
+  _r_: point to register _c_: copy region _m_: store macro
+  _j_: jump to register  _C_: copy rect   _e_: execute
+                      ^^ _i_: insert
+                      ^^ _p_: prepend
+                      ^^ _a_: append
+"
+  ("r" point-to-register)
+  ("j" jump-to-register)
+  ("c" copy-to-register)
+  ("C" copy-rectangle-to-register)
+  ("i" insert-register)
+  ("p" prepend-to-register)
+  ("a" append-to-register)
+  ("m" kmacro-to-register)
+  ("e" jump-to-register)
+  ("v" helm-register "view registers")
+  ("q" nil "cancel"))
+
 ;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
@@ -319,10 +359,11 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
     (define-key map (kbd "C-j")         'er/expand-region)
     (define-key map (kbd "C-c c")       'goto-last-change)
 
+    ;; Registers
+    (define-key map (kbd "C-x r")       'hydra-registers/body)
+
     ;; Align
-    (define-key map (kbd "C-c a a")     'align)
-    (define-key map (kbd "C-c a r")     'align-regexp)
-    (define-key map (kbd "C-c a e")     'align-each)
+    (define-key map (kbd "C-c a")       'hydra-align/body)
 
     ;; Company
     (define-key map (kbd "C-/")         'company-manual-begin)
@@ -341,7 +382,6 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
     (define-key map (kbd "M-I")         'helm-ag-pop-stack)
     (define-key map (kbd "M-i")         'helm-do-ag-this-saved-file)
     (define-key map (kbd "C-c M-i")     'helm-do-ag-buffers)
-    (define-key map (kbd "C-c p s s")   'helm-do-ag-project-root)
 
     ;; Multiple cursors
     (define-key map (kbd "C-c m")       'hydra-multiple-cursors/body)
