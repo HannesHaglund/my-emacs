@@ -430,6 +430,13 @@ Return a list of installed packages or nil for every skipped package."
    (("," kmacro-edit-macro "previous")
     ("." edit-kbd-macro "oldest"))))
 
+(pretty-hydra-define hydra-magit (:color teal :title "⎆ Magit" :quit-key "q")
+  ("Dispatch"
+   (("r" magit-dispatch "repo")
+    ("f" magit-file-dispatch "file"))
+   "Status"
+   (("s" magit-status "status"))))
+
 ;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
@@ -456,6 +463,7 @@ Return a list of installed packages or nil for every skipped package."
     (define-key map (kbd "C-c e")       'hydra-eval/body)
     (define-key map (kbd "C-c g")       'hydra-grep/body)
     (define-key map (kbd "C-c z")       'hydra-zoom/body)
+    (define-key map (kbd "C-c v")       'hydra-magit/body)
 
     ;; Company
     (define-key map (kbd "C-/")         'company-manual-begin)
