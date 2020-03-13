@@ -478,11 +478,6 @@ Return a list of installed packages or nil for every skipped package."
     (define-key map (kbd "C-h f")       'helm-apropos)
     (define-key map (kbd "C-h v")       'helm-apropos)
 
-    ;; Helm Swoop
-    (define-key map (kbd "M-I")         'helm-ag-pop-stack)
-    (define-key map (kbd "M-i")         'helm-do-ag-this-saved-file)
-    (define-key map (kbd "C-c M-i")     'helm-do-ag-buffers)
-
     map)
   "my-keys-minor-mode keymap.")
 
