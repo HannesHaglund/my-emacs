@@ -43,6 +43,7 @@ Return a list of installed packages or nil for every skipped package."
 ;; hydra
 ;; ----------------------------------------------------------------
 (ensure-package-installed 'hydra)
+(ensure-package-installed 'pretty-hydra)
 
 ;; ----------------------------------------------------------------
 ;; helm
@@ -95,38 +96,33 @@ Return a list of installed packages or nil for every skipped package."
 (require 'helm-projectile)
 (helm-projectile-on)
 
-(defhydra hydra-projectile (:color teal
-                            :hint nil)
-  "
-     PROJECTILE: %(projectile-project-root)
+(pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
+                                              :title "PROJECTILE in %(projectile-project-root)")
+  ("Find file"
+   (("f"   helm-projectile-find-file "file")
+    ("s-f" helm-projectile-find-file-dwim "file dwim")
+    ("r"   helm-projectile-recentf "recent file")
+    ("d"   helm-projectile-find-dir "dir"))
 
-     Find File            Search/Tags            Buffers                Cache
-------------------------------------------------------------------------------------------
-  _f_: file            _a_: ag                _i_: Ibuffer           _c_: clear cache
-_s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove known project
-  _r_: recent file     _t_: update gtags    _s-k_: kill all buffers  _X_: cleanup non-existing
-  _d_: dir             _o_: multi-occur                          ^^^^_z_: cache current
-"
-  ("a"   helm-do-ag-project-root)
-  ("g"   helm-projectile-grep)
-  ("b"   helm-projectile-switch-to-buffer)
-  ("c"   projectile-invalidate-cache)
-  ("f"   helm-projectile-find-file)
-  ("s-f" helm-projectile-find-file-dwim)
-  ("d"   helm-projectile-find-dir)
-  ("t"   ggtags-update-tags)
-  ("s-t" ggtags-update-tags)
-  ("i"   projectile-ibuffer)
-  ("K"   projectile-kill-buffers)
-  ("s-k" projectile-kill-buffers)
-  ("o"   projectile-multi-occur)
-  ("p"   helm-projectile-switch-project "switch project")
-  ("r"   helm-projectile-recentf)
-  ("x"   projectile-remove-known-project)
-  ("X"   projectile-cleanup-known-projects)
-  ("z"   projectile-cache-current-file)
-  ("`"   hydra-projectile-other-window/body "other window")
-  ("q"   nil "cancel" :color blue))
+   "Search/Tags"
+   (("a"   helm-do-ag-project-root "ag")
+    ("g"   helm-projectile-grep "git grep")
+    ("t"   ggtags-update-tags "update gtags")
+    ("o"   projectile-multi-occur "multi-occur"))
+
+   "Buffers"
+   (("i"   projectile-ibuffer)
+    ("b"   helm-projectile-switch-to-buffer "switch to buffer")
+    ("K" projectile-kill-buffers "Kill all buffers"))
+
+   "Cache"
+   (("c"   projectile-invalidate-cache "clear cache")
+    ("x"   projectile-remove-known-project "remove known project")
+    ("X"   projectile-cleanup-known-projects "cleanup non-existing")
+    ("z"   projectile-cache-current-file "cache current"))
+
+   "Project"
+   (("p"   helm-projectile-switch-project "switch project"))))
 
 ;; ----------------------------------------------------------------
 ;; multiple-cursors
@@ -139,31 +135,26 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
   (setq mc/cmds-to-run-once nil)
   (setq mc/cmds-to-run-for-all nil))
 
-(defhydra hydra-multiple-cursors (:hint nil)
-  "
- Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cursor%s(if (> (mc/num-cursors) 1) \"s\" \"\")
-------------------------------------------------------------------
- [_p_]   Next     [_n_]   Next     [_l_] Edit lines  [_0_] Insert numbers
- [_P_]   Skip     [_N_]   Skip     [_a_] Mark all    [_A_] Insert letters
- [_M-p_] Unmark   [_M-n_] Unmark   [_s_] Search      [_c_] Clear commands
- [Click] Cursor at point       [_q_] Quit"
-  ("l" mc/edit-lines :exit t)
-  ("a" mc/mark-all-like-this :exit t)
-  ("n" mc/mark-next-like-this)
-  ("N" mc/skip-to-next-like-this)
-  ("M-n" mc/unmark-next-like-this)
-  ("p" mc/mark-previous-like-this)
-  ("P" mc/skip-to-previous-like-this)
-  ("M-p" mc/unmark-previous-like-this)
-  ("s" mc/mark-all-in-region-regexp :exit t)
-  ("c" mc/clear-cmds-to-run)
-  ("0" mc/insert-numbers :exit t)
-  ("A" mc/insert-letters :exit t)
-  ("<mouse-1>" mc/add-cursor-on-click)
-  ;; Help with click recognition in this hydra
-  ("<down-mouse-1>" ignore)
-  ("<drag-mouse-1>" ignore)
-  ("q" nil))
+(pretty-hydra-define hydra-multiple-cursors (:title "MULTIPLE CURSORS - %(mc/num-cursors) active" :quit-key "q")
+  ("Up"
+   (("p" mc/mark-previous-like-this "next")
+    ("P" mc/skip-to-previous-like-this "skip")
+    ("M-p" mc/unmark-previous-like-this "unmark"))
+
+   "Down"
+   (("n" mc/mark-next-like-this "next")
+    ("N" mc/skip-to-next-like-this "skip")
+    ("M-n" mc/unmark-next-like-this "unmark"))
+
+   "Insert"
+   (("0" mc/insert-numbers "insert numbers" :exit t)
+    ("A" mc/insert-letters "insert letters" :exit t))
+
+   "Miscellaneous"
+   (("l" mc/edit-lines "edit lines" :exit t)
+    ("a" mc/mark-all-like-this "mark all" :exit t)
+    ("s" mc/mark-all-in-region-regexp "search" :exit t)
+    ("c" mc/clear-cmds-to-run "clear commands"))))
 
 ;; ----------------------------------------------------------------
 ;; restart-emacs
@@ -304,144 +295,134 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
   (save-buffer)
   (helm-do-ag-this-file))
 
-(defhydra hydra-align (:color teal :hint nil)
-  ("a" align        "align")
-  ("r" align-regexp "align-regexp")
-  ("e" align-each   "align-each")
-  ("q" nil          "cancel" :color blue))
-
+(pretty-hydra-define hydra-align (:color teal :quit-key "q")
+  ("ALIGN"
+   (("a" align        "align")
+    ("r" align-regexp "align-regexp")
+    ("e" align-each   "align-each"))))
 
 (defun do-in-each-buffer (what arg)
   (dolist (buffer (buffer-list))
     (with-current-buffer buffer
       (funcall what arg))))
 
-(defhydra hydra-zoom (:color red :hint nil)
-  ("r" (do-in-each-buffer 'text-scale-set 0)      "reset")
-  ("i" (do-in-each-buffer 'text-scale-increase 1) "zoom in")
-  ("o" (do-in-each-buffer 'text-scale-decrease 1) "zoom out")
-  ("tr" (text-scale-set 0)      "reset this buffer")
-  ("ti" (text-scale-increase 1) "zoom in this buffer")
-  ("to" (text-scale-decrease 1) "zoom out this buffer")
-  ("q" nil "cancel" :color blue))
 
-(defhydra hydra-grep (:color teal :hint nil)
-  "
-   ^^In buffers         ^^In project           ^^navigation
----------------------------------------------------------------------
-  _t_: this buffer     _a_: ag                _s_: stack pop
-  _b_: all buffers     _g_: git grep
-"
-  ("t" helm-do-ag-this-saved-file)
-  ("a" helm-do-ag-project-root)
-  ("g" helm-projectile-grep)
-  ("b" helm-do-ag-buffers)
-  ("s" helm-ag-pop-stack)
-  ("q" nil "cancel" :color blue))
+(pretty-hydra-define hydra-zoom (:color red :title "ZOOM" :quit-key "q")
+  ("All buffers"
+   (("r" (do-in-each-buffer 'text-scale-set 0)      "reset")
+    ("i" (do-in-each-buffer 'text-scale-increase 1) "zoom in")
+    ("o" (do-in-each-buffer 'text-scale-decrease 1) "zoom out"))
+   "This buffer"
+   (("R" (text-scale-set 0)      "reset")
+    ("I" (text-scale-increase 1) "zoom in")
+    ("O" (text-scale-decrease 1) "zoom out"))))
 
-(defhydra hydra-registers (:color blue :hint nil)
-  "
-   ^^Point                ^^Text           ^^Macros
--------------------------------------------------------------
-  _r_: point to register _c_: copy region _m_: store macro
-  _j_: jump to register  _C_: copy rect   _e_: execute
-                      ^^ _i_: insert
-                      ^^ _p_: prepend
-                      ^^ _a_: append
-"
-  ("r" point-to-register)
-  ("j" jump-to-register)
-  ("c" copy-to-register)
-  ("C" copy-rectangle-to-register)
-  ("i" insert-register)
-  ("p" prepend-to-register)
-  ("a" append-to-register)
-  ("m" kmacro-to-register)
-  ("e" jump-to-register)
-  ("v" helm-register "view registers")
-  ("q" nil "cancel"))
+(pretty-hydra-define hydra-grep (:color teal :title "GREP" :quit-key "q")
+  ("In buffers"
+   (("t" helm-do-ag-this-saved-file "this buffer")
+    ("b" helm-do-ag-buffers "all buffers"))
+   "In project"
+   (("a" helm-do-ag-project-root "ag")
+    ("g" helm-projectile-grep "git grep"))
+   "Navigation"
+   (("s" helm-ag-pop-stack "stack pop"))))
 
-(defhydra hydra-swedish (:color pink :hint nil)
-  ("["  (insert "å") "å")
-  ("{"  (insert "Å"))
-  (";"  (insert "ö") "ö")
-  (":"  (insert "Ö"))
-  ("'"  (insert "ä") "ä")
-  ("\"" (insert "Ä"))
-  ("q" nil "cancel"))
+(pretty-hydra-define hydra-registers (:color blue :title "REGISTERS" :quit-key "q")
+  ("Point"
+   (("r" point-to-register "point to register")
+    ("j" jump-to-register "jump to register"))
+   "Text"
+   (("c" copy-to-register "copy region")
+    ("C" copy-rectangle-to-register "copy rect")
+    ("i" insert-register "insert")
+    ("p" prepend-to-register "prepend")
+    ("a" append-to-register "append"))
+   "Macros"
+   (("m" kmacro-to-register "store macro")
+    ("e" jump-to-register "execute"))
+   "Miscellaneous"
+   (("v" helm-register "view registers"))))
 
-(defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
-                                     :color pink
-                                     :hint nil
-                                     :post (deactivate-mark))
-  "
-  ^_p_^       _w_ copy      _o_pen       _N_umber-lines            |\\     -,,,--,,_
-_b_   _f_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..  \-;;,_
-  ^_n_^       _k_ill        _c_lear      _r_eset-region-mark      |,4-  ) )_   .;.(  `'-'
-^^^^          _u_ndo        _q_: quit    ^ ^                     '---''(./..)-'(_\_)
-"
-  ("p" rectangle-previous-line)
-  ("n" rectangle-next-line)
-  ("b" rectangle-backward-char)
-  ("f" rectangle-forward-char)
-  ("k" kill-rectangle)                    ;; C-x r k
-  ("y" yank-rectangle)                    ;; C-x r y
-  ("w" copy-rectangle-as-kill)            ;; C-x r M-w
-  ("o" open-rectangle)                    ;; C-x r o
-  ("t" string-rectangle)                  ;; C-x r t
-  ("c" clear-rectangle)                   ;; C-x r c
-  ("e" rectangle-exchange-point-and-mark) ;; C-x C-x
-  ("N" rectangle-number-lines)            ;; C-x r N
-  ("r" (if (region-active-p)
-           (deactivate-mark)
-         (rectangle-mark-mode 1)))
-  ("u" undo nil)
-  ("q" nil))
+(pretty-hydra-define hydra-swedish (:color pink :quit-key "q")
+  ("SWEDISH"
+   (("["  (insert "å") "å")
+    ("{"  (insert "Å"))
+    (";"  (insert "ö") "ö")
+    (":"  (insert "Ö"))
+    ("'"  (insert "ä") "ä")
+    ("\"" (insert "Ä")))))
 
-(defhydra hydra-eval (:color blue :hint nil)
-  "
-elisp eval-...
-"
-  ( "e" helm-eval-expression "expression")
-  ( "b" eval-buffer "buffer")
-  ( "r" eval-region "region")
-  ( "d" eval-defun  "defun" )
-  ( "q" nil         "cancel"))
+(pretty-hydra-define hydra-rectangle (:body-pre (rectangle-mark-mode 1)
+                                                :color pink
+                                                :hint nil
+                                                :post (deactivate-mark)
+                                                :title "RECTANGLE"
+                                                :quit-key "q")
+  ("Movement"
+   (("p" rectangle-previous-line "↑")
+    ("n" rectangle-next-line "↓")
+    ("b" rectangle-backward-char "←")
+    ("f" rectangle-forward-char "→"))
 
-(defhydra hydra-macro (:hint nil :color pink :pre
-                             (when defining-kbd-macro
-                                 (kmacro-end-macro 1)))
-  "
-  ^Create-Cycle^   ^^Basic^          ^Insert^        ^Save^          ^Edit^
-╭─────────────────────────────────────────────────────────────────────────╯
-     ^_i_^           [_e_] execute    [_n_] insert    [_b_] name      [_,_] previous
-     ^^↑^^           [_d_] delete     [_t_] set       [_K_] key       [_._] last
- _j_ ←   → _l_       [_o_] edit       [_a_] add       [_x_] register
-     ^^↓^^           [_r_] region     [_f_] format    [_B_] defun
-     ^_k_^           [_m_] step
-    ^^   ^^          [_s_] swap
-"
-  ("j" kmacro-start-macro :color blue)
-  ("l" kmacro-end-or-call-macro-repeat)
-  ("i" kmacro-cycle-ring-previous)
-  ("k" kmacro-cycle-ring-next)
-  ("r" apply-macro-to-region-lines)
-  ("d" kmacro-delete-ring-head)
-  ("e" kmacro-end-or-call-macro-repeat)
-  ("o" kmacro-edit-macro-repeat)
-  ("m" kmacro-step-edit-macro)
-  ("s" kmacro-swap-ring)
-  ("n" kmacro-insert-counter)
-  ("t" kmacro-set-counter)
-  ("a" kmacro-add-counter)
-  ("f" kmacro-set-format)
-  ("b" kmacro-name-last-macro)
-  ("K" kmacro-bind-to-key)
-  ("B" insert-kbd-macro)
-  ("x" kmacro-to-register)
-  ("," kmacro-edit-macro)
-  ("." edit-kbd-macro)
-  ("q" nil :color blue))
+   "Actions"
+   (("w" copy-rectangle-as-kill "copy")
+    ("y" yank-rectangle "yank")
+    ("k" kill-rectangle "kill")
+    ("u" undo nil "undo"))
+
+   ""
+   (("o" open-rectangle "open")
+    ("t" string-rectangle "type")
+    ("c" clear-rectangle "clear"))
+
+   ""
+   (("N" rectangle-number-lines "Number-lines")
+    ("e" rectangle-exchange-point-and-mark "exchange-point")
+    ("r" (if (region-active-p)
+             (deactivate-mark)
+           (rectangle-mark-mode 1)) "reset-region-mark"))))
+
+(pretty-hydra-define hydra-eval (:color blue :quit-key "q")
+  ("ELISP EVALUATE"
+   (("e" helm-eval-expression "expression")
+    ("b" eval-buffer "buffer")
+    ("r" eval-region "region")
+    ("d" eval-defun  "defun"))))
+
+(pretty-hydra-define hydra-macro (:color pink
+                                         :quit-key "q"
+                                         :pre
+                                         (when defining-kbd-macro
+                                           (kmacro-end-macro 1)))
+  ("Create"
+   (("j" kmacro-start-macro "start macro" :color blue)
+    ("l" kmacro-end-or-call-macro-repeat "end macro")
+    ("i" kmacro-cycle-ring-previous "previous macro")
+    ("k" kmacro-cycle-ring-next "next macro"))
+
+   "Basic"
+   (("e" kmacro-end-or-call-macro-repeat "execute")
+    ("d" kmacro-delete-ring-head "delete")
+    ("o" kmacro-edit-macro-repeat "edit")
+    ("r" apply-macro-to-region-lines "region")
+    ("m" kmacro-step-edit-macro "step")
+    ("s" kmacro-swap-ring "swap"))
+
+   "Insert"
+   (("n" kmacro-insert-counter "insert")
+    ("t" kmacro-set-counter "set")
+    ("a" kmacro-add-counter "add")
+    ("f" kmacro-set-format "format"))
+
+   "Save"
+   (("b" kmacro-name-last-macro "name")
+    ("K" kmacro-bind-to-key "Key")
+    ("x" kmacro-to-register "register")
+    ("B" insert-kbd-macro "defun"))
+
+   "Edit"
+   (("," kmacro-edit-macro "previous")
+    ("." edit-kbd-macro "oldest"))))
 
 ;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
 (defvar my-keys-minor-mode-map
