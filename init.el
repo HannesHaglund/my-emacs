@@ -307,11 +307,10 @@ Return a list of installed packages or nil for every skipped package."
     ("r" align-regexp "align-regexp")
     ("e" align-each   "align-each"))))
 
-(defun do-in-each-buffer (what arg)
+(defun do-in-each-buffer (what &rest args)
   (dolist (buffer (buffer-list))
     (with-current-buffer buffer
-      (funcall what arg))))
-
+      (apply 'funcall what args))))
 
 (pretty-hydra-define hydra-zoom (:color red :title "🔍 Zoom" :quit-key "q")
   ("All buffers"
