@@ -310,6 +310,21 @@ _s-f_: file dwim       _g_: git grep          _b_: switch to buffer  _x_: remove
   ("e" align-each   "align-each")
   ("q" nil          "cancel" :color blue))
 
+
+(defun do-in-each-buffer (what arg)
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (funcall what arg))))
+
+(defhydra hydra-zoom (:color red :hint nil)
+  ("r" (do-in-each-buffer 'text-scale-set 0)      "reset")
+  ("i" (do-in-each-buffer 'text-scale-increase 1) "zoom in")
+  ("o" (do-in-each-buffer 'text-scale-decrease 1) "zoom out")
+  ("tr" (text-scale-set 0)      "reset this buffer")
+  ("ti" (text-scale-increase 1) "zoom in this buffer")
+  ("to" (text-scale-decrease 1) "zoom out this buffer")
+  ("q" nil "cancel" :color blue))
+
 (defhydra hydra-grep (:color teal :hint nil)
   "
    ^^In buffers         ^^In project           ^^navigation
@@ -453,6 +468,7 @@ elisp eval-...
     (define-key map (kbd "C-c r")       'hydra-rectangle/body)
     (define-key map (kbd "C-c e")       'hydra-eval/body)
     (define-key map (kbd "C-c g")       'hydra-grep/body)
+    (define-key map (kbd "C-c z")       'hydra-zoom/body)
 
     ;; Company
     (define-key map (kbd "C-/")         'company-manual-begin)
