@@ -174,6 +174,7 @@ Return a list of installed packages or nil for every skipped package."
 ;; ----------------------------------------------------------------
 (ensure-package-installed 'company)
 (ensure-package-installed 'company-fuzzy)
+(ensure-package-installed 'flx)
 (require 'company)
 
 (define-key company-active-map (kbd "SPC")                 nil)
@@ -190,7 +191,7 @@ Return a list of installed packages or nil for every skipped package."
 (setq company-eclim-auto-save nil)
 
 (global-company-fuzzy-mode 1)
-(setq company-fuzzy-prefix-ontop t)
+(setq company-fuzzy-sorting-function 'flx)
 
 (add-hook 'after-init-hook 'global-company-mode)
 
