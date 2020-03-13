@@ -97,7 +97,7 @@ Return a list of installed packages or nil for every skipped package."
 (helm-projectile-on)
 
 (pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
-                                              :title "PROJECTILE in %(projectile-project-root)")
+                                              :title "📁 Projectile in %(projectile-project-root)")
   ("Find file"
    (("f"   helm-projectile-find-file "file")
     ("s-f" helm-projectile-find-file-dwim "file dwim")
@@ -135,7 +135,7 @@ Return a list of installed packages or nil for every skipped package."
   (setq mc/cmds-to-run-once nil)
   (setq mc/cmds-to-run-for-all nil))
 
-(pretty-hydra-define hydra-multiple-cursors (:title "MULTIPLE CURSORS - %(mc/num-cursors) active" :quit-key "q")
+(pretty-hydra-define hydra-multiple-cursors (:title "⤲ Multiple cursors - %(mc/num-cursors) active" :quit-key "q")
   ("Up"
    (("p" mc/mark-previous-like-this "next")
     ("P" mc/skip-to-previous-like-this "skip")
@@ -203,6 +203,12 @@ Return a list of installed packages or nil for every skipped package."
 (require 'wgrep-helm)
 (setq wgrep-auto-save-buffer t)
 (setq wgrep-enable-key "\C-c\C-e")
+
+;; ----------------------------------------------------------------
+;; unicode-fonts
+;; ----------------------------------------------------------------
+(ensure-package-installed 'unicode-fonts)
+(unicode-fonts-setup)
 
 ;; ----------------------------------------------------------------
 ;; misc.
@@ -295,8 +301,8 @@ Return a list of installed packages or nil for every skipped package."
   (save-buffer)
   (helm-do-ag-this-file))
 
-(pretty-hydra-define hydra-align (:color teal :quit-key "q")
-  ("ALIGN"
+(pretty-hydra-define hydra-align (:color teal :title "☰ Align" :quit-key "q")
+  ("Actions"
    (("a" align        "align")
     ("r" align-regexp "align-regexp")
     ("e" align-each   "align-each"))))
@@ -307,7 +313,7 @@ Return a list of installed packages or nil for every skipped package."
       (funcall what arg))))
 
 
-(pretty-hydra-define hydra-zoom (:color red :title "ZOOM" :quit-key "q")
+(pretty-hydra-define hydra-zoom (:color red :title "🔍 Zoom" :quit-key "q")
   ("All buffers"
    (("r" (do-in-each-buffer 'text-scale-set 0)      "reset")
     ("i" (do-in-each-buffer 'text-scale-increase 1) "zoom in")
@@ -317,7 +323,7 @@ Return a list of installed packages or nil for every skipped package."
     ("I" (text-scale-increase 1) "zoom in")
     ("O" (text-scale-decrease 1) "zoom out"))))
 
-(pretty-hydra-define hydra-grep (:color teal :title "GREP" :quit-key "q")
+(pretty-hydra-define hydra-grep (:color teal :title "⛳ Grep" :quit-key "q")
   ("In buffers"
    (("t" helm-do-ag-this-saved-file "this buffer")
     ("b" helm-do-ag-buffers "all buffers"))
@@ -327,7 +333,7 @@ Return a list of installed packages or nil for every skipped package."
    "Navigation"
    (("s" helm-ag-pop-stack "stack pop"))))
 
-(pretty-hydra-define hydra-registers (:color blue :title "REGISTERS" :quit-key "q")
+(pretty-hydra-define hydra-registers (:color blue :title "🕮 Registers" :quit-key "q")
   ("Point"
    (("r" point-to-register "point to register")
     ("j" jump-to-register "jump to register"))
@@ -343,8 +349,8 @@ Return a list of installed packages or nil for every skipped package."
    "Miscellaneous"
    (("v" helm-register "view registers"))))
 
-(pretty-hydra-define hydra-swedish (:color pink :quit-key "q")
-  ("SWEDISH"
+(pretty-hydra-define hydra-swedish (:color pink :title "⚑ Swedish" :quit-key "q")
+  ("Character map"
    (("["  (insert "å") "å")
     ("{"  (insert "Å"))
     (";"  (insert "ö") "ö")
@@ -356,7 +362,7 @@ Return a list of installed packages or nil for every skipped package."
                                                 :color pink
                                                 :hint nil
                                                 :post (deactivate-mark)
-                                                :title "RECTANGLE"
+                                                :title "⬕ Rectangle"
                                                 :quit-key "q")
   ("Movement"
    (("p" rectangle-previous-line "↑")
@@ -382,14 +388,15 @@ Return a list of installed packages or nil for every skipped package."
              (deactivate-mark)
            (rectangle-mark-mode 1)) "reset-region-mark"))))
 
-(pretty-hydra-define hydra-eval (:color blue :quit-key "q")
-  ("ELISP EVALUATE"
+(pretty-hydra-define hydra-eval (:color blue :title "𝄠 Elisp eval" :quit-key "q")
+  ("Actions"
    (("e" helm-eval-expression "expression")
     ("b" eval-buffer "buffer")
     ("r" eval-region "region")
     ("d" eval-defun  "defun"))))
 
 (pretty-hydra-define hydra-macro (:color pink
+                                         :title "🤖 Macro"
                                          :quit-key "q"
                                          :pre
                                          (when defining-kbd-macro
