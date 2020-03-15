@@ -20,203 +20,225 @@
       (package-initialize)
       (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)))
 
-;; src:
-;; https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
-(defun ensure-package-installed (&rest packages)
-  "Assure every package is installed, ask for installation if it’s not.
-Return a list of installed packages or nil for every skipped package."
-  (mapcar
-   (lambda (package)
-     (if (package-installed-p package)
-         package
-       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
-           (progn (package-refresh-contents)
-                  (package-install package)
-                  package)
-         nil)))
-   packages))
-
 (package-initialize)
 (setup-melpa)
 
 ;; ----------------------------------------------------------------
+;; use-package
+;; ----------------------------------------------------------------
+(eval-when-compile
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+  (require 'use-package))
+
+;; ----------------------------------------------------------------
 ;; hydra
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'hydra)
-(ensure-package-installed 'pretty-hydra)
+(use-package hydra
+  :ensure t)
+
+(use-package pretty-hydra
+  :ensure t
+  :requires hydra)
 
 ;; ----------------------------------------------------------------
 ;; helm
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'helm)
-(helm-mode t)
-(setq helm-buffer-max-length nil)
+(use-package helm
+  :ensure t
+  :config
+  (helm-mode t)
+  (setq helm-buffer-max-length nil))
 
 ;; ----------------------------------------------------------------
 ;; helm-xref
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'helm-xref)
-(require 'helm-xref)
-(setq xref-show-xrefs-function 'helm-xref-show-xrefs)
+(use-package helm-xref
+  :ensure t
+  :requires helm
+  :config
+  (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
 
 ;; ----------------------------------------------------------------
 ;; helm-ag
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'helm-ag)
+(use-package helm-ag
+  :ensure t
+  :requires helm
+  :config
+  (setq helm-ag-use-temp-buffer t)
+  (setq helm-ag-insert-at-point t)
+  (setq helm-ag-fuzzy-match t)
 
-(setq helm-ag-use-temp-buffer t)
-(setq helm-ag-insert-at-point t)
-(setq helm-ag-fuzzy-match t)
+  (when (eq system-type 'windows-nt)
+    ;; Always use rg
+    (setq helm-ag-base-command "rg --no-heading --vimgrep")
+    ;; You will need to add the ripgrep executable to this path
+    (add-to-list 'exec-path "C:\\Program Files\\ripgrep"))
 
-(when (eq system-type 'windows-nt)
-  ;; Always use rg
-  (setq helm-ag-base-command "rg --no-heading --vimgrep")
-  ;; You will need to add the ripgrep executable to this path
-  (add-to-list 'exec-path "C:\\Program Files\\ripgrep"))
-
-(when (eq system-type 'gnu/linux)
-  ;; Use rg if available
-  (when (string= "" (shell-command-to-string "hash rg"))
-    (setq helm-ag-base-command "rg --no-heading")))
+  (when (eq system-type 'gnu/linux)
+    ;; Use rg if available
+    (when (string= "" (shell-command-to-string "hash rg"))
+      (setq helm-ag-base-command "rg --no-heading"))))
 
 ;; ----------------------------------------------------------------
 ;; helm-projectile
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'projectile)
-(projectile-mode +1)
-(projectile-global-mode)
-(require 'subr-x) ; Tags generation from projectile crashes otherwise
-(setq projectile-switch-project-action 'projectile-dired)
-(setq projectile-use-git-grep t)
-(setq projectile-enable-caching t)
-(setq projectile-indexing-method 'alien)
-(add-to-list 'projectile-globally-ignored-directories "Build")
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode +1)
+  (projectile-global-mode)
+  (require 'subr-x) ; Tags generation from projectile crashes otherwise
+  (setq projectile-switch-project-action 'projectile-dired)
+  (setq projectile-use-git-grep t)
+  (setq projectile-enable-caching t)
+  (setq projectile-indexing-method 'alien)
+  (add-to-list 'projectile-globally-ignored-directories "Build"))
 
-(ensure-package-installed 'helm-projectile)
-(require 'helm-projectile)
-(helm-projectile-on)
+(use-package helm-projectile
+  :ensure t
+  :requires (helm projectile pretty-hydra)
+  :config
+  (require 'helm-projectile)
+  (helm-projectile-on)
 
-(pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
-                                              :title "📁 Projectile in %(projectile-project-root)")
-  ("Find file"
-   (("f"   helm-projectile-find-file "file")
-    ("s-f" helm-projectile-find-file-dwim "file dwim")
-    ("r"   helm-projectile-recentf "recent file")
-    ("d"   helm-projectile-find-dir "dir"))
+  (pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
+                                                :title "📁 Projectile in %(projectile-project-root)")
+    ("Find file"
+     (("f"   helm-projectile-find-file "file")
+      ("s-f" helm-projectile-find-file-dwim "file dwim")
+      ("r"   helm-projectile-recentf "recent file")
+      ("d"   helm-projectile-find-dir "dir"))
 
-   "Search/Tags"
-   (("a"   helm-do-ag-project-root "ag")
-    ("g"   helm-projectile-grep "git grep")
-    ("t"   ggtags-update-tags "update gtags")
-    ("o"   projectile-multi-occur "multi-occur"))
+     "Search/Tags"
+     (("a"   helm-do-ag-project-root "ag")
+      ("g"   helm-projectile-grep "git grep")
+      ("t"   ggtags-update-tags "update gtags")
+      ("o"   projectile-multi-occur "multi-occur"))
 
-   "Buffers"
-   (("i"   projectile-ibuffer)
-    ("b"   helm-projectile-switch-to-buffer "switch to buffer")
-    ("K" projectile-kill-buffers "Kill all buffers"))
+     "Buffers"
+     (("i"   projectile-ibuffer)
+      ("b"   helm-projectile-switch-to-buffer "switch to buffer")
+      ("K" projectile-kill-buffers "Kill all buffers"))
 
-   "Cache"
-   (("c"   projectile-invalidate-cache "clear cache")
-    ("x"   projectile-remove-known-project "remove known project")
-    ("X"   projectile-cleanup-known-projects "cleanup non-existing")
-    ("z"   projectile-cache-current-file "cache current"))
+     "Cache"
+     (("c"   projectile-invalidate-cache "clear cache")
+      ("x"   projectile-remove-known-project "remove known project")
+      ("X"   projectile-cleanup-known-projects "cleanup non-existing")
+      ("z"   projectile-cache-current-file "cache current"))
 
-   "Project"
-   (("p"   helm-projectile-switch-project "switch project"))))
+     "Project"
+     (("p"   helm-projectile-switch-project "switch project")))))
 
 ;; ----------------------------------------------------------------
 ;; multiple-cursors
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'multiple-cursors)
-(require 'multiple-cursors)
+(use-package multiple-cursors
+  :ensure t
+  :requires pretty-hydra
+  :config
+  (require 'multiple-cursors)
 
-(defun mc/clear-cmds-to-run ()
-  (interactive)
-  (setq mc/cmds-to-run-once nil)
-  (setq mc/cmds-to-run-for-all nil))
+  (defun mc/clear-cmds-to-run ()
+    (interactive)
+    (setq mc/cmds-to-run-once nil)
+    (setq mc/cmds-to-run-for-all nil))
 
-(pretty-hydra-define hydra-multiple-cursors (:title "⤲ Multiple cursors - %(mc/num-cursors) active" :quit-key "q")
-  ("Up"
-   (("p" mc/mark-previous-like-this "next")
-    ("P" mc/skip-to-previous-like-this "skip")
-    ("M-p" mc/unmark-previous-like-this "unmark"))
+  (pretty-hydra-define hydra-multiple-cursors (:title "⤲ Multiple cursors - %(mc/num-cursors) active" :quit-key "q")
+    ("Up"
+     (("p" mc/mark-previous-like-this "next")
+      ("P" mc/skip-to-previous-like-this "skip")
+      ("M-p" mc/unmark-previous-like-this "unmark"))
 
-   "Down"
-   (("n" mc/mark-next-like-this "next")
-    ("N" mc/skip-to-next-like-this "skip")
-    ("M-n" mc/unmark-next-like-this "unmark"))
+     "Down"
+     (("n" mc/mark-next-like-this "next")
+      ("N" mc/skip-to-next-like-this "skip")
+      ("M-n" mc/unmark-next-like-this "unmark"))
 
-   "Insert"
-   (("0" mc/insert-numbers "insert numbers" :exit t)
-    ("A" mc/insert-letters "insert letters" :exit t))
+     "Insert"
+     (("0" mc/insert-numbers "insert numbers" :exit t)
+      ("A" mc/insert-letters "insert letters" :exit t))
 
-   "Miscellaneous"
-   (("l" mc/edit-lines "edit lines" :exit t)
-    ("a" mc/mark-all-like-this "mark all" :exit t)
-    ("s" mc/mark-all-in-region-regexp "search" :exit t)
-    ("c" mc/clear-cmds-to-run "clear commands"))))
+     "Miscellaneous"
+     (("l" mc/edit-lines "edit lines" :exit t)
+      ("a" mc/mark-all-like-this "mark all" :exit t)
+      ("s" mc/mark-all-in-region-regexp "search" :exit t)
+      ("c" mc/clear-cmds-to-run "clear commands")))))
 
 ;; ----------------------------------------------------------------
 ;; restart-emacs
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'restart-emacs)
-(setq restart-emacs-restore-frames nil)
-
-(defun restart-emacs-keep-frames ()
-  "Same as (restart-emacs) but restore the frame to current context"
-  (interactive)
-  (setq restart-emacs-restore-frames t)
-  (restart-emacs)
-  (setq restart-emacs-restore-frames nil))
+(use-package restart-emacs
+  :ensure t
+  :config
+  (setq restart-emacs-restore-frames t))
 
 ;; ----------------------------------------------------------------
 ;; company-mode
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'company)
-(ensure-package-installed 'company-fuzzy)
-(ensure-package-installed 'flx)
-(require 'company)
 
-(define-key company-active-map (kbd "SPC")                 nil)
-(define-key company-active-map (kbd "<return>")            nil)
-(define-key company-active-map (kbd "RET")                 nil)
-(define-key company-active-map (kbd "<tab>")              'company-complete-selection)
-(define-key company-active-map (read-kbd-macro "<C-tab>") 'company-select-next)
-(define-key company-active-map (read-kbd-macro "<S-tab>") 'company-select-previous)
-(define-key company-search-map (read-kbd-macro "<C-tab>") 'company-select-next)
-(define-key company-search-map (read-kbd-macro "<S-tab>") 'company-select-previous)
+(use-package company
+  :ensure t
+  :hook (after-init . global-company-mode)
+  :config
+  (require 'company)
+  (define-key company-active-map (kbd "SPC")                 nil)
+  (define-key company-active-map (kbd "<return>")            nil)
+  (define-key company-active-map (kbd "RET")                 nil)
+  (define-key company-active-map (kbd "<tab>")              'company-complete-selection)
+  (define-key company-active-map (read-kbd-macro "<C-tab>") 'company-select-next)
+  (define-key company-active-map (read-kbd-macro "<S-tab>") 'company-select-previous)
+  (define-key company-search-map (read-kbd-macro "<C-tab>") 'company-select-next)
+  (define-key company-search-map (read-kbd-macro "<S-tab>") 'company-select-previous)
+  (setq company-dabbrev-downcase nil)
+  (setq company-idle-delay 0.1)
+  (setq company-eclim-auto-save nil))
 
-(setq company-dabbrev-downcase nil)
-(setq company-idle-delay 0.1)
-(setq company-eclim-auto-save nil)
+(use-package flx
+  :ensure t)
 
-(global-company-fuzzy-mode 1)
-(setq company-fuzzy-sorting-function 'flx)
-
-(add-hook 'after-init-hook 'global-company-mode)
+(use-package company-fuzzy
+  :ensure t
+  :requires (company flx)
+  :config
+  (global-company-fuzzy-mode 1)
+  (setq company-fuzzy-sorting-function 'flx))
 
 ;; ----------------------------------------------------------------
 ;; wgrep
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'wgrep)
-(ensure-package-installed 'wgrep-helm)
-(require 'wgrep)
-(require 'wgrep-helm)
-(setq wgrep-auto-save-buffer t)
-(setq wgrep-enable-key "\C-c\C-e")
+(use-package wgrep
+  :ensure t
+  :config
+  (require 'wgrep)
+  (setq wgrep-auto-save-buffer t)
+  (setq wgrep-enable-key "\C-c\C-e"))
+
+(use-package wgrep-helm
+  :ensure t
+  :requires (wgrep helm)
+  :config
+  (require 'wgrep-helm))
 
 ;; ----------------------------------------------------------------
 ;; unicode-fonts
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'unicode-fonts)
-(unicode-fonts-setup)
+(use-package unicode-fonts
+  :ensure t
+  :config
+  (unicode-fonts-setup))
 
 ;; ----------------------------------------------------------------
 ;; misc.
 ;; ----------------------------------------------------------------
-(ensure-package-installed 'magit)
-(ensure-package-installed 'expand-region)
-(ensure-package-installed 'mwim)
+
+(use-package magit
+  :ensure t)
+(use-package expand-region
+  :ensure t)
+(use-package mwim
+  :ensure t)
 
 ;; ================================================================
 ;; Key binds
