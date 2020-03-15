@@ -1,6 +1,7 @@
 ;; ================================================================
 ;; Set up path
 ;; ================================================================
+(message "Loading init.el...")
 (add-to-list 'load-path "~/.emacs.d/elisp/")
 
 ;; ================================================================
@@ -29,7 +30,8 @@
 (eval-when-compile
   (unless (package-installed-p 'use-package)
     (package-install 'use-package))
-  (require 'use-package))
+  (require 'use-package)
+  (setq use-package-verbose t))
 
 ;; ----------------------------------------------------------------
 ;; hydra
@@ -39,7 +41,7 @@
 
 (use-package pretty-hydra
   :ensure t
-  :requires hydra)
+  :after hydra)
 
 ;; ----------------------------------------------------------------
 ;; helm
@@ -55,7 +57,7 @@
 ;; ----------------------------------------------------------------
 (use-package helm-xref
   :ensure t
-  :requires helm
+  :after helm
   :config
   (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
 
@@ -64,7 +66,7 @@
 ;; ----------------------------------------------------------------
 (use-package helm-ag
   :ensure t
-  :requires helm
+  :after helm
   :config
   (setq helm-ag-use-temp-buffer t)
   (setq helm-ag-insert-at-point t)
@@ -82,7 +84,7 @@
       (setq helm-ag-base-command "rg --no-heading"))))
 
 ;; ----------------------------------------------------------------
-;; helm-projectile
+;; projectile
 ;; ----------------------------------------------------------------
 (use-package projectile
   :ensure t
@@ -98,45 +100,28 @@
 
 (use-package helm-projectile
   :ensure t
-  :requires (helm projectile pretty-hydra)
+  :demand t                             ; Not having this causes some dependenant hydras to not load
+  :after (helm projectile)
+  :bind
+  ("M-x"     . helm-M-x)
+  ("C-x b"   . helm-buffers-list)
+  ("C-x C-b" . helm-buffers-list)
+  ("C-x C-f" . helm-find-files)
+  ("C-c C-y" . helm-show-kill-ring)
+  ("C-h h"   . helm-apropos)
+  ("C-h f"   . helm-apropos)
+  ("C-h y"   . helm-apropos)
   :config
   (require 'helm-projectile)
-  (helm-projectile-on)
-
-  (pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
-                                                :title "📁 Projectile in %(projectile-project-root)")
-    ("Find file"
-     (("f"   helm-projectile-find-file "file")
-      ("s-f" helm-projectile-find-file-dwim "file dwim")
-      ("r"   helm-projectile-recentf "recent file")
-      ("d"   helm-projectile-find-dir "dir"))
-
-     "Search/Tags"
-     (("a"   helm-do-ag-project-root "ag")
-      ("g"   helm-projectile-grep "git grep")
-      ("t"   ggtags-update-tags "update gtags")
-      ("o"   projectile-multi-occur "multi-occur"))
-
-     "Buffers"
-     (("i"   projectile-ibuffer)
-      ("b"   helm-projectile-switch-to-buffer "switch to buffer")
-      ("K" projectile-kill-buffers "Kill all buffers"))
-
-     "Cache"
-     (("c"   projectile-invalidate-cache "clear cache")
-      ("x"   projectile-remove-known-project "remove known project")
-      ("X"   projectile-cleanup-known-projects "cleanup non-existing")
-      ("z"   projectile-cache-current-file "cache current"))
-
-     "Project"
-     (("p"   helm-projectile-switch-project "switch project")))))
+  (helm-projectile-on))
 
 ;; ----------------------------------------------------------------
 ;; multiple-cursors
 ;; ----------------------------------------------------------------
 (use-package multiple-cursors
   :ensure t
-  :requires pretty-hydra
+  :after pretty-hydra
+  :bind ("C-c m" . hydra-multiple-cursors/body)
   :config
   (require 'multiple-cursors)
 
@@ -202,7 +187,7 @@
 
 (use-package company-fuzzy
   :ensure t
-  :requires (company flx)
+  :after (company flx)
   :config
   (global-company-fuzzy-mode 1)
   (setq company-fuzzy-sorting-function 'flx))
@@ -219,7 +204,7 @@
 
 (use-package wgrep-helm
   :ensure t
-  :requires (wgrep helm)
+  :after (wgrep helm)
   :config
   (require 'wgrep-helm))
 
@@ -232,291 +217,84 @@
   (unicode-fonts-setup))
 
 ;; ----------------------------------------------------------------
+;; no-mouse
+;; ----------------------------------------------------------------
+(use-package mye-no-mouse
+  :config
+  (disable-mouse-mode 1))
+
+;; ----------------------------------------------------------------
+;; basic-keybinds
+;; ----------------------------------------------------------------
+(use-package basic-keybinds
+  :bind
+  ("C-a" . beginning-of-code-line-or-buffer)
+  ("C-e" . end-of-code-line-or-buffer)
+  ("M-p" . scroll-up-bind)
+  ("M-n" . scroll-down-bind)
+  ("C-," . other-window)
+  ("C-." . wind-bck)
+  ("C-;" . other-frame)
+  ("M-g" . goto-line))
+
+;; ----------------------------------------------------------------
+;; whitespace
+;; ----------------------------------------------------------------
+(use-package whitespace
+  :config
+  (setq whitespace-style '(face tabs lines-tail))
+  (set-face-background 'whitespace-line "#FFC0C0")
+  (set-face-foreground 'whitespace-line nil)
+  (setq whitespace-line-column 120)
+  (global-whitespace-mode t))
+
+;; ----------------------------------------------------------------
+;; misc. hydras
+;; ----------------------------------------------------------------
+(use-package hydra-registers
+  :after pretty-hydra
+  :bind ("C-x r" . hydra-registers/body))
+(use-package hydra-rectangle
+  :after pretty-hydra
+  :bind ("C-c r" . hydra-rectangle/body))
+(use-package hydra-align
+  :after pretty-hydra
+  :bind ("C-c a" . hydra-align/body))
+(use-package hydra-zoom
+  :after pretty-hydra
+  :bind ("C-c z" . hydra-zoom/body))
+(use-package hydra-swedish
+  :after pretty-hydra
+  :bind ("C-c s" . hydra-swedish/body))
+(use-package hydra-eval
+  :after pretty-hydra
+  :bind ("C-c e" . hydra-eval/body))
+(use-package hydra-macro
+  :after pretty-hydra
+  :bind ("C-c o" . hydra-macro/body))
+
+(use-package hydra-projectile
+  :after pretty-hydra
+  :bind ("C-c p" . hydra-projectile/body))
+(use-package hydra-grep
+  :after pretty-hydra
+  :bind ("C-c g" . hydra-grep/body))
+(use-package hydra-magit
+  :after pretty-hydra
+  :bind ("C-c v" . hydra-magit/body))
+
+;; ----------------------------------------------------------------
 ;; misc.
 ;; ----------------------------------------------------------------
-
 (use-package magit
+  :commands (magit-dispatch magit-file-dispatch magit-status)
   :ensure t)
 (use-package expand-region
+  :bind ("C-j" . er/expand-region)
   :ensure t)
 (use-package mwim
   :ensure t)
-
-;; ================================================================
-;; Key binds
-;; ================================================================
-
-(defun scroll-down-bind ()
-  "Scroll 10 lines down."
-  (interactive)
-  (scroll-up-line 10))
-
-(defun scroll-up-bind ()
-  "Scroll 10 lines up."
-  (interactive)
-  (scroll-down-line 10))
-
-(defun wind-bck ()
-  "Change window."
-  (interactive)
-  (other-window -1))
-
-(defun c-tab-bind ()
-  "Indent line and move to next."
-  (interactive)
-  (indent-according-to-mode)
-  (next-line))
-
-(setq beginning-of-code-line-or-bugger-original-point nil)
-(setq beginning-of-code-line-or-buffer-times-pressed 0)
-(defun beginning-of-code-line-or-buffer ()
-  "Move point to beginning of code, line or buffer depending on times pressed."
-  (interactive)
-  (when (not (eq last-command this-command))
-    (setq beginning-of-code-line-or-bugger-original-point nil)
-    (setq beginning-of-code-line-or-buffer-times-pressed 0))
-  (when beginning-of-code-line-or-bugger-original-point
-    (goto-char beginning-of-code-line-or-bugger-original-point)
-    (setq beginning-of-code-line-or-bugger-original-point nil))
-  (setq beginning-of-code-line-or-buffer-times-pressed
-        (+ beginning-of-code-line-or-buffer-times-pressed 1))
-  (if (eq beginning-of-code-line-or-buffer-times-pressed 1)
-      (beginning-of-line-text)
-    (if (eq beginning-of-code-line-or-buffer-times-pressed 2)
-        (beginning-of-line)
-      (when (eq beginning-of-code-line-or-buffer-times-pressed 3)
-        (setq beginning-of-code-line-or-bugger-original-point (point))
-        (goto-char (point-min))
-        (setq beginning-of-code-line-or-buffer-times-pressed 0)))))
-
-(setq end-of-code-line-or-bugger-original-point nil)
-(setq end-of-code-line-or-buffer-times-pressed 0)
-(defun end-of-code-line-or-buffer ()
-  "Move point to end of code, line or buffer depending on times pressed."
-  (interactive)
-  (when (not (eq last-command this-command))
-    (setq end-of-code-line-or-bugger-original-point nil)
-    (setq end-of-code-line-or-buffer-times-pressed 0))
-  (when end-of-code-line-or-bugger-original-point
-    (goto-char end-of-code-line-or-bugger-original-point)
-    (setq end-of-code-line-or-bugger-original-point nil))
-  (setq end-of-code-line-or-buffer-times-pressed
-        (+ end-of-code-line-or-buffer-times-pressed 1))
-  (if (eq end-of-code-line-or-buffer-times-pressed 1)
-      (mwim-end)
-    (if (eq end-of-code-line-or-buffer-times-pressed 2)
-        (end-of-line)
-      (when (eq end-of-code-line-or-buffer-times-pressed 3)
-        (setq end-of-code-line-or-bugger-original-point (point))
-        (goto-char (point-max))
-        (setq end-of-code-line-or-buffer-times-pressed 0)))))
-
-(defun align-each (regexp)
-  (interactive "sRegexp: ")
-  (align-regexp
-   (if (use-region-p) (region-beginning) (point-min))
-   (if (use-region-p) (region-end)       (point-max))
-   (concat "\\(\\s-*\\)" regexp)
-   1
-   align-default-spacing
-   1))
-
-(defun helm-do-ag-this-saved-file ()
-  (interactive)
-  (save-buffer)
-  (helm-do-ag-this-file))
-
-(pretty-hydra-define hydra-align (:color teal :title "☰ Align" :quit-key "q")
-  ("Actions"
-   (("a" align        "align")
-    ("r" align-regexp "align-regexp")
-    ("e" align-each   "align-each"))))
-
-(defun do-in-each-buffer (what &rest args)
-  (dolist (buffer (buffer-list))
-    (with-current-buffer buffer
-      (apply 'funcall what args))))
-
-(pretty-hydra-define hydra-zoom (:color red :title "🔍 Zoom" :quit-key "q")
-  ("All buffers"
-   (("r" (do-in-each-buffer 'text-scale-set 0)      "reset")
-    ("i" (do-in-each-buffer 'text-scale-increase 1) "zoom in")
-    ("o" (do-in-each-buffer 'text-scale-decrease 1) "zoom out"))
-   "This buffer"
-   (("R" (text-scale-set 0)      "reset")
-    ("I" (text-scale-increase 1) "zoom in")
-    ("O" (text-scale-decrease 1) "zoom out"))))
-
-(pretty-hydra-define hydra-grep (:color teal :title "⛳ Grep" :quit-key "q")
-  ("In buffers"
-   (("t" helm-do-ag-this-saved-file "this buffer")
-    ("b" helm-do-ag-buffers "all buffers"))
-   "In project"
-   (("a" helm-do-ag-project-root "ag")
-    ("g" helm-projectile-grep "git grep"))
-   "Navigation"
-   (("s" helm-ag-pop-stack "stack pop"))))
-
-(pretty-hydra-define hydra-registers (:color blue :title "🕮 Registers" :quit-key "q")
-  ("Point"
-   (("r" point-to-register "point to register")
-    ("j" jump-to-register "jump to register"))
-   "Text"
-   (("c" copy-to-register "copy region")
-    ("C" copy-rectangle-to-register "copy rect")
-    ("i" insert-register "insert")
-    ("p" prepend-to-register "prepend")
-    ("a" append-to-register "append"))
-   "Macros"
-   (("m" kmacro-to-register "store macro")
-    ("e" jump-to-register "execute"))
-   "Miscellaneous"
-   (("v" helm-register "view registers"))))
-
-(pretty-hydra-define hydra-swedish (:color pink :title "⚑ Swedish" :quit-key "q")
-  ("Character map"
-   (("["  (insert "å") "å")
-    ("{"  (insert "Å"))
-    (";"  (insert "ö") "ö")
-    (":"  (insert "Ö"))
-    ("'"  (insert "ä") "ä")
-    ("\"" (insert "Ä")))))
-
-(pretty-hydra-define hydra-rectangle (:body-pre (rectangle-mark-mode 1)
-                                                :color pink
-                                                :hint nil
-                                                :post (deactivate-mark)
-                                                :title "⬕ Rectangle"
-                                                :quit-key "q")
-  ("Movement"
-   (("p" rectangle-previous-line "↑")
-    ("n" rectangle-next-line "↓")
-    ("b" rectangle-backward-char "←")
-    ("f" rectangle-forward-char "→"))
-
-   "Actions"
-   (("w" copy-rectangle-as-kill "copy")
-    ("y" yank-rectangle "yank")
-    ("k" kill-rectangle "kill")
-    ("u" undo nil "undo"))
-
-   ""
-   (("o" open-rectangle "open")
-    ("t" string-rectangle "type")
-    ("c" clear-rectangle "clear"))
-
-   ""
-   (("N" rectangle-number-lines "Number-lines")
-    ("e" rectangle-exchange-point-and-mark "exchange-point")
-    ("r" (if (region-active-p)
-             (deactivate-mark)
-           (rectangle-mark-mode 1)) "reset-region-mark"))))
-
-(pretty-hydra-define hydra-eval (:color blue :title "𝄠 Elisp eval" :quit-key "q")
-  ("Actions"
-   (("e" helm-eval-expression "expression")
-    ("b" eval-buffer "buffer")
-    ("r" eval-region "region")
-    ("d" eval-defun  "defun"))))
-
-(pretty-hydra-define hydra-macro (:color pink
-                                         :title "🤖 Macro"
-                                         :quit-key "q"
-                                         :pre
-                                         (when defining-kbd-macro
-                                           (kmacro-end-macro 1)))
-  ("Create"
-   (("j" kmacro-start-macro "start macro" :color blue)
-    ("l" kmacro-end-or-call-macro-repeat "end macro")
-    ("i" kmacro-cycle-ring-previous "previous macro")
-    ("k" kmacro-cycle-ring-next "next macro"))
-
-   "Basic"
-   (("e" kmacro-end-or-call-macro-repeat "execute")
-    ("d" kmacro-delete-ring-head "delete")
-    ("o" kmacro-edit-macro-repeat "edit")
-    ("r" apply-macro-to-region-lines "region")
-    ("m" kmacro-step-edit-macro "step")
-    ("s" kmacro-swap-ring "swap"))
-
-   "Insert"
-   (("n" kmacro-insert-counter "insert")
-    ("t" kmacro-set-counter "set")
-    ("a" kmacro-add-counter "add")
-    ("f" kmacro-set-format "format"))
-
-   "Save"
-   (("b" kmacro-name-last-macro "name")
-    ("K" kmacro-bind-to-key "Key")
-    ("x" kmacro-to-register "register")
-    ("B" insert-kbd-macro "defun"))
-
-   "Edit"
-   (("," kmacro-edit-macro "previous")
-    ("." edit-kbd-macro "oldest"))))
-
-(pretty-hydra-define hydra-magit (:color teal :title "⎆ Magit" :quit-key "q")
-  ("Dispatch"
-   (("r" magit-dispatch "repo")
-    ("f" magit-file-dispatch "file"))
-   "Status"
-   (("s" magit-status "status"))))
-
-;; src: http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
-(defvar my-keys-minor-mode-map
-  (let ((map (make-sparse-keymap)))
-
-    ;; Common
-    (define-key map (kbd "C-a")         'beginning-of-code-line-or-buffer)
-    (define-key map (kbd "C-e")         'end-of-code-line-or-buffer)
-    (define-key map (kbd "M-p")         'scroll-up-bind)
-    (define-key map (kbd "M-n")         'scroll-down-bind)
-    (define-key map (kbd "C-,")         'other-window)
-    (define-key map (kbd "C-.")         'wind-bck)
-    (define-key map (kbd "C-;")         'other-frame)
-    (define-key map (kbd "M-g")         'goto-line)
-    (define-key map (kbd "C-j")         'er/expand-region)
-
-    ;; Misc hydras
-    (define-key map (kbd "C-x r")       'hydra-registers/body)
-    (define-key map (kbd "C-c a")       'hydra-align/body)
-    (define-key map (kbd "C-c m")       'hydra-multiple-cursors/body)
-    (define-key map (kbd "C-c o")       'hydra-macro/body)
-    (define-key map (kbd "C-c p")       'hydra-projectile/body)
-    (define-key map (kbd "C-c s")       'hydra-swedish/body)
-    (define-key map (kbd "C-c r")       'hydra-rectangle/body)
-    (define-key map (kbd "C-c e")       'hydra-eval/body)
-    (define-key map (kbd "C-c g")       'hydra-grep/body)
-    (define-key map (kbd "C-c z")       'hydra-zoom/body)
-    (define-key map (kbd "C-c v")       'hydra-magit/body)
-
-    ;; Company
-    (define-key map (kbd "C-/")         'company-manual-begin)
-
-    ;; Helm
-    (define-key map (kbd "M-x")         'helm-M-x)
-    (define-key map (kbd "C-x b")       'helm-buffers-list)
-    (define-key map (kbd "C-x C-b")     'helm-buffers-list)
-    (define-key map (kbd "C-x C-f")     'helm-find-files)
-    (define-key map (kbd "C-c C-y")     'helm-show-kill-ring)
-    (define-key map (kbd "C-h h")       'helm-apropos)
-    (define-key map (kbd "C-h f")       'helm-apropos)
-    (define-key map (kbd "C-h v")       'helm-apropos)
-
-    map)
-  "my-keys-minor-mode keymap.")
-
-;; Refuses to work inside the key map
-;; Doing both cause I don't know which works
-(global-set-key [C-tab] 'c-tab-bind)
-(global-set-key (kbd "<C-tab>") 'c-tab-bind)
-
-(define-minor-mode my-keys-minor-mode
-  "A minor mode so that my key settings override annoying major modes."
-  :init-value t
-  :lighter " My-Keys")
-
-(my-keys-minor-mode 1)
+(use-package useful-commands)
 
 ;; ================================================================
 ;; Visuals
@@ -543,15 +321,6 @@
 
 ;; No scroll bar
 (scroll-bar-mode -1)
-
-;; Whitespace
-(require 'whitespace)
-(setq whitespace-style '(face tabs lines-tail))
-(set-face-background 'whitespace-line "#FFC0C0")
-(set-face-foreground 'whitespace-line nil)
-(setq whitespace-line-column 120)
-(global-whitespace-mode t)
-
 
 ;; ================================================================
 ;; Languages
@@ -609,113 +378,6 @@
                              ((octave-in-string-or-comment-p) nil)
                              ((looking-at-p "\\(\\s<\\)\\1\\{2,\\}") 0)))))))
 
-
-;; ================================================================
-;; Useful interactive functions
-;; ================================================================
-
-(defun shell-command-to-kill-ring (cmd)
-  (interactive "sShell command: ")
-  (let ((output (shell-command-to-string cmd)))
-    (message (concat "Shell output:\n" output))
-    (kill-new output)))
-
-(defun overwrite-emacs-d (repo-dir)
-  "Overwrite contents in ~/.emacs.d/ with the contents of the my-emacs repository."
-  (interactive (list (read-directory-name "my-emacs directory: "
-                                          ;; folder of init.el buffer if it exists, or nil
-                                          (let ((init-el-buffer (get-buffer "init.el")))
-                                            (if init-el-buffer
-                                                (file-name-directory (buffer-file-name init-el-buffer))
-                                              nil)))))
-  (let ((emacs-d "~/.emacs.d")
-        (init-el "~/.emacs.d/init.el")
-        (elisp "~/.emacs.d/elisp"))
-    (when (file-directory-p elisp)   (delete-directory elisp t t))
-    (when (file-exists-p    init-el) (delete-file      init-el))
-    (copy-directory (expand-file-name "elisp"   repo-dir) elisp t t nil)
-    (copy-file      (expand-file-name "init.el" repo-dir) init-el t t t t)
-    (message (concat "Wrote " repo-dir " to " emacs-d))))
-
-;; Source: https://emacs.stackexchange.com/questions/24459/revert-all-open-buffers-and-ignore-errors
-(defun revert-all-file-buffers ()
-  "Refresh all open file buffers without confirmation.
-Buffers in modified (not yet saved) state in emacs will not be reverted. They
-will be reverted though if they were modified outside emacs.
-Buffers visiting files which do not exist any more or are no longer readable
-will be killed."
-  (interactive)
-  (dolist (buf (buffer-list))
-    (let ((filename (buffer-file-name buf)))
-      ;; Revert only buffers containing files, which are not modified;
-      ;; do not try to revert non-file buffers like *Messages*.
-      (when (and filename
-                 (not (buffer-modified-p buf)))
-        (if (file-readable-p filename)
-            ;; If the file exists and is readable, revert the buffer.
-            (with-current-buffer buf
-              (revert-buffer :ignore-auto :noconfirm :preserve-modes))
-          ;; Otherwise, kill the buffer.
-          (let (kill-buffer-query-functions) ; No query done when killing buffer
-            (kill-buffer buf)
-            (message "Killed non-existing/unreadable file buffer: %s" filename))))))
-  (message "Finished reverting buffers containing unmodified files."))
-
-;; source: http://steve.yegge.googlepages.com/my-dot-emacs-file
-(defun rename-file-and-buffer (new-name)
-  "Renames both current buffer and file it's visiting to NEW-NAME."
-  (interactive "sNew name: ")
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (not filename)
-        (message "Buffer '%s' is not visiting a file!" name)
-      (if (get-buffer new-name)
-          (message "A buffer named '%s' already exists!" new-name)
-        (progn
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil))))))
-
-;; source: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun rename-file-and-buffer (new-name)
-  "Renames both current buffer and file it's visiting to NEW-NAME." (interactive "sNew name: ")
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (not filename)
-        (message "Buffer '%s' is not visiting a file!" name)
-      (if (get-buffer new-name)
-          (message "A buffer named '%s' already exists!" new-name)
-        (progn
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil)))))) ;;
-
-;; source: https://sites.google.com/site/steveyegge2/my-dot-emacs-file
-(defun move-buffer-file (dir)
-  "Moves both current buffer and file it's visiting to DIR." (interactive "DNew directory: ")
-  (let* ((name (buffer-name))
-         (filename (buffer-file-name))
-         (dir
-          (if (string-match dir "\\(?:/\\|\\\\)$")
-              (substring dir 0 -1) dir))
-         (newname (concat dir "/" name)))
-    (if (not filename)
-        (message "Buffer '%s' is not visiting a file!" name)
-      (progn
-        (copy-file filename newname 1)
-        (delete-file filename)
-        (set-visited-file-name newname)
-        (set-buffer-modified-p nil)
-        t))))
-
-;; source: https://stackoverflow.com/questions/3417438/close-all-buffers-besides-the-current-one-in-emacs
-(defun kill-other-buffers ()
-  (interactive)
-  (mapc 'kill-buffer (cdr (buffer-list (current-buffer)))))
-
-
 ;; ================================================================
 ;; Misc.
 ;; ================================================================
@@ -723,10 +385,6 @@ will be killed."
 ;; Dabbrev settings
 (setq dabbrev-case-fold-search nil)
 (setq dabbrev-upcase-means-case-search t)
-
-;; Disable mouse
-(require 'mye-no-mouse)
-(disable-mouse-mode 1)
 
 ;; Other
 (defalias 'yes-or-no-p 'y-or-n-p)
