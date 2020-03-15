@@ -181,16 +181,18 @@
 (use-package company
   :ensure t
   :hook (after-init . global-company-mode)
+  :bind (:map company-active-map
+              ("SPC"      . nil)
+              ("RET"      . nil)
+              ("<return>" . nil)
+              ("<tab>"    . 'company-complete-selection)
+              ("<C-tab>"  . 'company-select-next)
+              ("C-`"  . 'company-select-previous)
+              :map company-search-map
+              ("<C-tab>"  . 'company-select-next)
+              ("C-`"  . 'company-select-previous))
   :config
   (require 'company)
-  (define-key company-active-map (kbd "SPC")                 nil)
-  (define-key company-active-map (kbd "<return>")            nil)
-  (define-key company-active-map (kbd "RET")                 nil)
-  (define-key company-active-map (kbd "<tab>")              'company-complete-selection)
-  (define-key company-active-map (read-kbd-macro "<C-tab>") 'company-select-next)
-  (define-key company-active-map (read-kbd-macro "<S-tab>") 'company-select-previous)
-  (define-key company-search-map (read-kbd-macro "<C-tab>") 'company-select-next)
-  (define-key company-search-map (read-kbd-macro "<S-tab>") 'company-select-previous)
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.1)
   (setq company-eclim-auto-save nil))
