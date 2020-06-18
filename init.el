@@ -342,14 +342,14 @@
   (setq-default indent-tabs-mode nil)
   (setq tab-stop-list (number-sequence 4 200 4))
   (setq tab-width 4)
-  (setq default-tab-width 4))
+  (setq default-tab-width 4)
+  (infer-indentation-style))
 
-(apply-tab-settings)
 (setq show-paren-delay 0)
 (show-paren-mode 1)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'prog-mode-hook 'apply-tab-settings)
 (add-hook 'prog-mode-hook 'linum-mode)
-(add-hook 'prog-mode-hook 'infer-indentation-style)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; ----------------------------------------------------------------
 ;; c-mode
