@@ -162,7 +162,6 @@
 ;; ----------------------------------------------------------------
 ;; company-mode
 ;; ----------------------------------------------------------------
-
 (use-package company
   :ensure t
   :hook (after-init . global-company-mode)
@@ -217,13 +216,6 @@
   (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
   (add-to-list 'auto-mode-alist '("\\.docker\\'"  . dockerfile-mode))
   (add-hook 'dockerfile-mode-hook (lambda () (setq tab-width 4))))
-
-;; ----------------------------------------------------------------
-;; no-mouse
-;; ----------------------------------------------------------------
-(use-package mye-no-mouse
-  :config
-  (disable-mouse-mode 1))
 
 ;; ----------------------------------------------------------------
 ;; basic-keybinds
