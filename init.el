@@ -209,6 +209,16 @@
   (require 'wgrep-helm))
 
 ;; ----------------------------------------------------------------
+;; dockerfile-mode
+;; ----------------------------------------------------------------
+(use-package dockerfile-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+  (add-to-list 'auto-mode-alist '("\\.docker\\'"  . dockerfile-mode))
+  (add-hook 'dockerfile-mode-hook (lambda () (setq tab-width 4))))
+
+;; ----------------------------------------------------------------
 ;; no-mouse
 ;; ----------------------------------------------------------------
 (use-package mye-no-mouse
