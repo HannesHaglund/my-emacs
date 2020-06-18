@@ -5,6 +5,8 @@
    "In project"
    (("a" helm-do-ag-project-root "ag")
     ("g" helm-projectile-grep "git grep"))
+   "In directory"
+   (("d" helm-do-ag "ag"))
    "Navigation"
    (("s" helm-ag-pop-stack "stack pop"))))
 
