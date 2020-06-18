@@ -99,4 +99,12 @@ will be killed."
   (interactive)
   (mapc 'kill-buffer (cdr (buffer-list (current-buffer)))))
 
+;; source: https://www.reddit.com/r/emacs/comments/4zmly1/how_to_open_the_directory_of_a_file/
+(defun open-file-directory ()
+  "Open the current file's directory however the OS would."
+  (interactive)
+  (if default-directory
+      (browse-url-of-file (expand-file-name default-directory))
+    (error "No `default-directory' to open")))
+
 (provide 'useful-commands)
