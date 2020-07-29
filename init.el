@@ -387,3 +387,4 @@
 (setq tags-add-tables nil)              ; Never ask "keep current list of tags table?"
 (setq ring-bell-function 'ignore)       ; Disable warning sounds
 (setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
+(setenv "PAGER" "cat")
