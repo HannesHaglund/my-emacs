@@ -304,8 +304,8 @@
 (add-hook 'prog-mode-hook 'linum-mode)
 (add-hook 'prog-mode-hook 'column-number-mode)
 
-;; visual line mode
-(global-visual-line-mode t)
+;; truncate long lines
+(toggle-truncate-lines t)
 
 ;; no tool bar
 (tool-bar-mode -1)
