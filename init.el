@@ -156,6 +156,7 @@
 ;; ----------------------------------------------------------------
 (use-package restart-emacs
   :ensure t
+  :commands (restart-emacs)
   :config
   (setq restart-emacs-restore-frames t))
 
