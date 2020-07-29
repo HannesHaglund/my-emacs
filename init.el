@@ -244,6 +244,16 @@
   (global-whitespace-mode t))
 
 ;; ----------------------------------------------------------------
+;; expand-region
+;; ----------------------------------------------------------------
+(use-package expand-region
+  :bind ("C-j" . er/expand-region)
+  :ensure t
+  :init
+  ;; Make sure our binding isn't overriden by this binding
+  (define-key lisp-interaction-mode-map (kbd "C-j") nil))
+
+;; ----------------------------------------------------------------
 ;; misc. hydras
 ;; ----------------------------------------------------------------
 (use-package hydra-registers
@@ -283,9 +293,6 @@
 ;; ----------------------------------------------------------------
 (use-package magit
   :commands (magit-dispatch magit-file-dispatch magit-status)
-  :ensure t)
-(use-package expand-region
-  :bind ("C-j" . er/expand-region)
   :ensure t)
 (use-package mwim
   :ensure t)
