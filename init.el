@@ -288,6 +288,8 @@
   :ensure t)
 (use-package mwim
   :ensure t)
+(use-package bash-completion
+  :ensure t)
 (use-package useful-commands)
 
 ;; ================================================================
