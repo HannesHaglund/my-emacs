@@ -11,16 +11,8 @@
 
 ;; Setup...
 (defun setup-melpa ()
-  (add-to-list 'package-archives
-               '("melpa-stable" .
-                 "http://melpa-stable.milkbox.net/packages/") t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-  (when (>= emacs-major-version 24)
-      (package-initialize)
-      (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)))
-
+  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                           ("melpa" . "https://melpa.org/packages/"))))
 (package-initialize)
 (setup-melpa)
 
@@ -130,7 +122,10 @@
     (setq mc/cmds-to-run-once nil)
     (setq mc/cmds-to-run-for-all nil))
 
-  (pretty-hydra-define hydra-multiple-cursors (:title "⤲ Multiple cursors - %(mc/num-cursors) active" :quit-key "q")
+  (pretty-hydra-define hydra-multiple-cursors
+    (:title "⤲ Multiple cursors - %(mc/num-cursors) active"
+            :quit-key "q"
+            :pre (highlight-regexp (buffer-substring (mark) (point))))
     ("Up"
      (("p" mc/mark-previous-like-this "next")
       ("P" mc/skip-to-previous-like-this "skip")
@@ -172,10 +167,10 @@
               ("<return>" . nil)
               ("<tab>"    . 'company-complete-selection)
               ("<C-tab>"  . 'company-select-next)
-              ("C-`"  . 'company-select-previous)
+              ("C-`"      . 'company-select-previous)
               :map company-search-map
               ("<C-tab>"  . 'company-select-next)
-              ("C-`"  . 'company-select-previous))
+              ("C-`"      . 'company-select-previous))
   :config
   (require 'company)
   (setq company-dabbrev-downcase nil)
@@ -254,6 +249,38 @@
   (define-key lisp-interaction-mode-map (kbd "C-j") nil))
 
 ;; ----------------------------------------------------------------
+;; version control
+;; ----------------------------------------------------------------
+
+(use-package hydra-p4
+  :commands (hydra-p4/body)
+  :after pretty-hydra)
+
+(use-package hydra-magit
+  :after pretty-hydra)
+
+(use-package p4
+  :ensure t
+  :config
+  (setq p4-global-key-prefix nil))
+
+(use-package magit
+  :commands (magit-dispatch magit-file-dispatch magit-status)
+  :ensure t)
+
+(pretty-hydra-define hydra-vc (:color teal :title "⎆ Could not idenfiy VC type..." :quit-key "q")
+  (""
+   (("g" hydra-magit/body "magit")
+    ("p" hydra-p4/body    "p4"))))
+
+(defun appropriate-vc-hydra-body ()
+  (interactive)
+  (if (string= (vc-backend buffer-file-name) "Git") (hydra-magit/body)
+    (if (p4-fstat buffer-file-name) (hydra-p4/body) (hydra-vc/body))))
+
+(global-set-key (kbd "C-c v") 'appropriate-vc-hydra-body)
+
+;; ----------------------------------------------------------------
 ;; misc. hydras
 ;; ----------------------------------------------------------------
 (use-package hydra-registers
@@ -277,23 +304,16 @@
 (use-package hydra-macro
   :after pretty-hydra
   :bind ("C-c o" . hydra-macro/body))
-
 (use-package hydra-projectile
   :after pretty-hydra
   :bind ("C-c p" . hydra-projectile/body))
 (use-package hydra-grep
   :after pretty-hydra
   :bind ("C-c g" . hydra-grep/body))
-(use-package hydra-magit
-  :after pretty-hydra
-  :bind ("C-c v" . hydra-magit/body))
 
 ;; ----------------------------------------------------------------
 ;; misc.
 ;; ----------------------------------------------------------------
-(use-package magit
-  :commands (magit-dispatch magit-file-dispatch magit-status)
-  :ensure t)
 (use-package mwim
   :ensure t)
 (use-package bash-completion
