@@ -311,6 +311,9 @@
 (use-package hydra-grep
   :after pretty-hydra
   :bind ("C-c g" . hydra-grep/body))
+(use-package hydra-dired
+  :after pretty-hydra
+  :bind (:map dired-mode-map ("<tab>" . hydra-dired/body)))
 
 ;; ----------------------------------------------------------------
 ;; misc.
