@@ -268,17 +268,18 @@
   :commands (magit-dispatch magit-file-dispatch magit-status)
   :ensure t)
 
-(pretty-hydra-define hydra-vc (:color teal :title "⎆ Could not idenfiy VC type..." :quit-key "q")
+(pretty-hydra-define hydra-vc (:color teal :title "⎆ Choose VC backend..." :quit-key "q")
   (""
    (("g" hydra-magit/body "magit")
     ("p" hydra-p4/body    "p4"))))
 
 (defun appropriate-vc-hydra-body ()
   (interactive)
-  (if (string= (vc-backend buffer-file-name) "Git") (hydra-magit/body)
-    (if (p4-fstat buffer-file-name) (hydra-p4/body) (hydra-vc/body))))
+  (if (string= (vc-backend buffer-file-name) "Git") (hydra-magit/body) (hydra-vc/body)))
 
 (global-set-key (kbd "C-c v") 'appropriate-vc-hydra-body)
+
+(vc-backend default-directory)
 
 ;; ----------------------------------------------------------------
 ;; misc. hydras
