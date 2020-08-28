@@ -448,6 +448,10 @@
 (setq dabbrev-case-fold-search nil)
 (setq dabbrev-upcase-means-case-search t)
 
+;; Shell environment
+(setenv "PAGER"  "cat")
+(setenv "EDITOR" "emacs")
+
 ;; Other
 (defalias 'yes-or-no-p 'y-or-n-p)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -455,7 +459,6 @@
 (setq tags-add-tables nil)              ; Never ask "keep current list of tags table?"
 (setq ring-bell-function 'ignore)       ; Disable warning sounds
 (setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
-(setenv "PAGER" "cat")
 
 ;; ================================================================
 ;; local-init
