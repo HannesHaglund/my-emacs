@@ -339,7 +339,7 @@
 (add-hook 'prog-mode-hook 'column-number-mode)
 
 ;; truncate long lines
-(toggle-truncate-lines t)
+(setq-default truncate-lines t)
 
 ;; no tool bar
 (tool-bar-mode -1)
