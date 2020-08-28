@@ -279,8 +279,6 @@
 
 (global-set-key (kbd "C-c v") 'appropriate-vc-hydra-body)
 
-(vc-backend default-directory)
-
 ;; ----------------------------------------------------------------
 ;; misc. hydras
 ;; ----------------------------------------------------------------
