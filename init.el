@@ -35,7 +35,6 @@
 ;; to overwrite it again even if we get an error
 (use-package useful-commands)
 
-
 ;; ----------------------------------------------------------------
 ;; hydra
 ;; ----------------------------------------------------------------
@@ -98,8 +97,7 @@
   (setq projectile-switch-project-action 'projectile-dired)
   (setq projectile-use-git-grep t)
   (setq projectile-enable-caching t)
-  (setq projectile-indexing-method 'alien)
-  (add-to-list 'projectile-globally-ignored-directories "Build"))
+  (setq projectile-indexing-method 'alien))
 
 (use-package helm-projectile
   :ensure t
