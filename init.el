@@ -261,6 +261,15 @@
   (define-key lisp-interaction-mode-map (kbd "C-j") nil))
 
 ;; ----------------------------------------------------------------
+;; dumb-jump
+;; ----------------------------------------------------------------
+(use-package dumb-jump
+  :ensure t
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  (setq dumb-jump-prefer-searcher 'rg))
+
+;; ----------------------------------------------------------------
 ;; version control
 ;; ----------------------------------------------------------------
 (use-package hydra-p4
