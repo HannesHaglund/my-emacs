@@ -420,6 +420,22 @@
 ;; Misc.
 ;; ================================================================
 
+;; Change behavior of incremental search to inherit region
+;; source: https://www.reddit.com/r/emacs/comments/b7yjje/isearch_region_search/
+(defun isearch-region-to-advice (&optional not-regexp no-recursive-edit)
+  "If a region is active, make this the isearch default search pattern."
+  (interactive "P\np")
+  (when (use-region-p)
+    (let ((search (buffer-substring-no-properties
+                   (region-beginning)
+                   (region-end))))
+      (setq deactivate-mark t)
+      (isearch-yank-string search))))
+(advice-add 'isearch-forward-regexp  :after 'isearch-region-to-advice)
+(advice-add 'isearch-forward         :after 'isearch-region-to-advice)
+(advice-add 'isearch-backward-regexp :after 'isearch-region-to-advice)
+(advice-add 'isearch-backward        :after 'isearch-region-to-advice)
+
 ;; Dabbrev settings
 (setq dabbrev-case-fold-search nil)
 (setq dabbrev-upcase-means-case-search t)
