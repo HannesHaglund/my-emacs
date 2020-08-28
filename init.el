@@ -212,6 +212,19 @@
   (add-hook 'dockerfile-mode-hook (lambda () (setq tab-width 4))))
 
 ;; ----------------------------------------------------------------
+;; region-occurences-highligher
+;; ----------------------------------------------------------------
+(use-package region-occurrences-highlighter
+  :ensure t
+  :config
+  (set-face-attribute 'region-occurrences-highlighter-face nil
+                      :background "thistle2"
+                      :inverse-video nil)
+  (add-hook 'prog-mode-hook #'region-occurrences-highlighter-mode)
+  (add-hook 'org-mode-hook  #'region-occurrences-highlighter-mode)
+  (add-hook 'text-mode-hook #'region-occurrences-highlighter-mode))
+
+;; ----------------------------------------------------------------
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
 (use-package basic-keybinds
@@ -249,7 +262,6 @@
 ;; ----------------------------------------------------------------
 ;; version control
 ;; ----------------------------------------------------------------
-
 (use-package hydra-p4
   :commands (hydra-p4/body)
   :after pretty-hydra)
