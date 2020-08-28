@@ -448,3 +448,10 @@
 (setq ring-bell-function 'ignore)       ; Disable warning sounds
 (setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
 (setenv "PAGER" "cat")
+
+;; ================================================================
+;; local-init
+;; ================================================================
+
+;; local-init.el is intended for machine-local configuration. Load it now.
+(load-file (expand-file-name "local-init.el" (file-name-directory (or load-file-name (buffer-file-name)))))

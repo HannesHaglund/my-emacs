@@ -12,13 +12,15 @@
                                             (if init-el-buffer
                                                 (file-name-directory (buffer-file-name init-el-buffer))
                                               nil)))))
-  (let ((emacs-d "~/.emacs.d")
-        (init-el "~/.emacs.d/init.el")
-        (elisp "~/.emacs.d/elisp"))
+  (let ((emacs-d       "~/.emacs.d")
+        (init-el       "~/.emacs.d/init.el")
+        (local-init-el "~/.emacs.d/local-init.el")
+        (elisp         "~/.emacs.d/elisp"))
     (when (file-directory-p elisp)   (delete-directory elisp t t))
     (when (file-exists-p    init-el) (delete-file      init-el))
     (copy-directory (expand-file-name "elisp"   repo-dir) elisp t t nil)
     (copy-file      (expand-file-name "init.el" repo-dir) init-el t t t t)
+    (copy-file      (expand-file-name "local-init.el" repo-dir) local-init-el t t t t)
     (message (concat "Wrote " repo-dir " to " emacs-d))))
 
 ;; Source: https://emacs.stackexchange.com/questions/24459/revert-all-open-buffers-and-ignore-errors
