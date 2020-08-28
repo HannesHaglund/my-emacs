@@ -26,6 +26,17 @@
   (setq use-package-verbose t))
 
 ;; ----------------------------------------------------------------
+;; useful-commands
+;; ----------------------------------------------------------------
+;;
+;; We load this as early as possible because it contains (overwrite-emacs-d)
+;;
+;; If something later fails after we've overwritten .emacs.d we want to be able
+;; to overwrite it again even if we get an error
+(use-package useful-commands)
+
+
+;; ----------------------------------------------------------------
 ;; hydra
 ;; ----------------------------------------------------------------
 (use-package hydra
@@ -320,7 +331,6 @@
   :ensure t)
 (use-package bash-completion
   :ensure t)
-(use-package useful-commands)
 
 ;; ================================================================
 ;; Visuals
