@@ -123,9 +123,7 @@
     (setq mc/cmds-to-run-for-all nil))
 
   (pretty-hydra-define hydra-multiple-cursors
-    (:title "⤲ Multiple cursors - %(mc/num-cursors) active"
-            :quit-key "q"
-            :pre (highlight-regexp (buffer-substring (mark) (point))))
+    (:title "⤲ Multiple cursors - %(mc/num-cursors) active" :quit-key "q")
     ("Up"
      (("p" mc/mark-previous-like-this "next")
       ("P" mc/skip-to-previous-like-this "skip")
