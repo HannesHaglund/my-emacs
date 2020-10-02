@@ -211,6 +211,18 @@
   (require 'wgrep-helm))
 
 ;; ----------------------------------------------------------------
+;; eglot
+;; ----------------------------------------------------------------
+(use-package eglot
+  :ensure t
+  :config
+  (setq eglot-ignored-server-capabilites (quote (:documentHighlightProvider))))
+
+(use-package hydra-eglot
+  :after (pretty-hydra eglot)
+  :bind ("C-c e" . hydra-eglot/body))
+
+;; ----------------------------------------------------------------
 ;; region-occurences-highligher
 ;; ----------------------------------------------------------------
 (use-package region-occurrences-highlighter
@@ -317,7 +329,7 @@
   :bind ("C-c s" . hydra-swedish/body))
 (use-package hydra-eval
   :after pretty-hydra
-  :bind ("C-c e" . hydra-eval/body))
+  :bind ("C-c l" . hydra-eval/body))
 (use-package hydra-macro
   :after pretty-hydra
   :bind ("C-c o" . hydra-macro/body))
