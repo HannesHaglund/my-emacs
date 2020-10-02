@@ -7,8 +7,8 @@
 (pretty-hydra-define hydra-eglot (:color amaranth :title (hydra-eglot-title) :quit-key "q" :pre (eglot-ensure))
 
   ("Errors"
-   (("p" flymake-goto-next-error "next")
-    ("n" flymake-goto-next-error "previous"))
+   (("p" flymake-goto-prev-error "previous")
+    ("n" flymake-goto-next-error "next"))
 
    "Find"
     (("fd" eglot-find-declaration "declaration")
