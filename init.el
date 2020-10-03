@@ -227,14 +227,15 @@
 ;; ----------------------------------------------------------------
 (use-package basic-keybinds
   :bind
-  ("C-a" . beginning-of-code-line-or-buffer)
-  ("C-e" . end-of-code-line-or-buffer)
-  ("M-p" . scroll-up-bind)
-  ("M-n" . scroll-down-bind)
-  ("C-," . other-window)
-  ("C-." . wind-bck)
-  ("C-;" . other-frame)
-  ("M-g" . goto-line))
+  ("C-a"   . beginning-of-code-line-or-buffer)
+  ("C-e"   . end-of-code-line-or-buffer)
+  ("M-p"   . scroll-up-bind)
+  ("M-n"   . scroll-down-bind)
+  ("C-,"   . other-window)
+  ("C-."   . wind-bck)
+  ("C-;"   . other-frame)
+  ("M-g"   . goto-line)
+  ("C-c s" . shell-here))
 
 ;; ----------------------------------------------------------------
 ;; whitespace
@@ -321,7 +322,7 @@
   :bind ("C-c z" . hydra-zoom/body))
 (use-package hydra-swedish
   :after pretty-hydra
-  :bind ("C-c s" . hydra-swedish/body))
+  :bind ("C-c ;" . hydra-swedish/body)) ; C-c ö, kind of
 (use-package hydra-eval
   :after pretty-hydra
   :bind ("C-c l" . hydra-eval/body))
