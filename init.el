@@ -194,16 +194,6 @@
   (setq company-idle-delay 0.1)
   (setq company-eclim-auto-save nil))
 
-(use-package flx
-  :ensure t)
-
-(use-package company-fuzzy
-  :ensure t
-  :after (company flx)
-  :config
-  (global-company-fuzzy-mode 1)
-  (setq company-fuzzy-sorting-function 'flx))
-
 ;; ----------------------------------------------------------------
 ;; wgrep
 ;; ----------------------------------------------------------------
