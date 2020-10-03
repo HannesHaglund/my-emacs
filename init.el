@@ -86,6 +86,16 @@
       (setq helm-ag-base-command "rg --no-heading"))))
 
 ;; ----------------------------------------------------------------
+;; helm-tramp
+;; ----------------------------------------------------------------
+(use-package helm-tramp
+  :ensure t
+  :after helm
+  :config
+  (setq tramp-default-method "ssh")
+  (define-key global-map (kbd "C-c t") 'helm-tramp))
+
+;; ----------------------------------------------------------------
 ;; projectile
 ;; ----------------------------------------------------------------
 (use-package projectile
@@ -471,6 +481,10 @@
 ;; Shell environment
 (setenv "PAGER"  "cat")
 (setenv "EDITOR" "emacs")
+
+;; No backup/lock files
+(setq make-backup-files nil)
+(setq create-lockfiles nil)
 
 ;; Other
 (defalias 'yes-or-no-p 'y-or-n-p)
