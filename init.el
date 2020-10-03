@@ -258,6 +258,14 @@
   (define-key lisp-interaction-mode-map (kbd "C-j") nil))
 
 ;; ----------------------------------------------------------------
+;; persistent-scratch
+;; ----------------------------------------------------------------
+(use-package persistent-scratch
+  :ensure t
+  :init
+  (persistent-scratch-setup-default))
+
+;; ----------------------------------------------------------------
 ;; dumb-jump
 ;; ----------------------------------------------------------------
 (use-package dumb-jump
