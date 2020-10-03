@@ -4,9 +4,11 @@
     ("b" helm-do-ag-buffers "all buffers"))
    "In project"
    (("a" helm-do-ag-project-root "ag")
-    ("g" helm-projectile-grep "git grep"))
+    ("g" helm-projectile-grep "git grep")
+    ("fp" helm-projectile-find-file "find | grep"))
    "In directory"
-   (("d" helm-do-ag "ag"))
+   (("d" helm-do-ag "ag")
+    ("fd" helm-find "find | grep"))
    "Navigation"
    (("s" helm-ag-pop-stack "stack pop"))))
 
