@@ -243,8 +243,7 @@
   ("C-,"   . other-window)
   ("C-."   . wind-bck)
   ("C-;"   . other-frame)
-  ("M-g"   . goto-line)
-  ("C-c s" . shell-here))
+  ("M-g"   . goto-line))
 
 ;; ----------------------------------------------------------------
 ;; whitespace
@@ -348,9 +347,9 @@
 (use-package hydra-projectile
   :after pretty-hydra
   :bind ("C-c p" . hydra-projectile/body))
-(use-package hydra-grep
+(use-package hydra-directory
   :after pretty-hydra
-  :bind ("C-c g" . hydra-grep/body))
+  :bind ("C-c d" . hydra-directory/body))
 (use-package hydra-dired
   :after pretty-hydra
   :bind (:map dired-mode-map ("<tab>" . hydra-dired/body)))
