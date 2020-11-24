@@ -268,6 +268,13 @@
   (define-key lisp-interaction-mode-map (kbd "C-j") nil))
 
 ;; ----------------------------------------------------------------
+;; expand-region
+;; ----------------------------------------------------------------
+(use-package avy
+  :ensure t
+  :bind ("C-v" . avy-goto-char-timer))
+
+;; ----------------------------------------------------------------
 ;; persistent-scratch
 ;; ----------------------------------------------------------------
 (use-package persistent-scratch
@@ -344,9 +351,6 @@
 (use-package hydra-grep
   :after pretty-hydra
   :bind ("C-c g" . hydra-grep/body))
-(use-package hydra-navigation
-  :after (pretty-hydra helm helm-projectile avy basic-keybinds)
-  :bind (:map dired-mode-map ("C-c n" . hydra-navigation/body)))
 (use-package hydra-dired
   :after pretty-hydra
   :bind (:map dired-mode-map ("<tab>" . hydra-dired/body)))
