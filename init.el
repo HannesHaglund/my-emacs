@@ -3,6 +3,7 @@
 ;; ================================================================
 (message "Loading init.el...")
 (add-to-list 'load-path "~/.emacs.d/elisp/")
+(add-to-list 'load-path "./elisp/")
 
 ;; ================================================================
 ;; Fetch packages
@@ -21,6 +22,7 @@
 ;; ----------------------------------------------------------------
 (eval-when-compile
   (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
     (package-install 'use-package))
   (require 'use-package)
   (setq use-package-verbose t))
@@ -136,8 +138,7 @@
   :config
   (pretty-hydra-define hydra-text-scale (:color red :title "🔍 Zoom" quit-key "q" :pre (default-text-scale-mode))
   ("Actions"
-   (("r" default-text-scale-reset "reset")
-    ("i" default-text-scale-increase "zoom in")
+   (("i" default-text-scale-increase "zoom in")
     ("o" default-text-scale-decrease "zoom out")))))
 
 ;; ----------------------------------------------------------------
