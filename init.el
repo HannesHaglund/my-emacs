@@ -127,6 +127,20 @@
   (helm-projectile-on))
 
 ;; ----------------------------------------------------------------
+;; default-text-scale
+;; ----------------------------------------------------------------
+(use-package default-text-scale
+  :ensure t
+  :after pretty-hydra
+  :bind ("C-c z" . hydra-text-scale/body)
+  :config
+  (pretty-hydra-define hydra-text-scale (:color red :title "🔍 Zoom" quit-key "q" :pre (default-text-scale-mode))
+  ("Actions"
+   (("r" default-text-scale-reset "reset")
+    ("i" default-text-scale-increase "zoom in")
+    ("o" default-text-scale-decrease "zoom out")))))
+
+;; ----------------------------------------------------------------
 ;; multiple-cursors
 ;; ----------------------------------------------------------------
 (use-package multiple-cursors
@@ -332,9 +346,6 @@
 (use-package hydra-align
   :after pretty-hydra
   :bind ("C-c a" . hydra-align/body))
-(use-package hydra-zoom
-  :after pretty-hydra
-  :bind ("C-c z" . hydra-zoom/body))
 (use-package hydra-swedish
   :after pretty-hydra
   :bind ("C-c ;" . hydra-swedish/body)) ; C-c ö, kind of
