@@ -1,7 +1,7 @@
 (pretty-hydra-define hydra-directory (:color blue :title "⛳ Directory: %(default-directory-fun)" :quit-key "q")
   ("Navigation"
    (("f" helm-find "file")
-    ("g" helm-do-ag "grep")
+    ("g" helm-ag "grep")
     ("," helm-ag-pop-stack "grep pop stack" :color red))
    "Other"
    (("s" shell-here "shell here")
