@@ -356,12 +356,16 @@
 (use-package hydra-projectile
   :after pretty-hydra
   :bind ("C-c p" . hydra-projectile/body))
-(use-package hydra-directory
-  :after pretty-hydra
-  :bind ("C-c d" . hydra-directory/body))
-(use-package hydra-dired
-  :after pretty-hydra
-  :bind (:map dired-mode-map ("<tab>" . hydra-dired/body)))
+
+;; ----------------------------------------------------------------
+;; Add some useful bindings to dired
+;; ----------------------------------------------------------------
+(defun dired-here () (interactive) (dired default-directory))
+(bind-key "C-x d" 'dired-here)
+(bind-key "C-d" 'open-file-directory dired-mode-map) ; d and D is taken
+(bind-key "b" 'shell-here dired-mode-map) ; mnemonic: b for bash; s and S is taken
+(bind-key "r" 'revert-buffer dired-mode-map)
+(bind-key "g" 'helm-ag dired-mode-map)
 
 ;; ----------------------------------------------------------------
 ;; misc.
