@@ -1,3 +1,36 @@
+(setq run-shell-background-output-buffer-name "*run-shell-background output*")
+
+(defun run-shell-background (command cwd)
+  (interactive "sShell command: \nDCWD: ")
+  (let ((full-command (concat "cd " cwd " && " command)))
+    (write-to-run-shell-background-buffer command)
+    (write-to-run-shell-background-buffer (concat "in " cwd))
+    (set-process-sentinel
+     ;; Escape % (by replacing it with %%) since sentinel tries to format the string
+     (start-process-shell-command (replace-in-string "%" "%%" command)
+                                  run-shell-background-output-buffer-name
+                                  full-command)
+     #'run-shell-background-sentinel)))
+
+(defun run-shell-background-sentinel (process msg)
+  (when (memq (process-status process) '(exit signal))
+    (message (concat (process-name process) " - " msg))
+    (write-to-run-shell-background-buffer (concat "Sentinel: " (process-name process) " - " msg))
+    (when (not (string= msg "finished\n"))
+      (display-buffer run-shell-background-output-buffer-name)
+      (with-current-buffer run-shell-background-output-buffer-name (goto-char (point-max))))))
+
+(defun write-to-run-shell-background-buffer (msg)
+  (with-current-buffer (get-buffer-create run-shell-background-output-buffer-name)
+    (prog-mode)
+    (save-excursion
+      (goto-char (point-max))
+      (insert (propertize (concat ">>> " msg "\n")
+                          'font-lock-face font-lock-function-name-face)))))
+
+(defun replace-in-string (what with in)
+  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
 (defun shell-command-to-kill-ring (cmd)
   (interactive "sShell command: ")
   (let ((output (shell-command-to-string cmd)))
