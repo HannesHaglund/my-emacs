@@ -63,15 +63,4 @@
         (goto-char (point-max))
         (setq end-of-code-line-or-buffer-times-pressed 0)))))
 
-(defun shell-here ()
-  "Open a shell in current directory. Cd a current shell to there if it exists"
-  (interactive)
-  (let ((dir default-directory))
-    (when (get-buffer "*shell*")
-      (with-current-buffer "*shell*"
-        (goto-char (point-max))
-        (insert (concat "pushd " dir))
-        (comint-send-input))))
-  (shell))
-
 (provide 'basic-keybinds)
