@@ -55,7 +55,7 @@
     (copy-file      (expand-file-name "init.el" repo-dir) init-el t t t t)
     (copy-file      (expand-file-name "local-init.el" repo-dir) local-init-el t t t t)
     (message (concat "Wrote " repo-dir " to " emacs-d))
-    (load-file (expand-file-name "init.el" repo-dir))))
+    (load-file init-el)))
 
 ;; Source: https://emacs.stackexchange.com/questions/24459/revert-all-open-buffers-and-ignore-errors
 (defun revert-all-file-buffers ()
