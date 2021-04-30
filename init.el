@@ -282,7 +282,7 @@
   (define-key lisp-interaction-mode-map (kbd "C-j") nil))
 
 ;; ----------------------------------------------------------------
-;; expand-region
+;; avy
 ;; ----------------------------------------------------------------
 (use-package avy
   :ensure t
