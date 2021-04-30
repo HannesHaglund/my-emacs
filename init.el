@@ -137,9 +137,9 @@
   :bind ("C-c z" . hydra-text-scale/body)
   :config
   (pretty-hydra-define hydra-text-scale (:color red :title "🔍 Zoom" quit-key "q" :pre (default-text-scale-mode))
-  ("Actions"
-   (("i" default-text-scale-increase "zoom in")
-    ("o" default-text-scale-decrease "zoom out")))))
+    ("Actions"
+     (("i" default-text-scale-increase "zoom in")
+      ("o" default-text-scale-decrease "zoom out")))))
 
 ;; ----------------------------------------------------------------
 ;; multiple-cursors
@@ -312,9 +312,6 @@
   :commands (hydra-p4/body)
   :after pretty-hydra)
 
-(use-package hydra-magit
-  :after pretty-hydra)
-
 (use-package p4
   :ensure t
   :config
@@ -326,12 +323,12 @@
 
 (pretty-hydra-define hydra-vc (:color teal :title "⎆ Choose VC backend..." :quit-key "q")
   (""
-   (("g" hydra-magit/body "magit")
-    ("p" hydra-p4/body    "p4"))))
+   (("g" magit-status  "magit")
+    ("p" hydra-p4/body "p4"))))
 
 (defun appropriate-vc-hydra-body ()
   (interactive)
-  (if (string= (vc-backend buffer-file-name) "Git") (hydra-magit/body) (hydra-vc/body)))
+  (if (string= (vc-backend buffer-file-name) "Git") (magit-status) (hydra-vc/body)))
 
 (global-set-key (kbd "C-c v") 'appropriate-vc-hydra-body)
 
