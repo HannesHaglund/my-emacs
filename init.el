@@ -38,6 +38,31 @@
 (use-package useful-commands)
 
 ;; ----------------------------------------------------------------
+;; Attempt to install system dependencies
+;; ----------------------------------------------------------------
+
+;; Inherit PATH from system
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
+(use-package system-packages
+  :ensure t)
+
+(use-package ensure-system-package
+  :demand t
+  :after (exec-path-from-shell system-packages)
+  :config
+  (ensure-system-package "python3" "python.exe" "Please download and install it via https://www.python.org/downloads/ .")
+  (ensure-system-package "git" "git.exe" "Please download and install it via https://git-scm.com/downloads .")
+  (ensure-system-package "universal-ctags" "ctags.exe"
+                         "Please download a binary from https://github.com/universal-ctags/ctags-win32/releases and copy it to somewhere under C:\\Program Files .")
+  (ensure-system-package "ripgrep" "rg.exe"
+                         "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files ."))
+
+;; ----------------------------------------------------------------
 ;; hydra
 ;; ----------------------------------------------------------------
 (use-package hydra
@@ -78,9 +103,7 @@
 
   (when (eq system-type 'windows-nt)
     ;; Always use rg
-    (setq helm-ag-base-command "rg --no-heading --vimgrep")
-    ;; You will need to add the ripgrep executable to this path
-    (add-to-list 'exec-path "C:\\Program Files\\ripgrep"))
+    (setq helm-ag-base-command "rg --no-heading --vimgrep"))
 
   (when (eq system-type 'gnu/linux)
     ;; Use rg if available
@@ -238,15 +261,6 @@
   :bind ("C-c e" . hydra-eglot/body))
 
 ;; ----------------------------------------------------------------
-;; exec-path-from-shell
-;; ----------------------------------------------------------------
-(use-package exec-path-from-shell
-  :ensure t
-  :config
-  (when (memq window-system '(mac ns x))
-    (exec-path-from-shell-initialize)))
-
-;; ----------------------------------------------------------------
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
 (use-package basic-keybinds
@@ -358,7 +372,7 @@
   :bind ("C-c p" . hydra-projectile/body))
 
 ;; ----------------------------------------------------------------
-;; Add some useful bindings to dired
+;; dired-mode
 ;; ----------------------------------------------------------------
 (defun dired-here () (interactive) (dired default-directory))
 (bind-key "C-x d" 'dired-here)

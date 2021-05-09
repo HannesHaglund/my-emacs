@@ -29,7 +29,7 @@
                           'font-lock-face font-lock-function-name-face)))))
 
 (defun replace-in-string (what with in)
-  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+  (when in (replace-regexp-in-string (regexp-quote what) with in nil 'literal)))
 
 (defun shell-command-to-kill-ring (cmd)
   (interactive "sShell command: ")
