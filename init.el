@@ -147,6 +147,7 @@
   ("C-h h"   . helm-apropos)
   ("C-h f"   . helm-apropos)
   ("C-h y"   . helm-apropos)
+  ("M-s"     . helm-occur)
   :config
   (require 'helm-projectile)
   (helm-projectile-on))
@@ -229,7 +230,7 @@
   :config
   (require 'company)
   (setq company-dabbrev-downcase nil)
-  (setq company-idle-delay 0.1)
+  (setq company-idle-delay 0.05)
   (setq company-eclim-auto-save nil))
 
 ;; ----------------------------------------------------------------
@@ -249,18 +250,48 @@
   (require 'wgrep-helm))
 
 ;; ----------------------------------------------------------------
-;; eglot
+;; lsp-mode
 ;; ----------------------------------------------------------------
-(use-package eglot
+(use-package lsp-mode
   :ensure t
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  ;; This is recommended by https://emacs-lsp.github.io/lsp-mode/page/performance/
+  (setq gc-cons-threshold (* 100 1000 1000))
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb
+  :hook ((c-mode . lsp)
+         (c++-mode . lsp))
+  :commands lsp)
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+
+(use-package helm-lsp
+  :ensure t
+  :commands helm-lsp-workspace-symbol)
+
+(use-package dap-mode
+  :ensure t)
+
+(use-package company-lsp
+  :ensure t
+  :after company
   :config
-  (setq eglot-ignored-server-capabilites (quote (:documentHighlightProvider))))
+  (setq company-lsp-cache-candidates 'auto)
+  (push 'company-lsp company-backends)
+  (setq 'company-lsp-async t)
+  (setq company-lsp-enable-snippet))
 
-(use-package hydra-eglot
-  :after (pretty-hydra eglot)
-  :bind ("C-c e" . hydra-eglot/body))
+;; There are multiple python lsp's to choose from - this one had the least lag for me
+(use-package lsp-python-ms
+  :ensure t
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-python-ms)
+                         (lsp))))
 
-;; ----------------------------------------------------------------
+`;; ----------------------------------------------------------------
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
 (use-package basic-keybinds
@@ -363,7 +394,7 @@
   :bind ("C-c ;" . hydra-swedish/body)) ; C-c ö, kind of
 (use-package hydra-eval
   :after pretty-hydra
-  :bind ("C-c l" . hydra-eval/body))
+  :bind ("C-c e" . hydra-eval/body))
 (use-package hydra-macro
   :after pretty-hydra
   :bind ("C-c o" . hydra-macro/body))
@@ -377,9 +408,9 @@
 (defun dired-here () (interactive) (dired default-directory))
 (bind-key "C-x d" 'dired-here)
 (bind-key "C-d" 'open-file-directory dired-mode-map) ; d and D is taken
-(bind-key "b" 'shell-here dired-mode-map) ; mnemonic: b for bash; s and S is taken
-(bind-key "r" 'revert-buffer dired-mode-map)
-(bind-key "g" 'helm-ag dired-mode-map)
+(bind-key "b" 'shell-here            dired-mode-map) ; mnemonic: b for bash; s and S is taken
+(bind-key "r" 'revert-buffer         dired-mode-map)
+(bind-key "g" 'helm-ag               dired-mode-map)
 
 ;; ----------------------------------------------------------------
 ;; misc.
