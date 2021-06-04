@@ -54,8 +54,7 @@
     (copy-directory (expand-file-name "elisp"   repo-dir) elisp t t nil)
     (copy-file      (expand-file-name "init.el" repo-dir) init-el t t t t)
     (copy-file      (expand-file-name "local-init.el" repo-dir) local-init-el t t t t)
-    (message (concat "Wrote " repo-dir " to " emacs-d))
-    (load-file init-el)))
+    (message (concat "Wrote " repo-dir " to " emacs-d))))
 
 ;; Source: https://emacs.stackexchange.com/questions/24459/revert-all-open-buffers-and-ignore-errors
 (defun revert-all-file-buffers ()
