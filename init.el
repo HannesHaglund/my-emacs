@@ -552,6 +552,9 @@
 (setq make-backup-files nil)
 (setq create-lockfiles nil)
 
+;; Auto-revert image buffers
+(add-hook 'image-mode-hook (lambda () (auto-revert-mode) (auto-image-file-mode)))
+
 ;; Other
 (defalias 'yes-or-no-p 'y-or-n-p)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
