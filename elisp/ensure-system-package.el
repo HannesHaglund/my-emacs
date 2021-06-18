@@ -26,7 +26,7 @@
               (add-to-list 'exec-path exe-win-path)
               (setenv "PATH"  (concat (getenv "PATH") ";" exe-win-path)))
           ;; It's not even in program files, ask the user to install it
-          (display-warning :error
+          (display-warning :warning
                            (concat "The system executable " binary-name " was not found on the system. "
                                    "It not being available may cause some packages to not work correctly. "
                                    "You must install it manually, and then restart emacs. "

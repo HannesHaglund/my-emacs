@@ -274,15 +274,6 @@
 (use-package dap-mode
   :ensure t)
 
-(use-package company-lsp
-  :ensure t
-  :after company
-  :config
-  (setq company-lsp-cache-candidates 'auto)
-  (push 'company-lsp company-backends)
-  (setq 'company-lsp-async t)
-  (setq company-lsp-enable-snippet))
-
 ;; There are multiple python lsp's to choose from - this one had the least lag for me
 (use-package lsp-python-ms
   :ensure t
@@ -291,9 +282,10 @@
                          (require 'lsp-python-ms)
                          (lsp))))
 
-`;; ----------------------------------------------------------------
+;; ----------------------------------------------------------------
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
+
 (use-package basic-keybinds
   :bind
   ("C-a"   . beginning-of-code-line-or-buffer)
