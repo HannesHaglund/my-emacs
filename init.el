@@ -483,6 +483,12 @@
 (add-hook 'prog-mode-hook 'linum-mode)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+(use-package aggressive-indent
+  :ensure t
+  :config
+  (global-aggressive-indent-mode 1)
+  (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
+
 ;; ----------------------------------------------------------------
 ;; c-mode
 ;; ----------------------------------------------------------------
