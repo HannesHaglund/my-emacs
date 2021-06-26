@@ -303,7 +303,6 @@
 (use-package whitespace
   :config
   (setq whitespace-style '(face tabs lines-tail))
-  (set-face-background 'whitespace-line "#FFC0C0")
   (set-face-foreground 'whitespace-line nil)
   (setq whitespace-line-column 120)
   (global-whitespace-mode t))
@@ -419,7 +418,11 @@
 ;; ================================================================
 
 ;; Theme
-(load-theme 'adwaita t)
+(load-theme 'wombat t)
+;; Improve helm selection face
+(set-face-attribute 'helm-selection nil
+                    :background "purple4"
+                    :foreground "snow")
 
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
