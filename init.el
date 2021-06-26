@@ -60,7 +60,8 @@
   (ensure-system-package "universal-ctags" "ctags.exe"
                          "Please download a binary from https://github.com/universal-ctags/ctags-win32/releases and copy it to somewhere under C:\\Program Files .")
   (ensure-system-package "ripgrep" "rg.exe"
-                         "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files ."))
+                         "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
+  (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php ."))
 
 ;; ----------------------------------------------------------------
 ;; hydra
