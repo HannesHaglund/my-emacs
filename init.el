@@ -425,6 +425,18 @@
                     :background "purple4"
                     :foreground "snow")
 
+
+;; Dims unfocused buffers
+(use-package dimmer
+  :ensure t
+  :config
+  (setq dimmer-adjustment-mode :both)
+  (setq dimmer-fraction 0.15)
+  (dimmer-configure-helm)
+  (dimmer-configure-hydra)
+  (dimmer-configure-magit)
+  (dimmer-mode t))
+
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
 
