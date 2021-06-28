@@ -292,15 +292,16 @@
 
 (use-package basic-keybinds
   :bind
-  ("C-a"   . beginning-of-code-line-or-buffer)
-  ("C-e"   . end-of-code-line-or-buffer)
-  ("M-p"   . scroll-up-bind)
-  ("M-n"   . scroll-down-bind)
-  ("C-,"   . other-window)
-  ("C-."   . wind-bck)
-  ("C-;"   . other-frame)
-  ("M-g"   . goto-line)
-  ("C-z"   . undo))
+  ("C-a" . beginning-of-code-line-or-buffer)
+  ("C-e" . end-of-code-line-or-buffer)
+  ("M-p" . scroll-up-bind)
+  ("M-n" . scroll-down-bind)
+  ("C-," . other-window)
+  ("C-." . wind-bck)
+  ("C-;" . other-frame)
+  ("M-g" . goto-line)
+  ("C-z" . undo)
+  ("C-Q" . quoted-insert))
 
 ;; ----------------------------------------------------------------
 ;; whitespace
@@ -387,6 +388,8 @@
 
   (define-key god-local-mode-map (kbd ".") #'repeat)
   (define-key god-local-mode-map (kbd "i") #'god-mode-all)
+
+  (define-key special-mode-map (kbd ",") #'other-window)
 
   (global-set-key (kbd "C-x C-1") #'delete-other-windows)
   (global-set-key (kbd "C-x C-2") #'split-window-below)
