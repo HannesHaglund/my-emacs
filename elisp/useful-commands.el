@@ -5,12 +5,10 @@
   (let ((full-command (concat "cd " cwd " && " command)))
     (write-to-run-shell-background-buffer command)
     (write-to-run-shell-background-buffer (concat "in " cwd))
-    (set-process-sentinel
-     ;; Escape % (by replacing it with %%) since sentinel tries to format the string
-     (start-process-shell-command (replace-in-string "%" "%%" command)
-                                  run-shell-background-output-buffer-name
-                                  full-command)
-     #'run-shell-background-sentinel)))
+    (let ((proc (start-process-shell-command (replace-in-string "%" "%%" command)
+                                             run-shell-background-output-buffer-name
+                                             full-command)))
+      (set-process-sentinel proc #'run-shell-background-sentinel))))
 
 (defun run-shell-background-sentinel (process msg)
   (when (memq (process-status process) '(exit signal))
@@ -23,10 +21,15 @@
 (defun write-to-run-shell-background-buffer (msg)
   (with-current-buffer (get-buffer-create run-shell-background-output-buffer-name)
     (prog-mode)
+    ;; Write text
     (save-excursion
       (goto-char (point-max))
       (insert (propertize (concat ">>> " msg "\n")
-                          'font-lock-face font-lock-function-name-face)))))
+                          'font-lock-face font-lock-function-name-face)))
+    ;; Scroll window to end
+    (when (get-buffer-window) (with-selected-window (get-buffer-window)
+                                (goto-char (point-max))
+                                (recenter -1 t)))))
 
 (defun replace-in-string (what with in)
   (when in (replace-regexp-in-string (regexp-quote what) with in nil 'literal)))
@@ -55,6 +58,21 @@
     (copy-file      (expand-file-name "init.el" repo-dir) init-el t t t t)
     (copy-file      (expand-file-name "local-init.el" repo-dir) local-init-el t t t t)
     (message (concat "Wrote " repo-dir " to " emacs-d))))
+
+(defun load-and-overwrite-local-init (repo-dir)
+  "Load and overwrite contents of ~/.emacs.d/local-init.el with the contents of the one in the my-emacs repository."
+  (interactive (list (read-directory-name "my-emacs directory: "
+                                          ;; folder of init.el buffer if it exists, or nil
+                                          (let ((init-el-buffer (get-buffer "local-init.el")))
+                                            (if init-el-buffer
+                                                (file-name-directory (buffer-file-name init-el-buffer))
+                                              nil)))))
+  (let ((emacs-d       "~/.emacs.d")
+        (local-init-el "~/.emacs.d/local-init.el")
+        (repo-local-init (expand-file-name "local-init.el" repo-dir)))
+    (load-file repo-local-init)
+    (copy-file repo-local-init local-init-el t t t t)
+    (message (concat "Wrote " repo-local-init " to " emacs-d))))
 
 ;; Source: https://emacs.stackexchange.com/questions/24459/revert-all-open-buffers-and-ignore-errors
 (defun revert-all-file-buffers ()
