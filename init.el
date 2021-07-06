@@ -119,8 +119,7 @@
   :after helm
   :config
   (setq tramp-default-method "ssh")
-  (define-key global-map (kbd "C-c t")   'Helm-Tramp)
-  (define-key global-map (kbd "C-c C-t") 'helm-tramp))
+  (define-key global-map (kbd "C-c t") 'Helm-Tramp))
 
 ;; ----------------------------------------------------------------
 ;; projectile
@@ -161,7 +160,6 @@
   :ensure t
   :after pretty-hydra
   :bind ("C-c z"   . hydra-text-scale/body)
-  :bind ("C-c C-z" . hydra-text-scale/body)
   :config
   (pretty-hydra-define hydra-text-scale (:color red :title "🔍 Zoom" quit-key "q" :pre (default-text-scale-mode))
     ("Actions"
@@ -175,7 +173,6 @@
   :ensure t
   :after pretty-hydra
   :bind ("C-c m"   . hydra-multiple-cursors/body)
-  :bind ("C-c C-m" . hydra-multiple-cursors/body)
   :config
   (require 'multiple-cursors)
 
@@ -300,8 +297,7 @@
   ("C-." . wind-bck)
   ("C-;" . other-frame)
   ("M-g" . goto-line)
-  ("C-z" . undo)
-  ("C-Q" . quoted-insert))
+  ("C-z" . undo))
 
 ;; ----------------------------------------------------------------
 ;; whitespace
@@ -373,31 +369,6 @@
   (if (string= (vc-backend buffer-file-name) "Git") (magit-status) (hydra-vc/body)))
 
 (global-set-key (kbd "C-c v")   'appropriate-vc-hydra-body)
-(global-set-key (kbd "C-c C-v") 'appropriate-vc-hydra-body)
-
-;; ----------------------------------------------------------------
-;; god-mode
-;; ----------------------------------------------------------------
-(use-package god-mode
-  :ensure t
-  :config
-
-  (defun my-god-mode-update-cursor-type ()
-    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-  (add-hook 'post-command-hook #'my-god-mode-update-cursor-type)
-
-  (define-key god-local-mode-map (kbd ".") #'repeat)
-  (define-key god-local-mode-map (kbd "i") #'god-mode-all)
-
-  (define-key special-mode-map (kbd ",") #'other-window)
-
-  (global-set-key (kbd "C-x C-1") #'delete-other-windows)
-  (global-set-key (kbd "C-x C-2") #'split-window-below)
-  (global-set-key (kbd "C-x C-3") #'split-window-right)
-  (global-set-key (kbd "C-x C-0") #'delete-window)
-
-  (global-set-key (kbd "<escape>") #'god-mode-all)
-  (god-mode-all))
 
 ;; ----------------------------------------------------------------
 ;; misc. hydras
@@ -405,38 +376,31 @@
 (use-package hydra-registers
   :after pretty-hydra
   :bind
-  ("C-x r"   . hydra-registers/body)
-  ("C-x C-r" . hydra-registers/body))
+  ("C-x r" . hydra-registers/body))
 (use-package hydra-rectangle
   :after pretty-hydra
   :bind
-  ("C-c r"   . hydra-rectangle/body)
-  ("C-c C-r" . hydra-rectangle/body))
+  ("C-c r" . hydra-rectangle/body))
 (use-package hydra-align
   :after pretty-hydra
   :bind
-  ("C-c a"   . hydra-align/body)
-  ("C-c C-a" . hydra-align/body))
+  ("C-c a" . hydra-align/body))
 (use-package hydra-swedish
   :after pretty-hydra
   :bind
-  ("C-c ;"   . hydra-swedish/body)      ; C-c ö, kind of
-  ("C-c C-;" . hydra-swedish/body))
+  ("C-c ;" . hydra-swedish/body))      ; C-c ö, kind of
 (use-package hydra-eval
   :after pretty-hydra
   :bind
-  ("C-c e"   . hydra-eval/body)
-  ("C-c C-e" . hydra-eval/body))
+  ("C-c e" . hydra-eval/body))
 (use-package hydra-macro
   :after pretty-hydra
   :bind
-  ("C-c o"   . hydra-macro/body)
-  ("C-c C-o" . hydra-macro/body))
+  ("C-c o" . hydra-macro/body))
 (use-package hydra-projectile
   :after pretty-hydra
   :bind
-  ("C-c p"   . hydra-projectile/body)
-  ("C-c C-p" . hydra-projectile/body))
+  ("C-c p" . hydra-projectile/body))
 
 ;; ----------------------------------------------------------------
 ;; dired-mode
