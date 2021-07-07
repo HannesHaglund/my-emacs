@@ -15,10 +15,6 @@
    "Scrolling"
    (("n" scroll-down-bind "down")
     ("p" scroll-up-bind "up"))
-   "Grep"
-   (("gp" helm-projectile-grep "grep project")
-    ("gd" helm-do-ag "grep directory")
-    ("g," helm-ag-pop-stack "grep pop stack"))
    "Search"
    (("s" isearch-forward "isearch" :color blue)
     ("r" isearch-backward "isearch backward" :color blue)
