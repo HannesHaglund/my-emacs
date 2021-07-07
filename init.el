@@ -12,8 +12,8 @@
 
 ;; Setup...
 (defun setup-melpa ()
-  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                           ("melpa" . "https://melpa.org/packages/"))))
+  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                           ("melpa" . "http://melpa.org/packages/"))))
 (package-initialize)
 (setup-melpa)
 
@@ -287,10 +287,8 @@
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
 
-(use-package hydra-navigation)
-
 (use-package basic-keybinds
-  :after hydra-navigation
+  :after pretty-hydra
   :bind
   ("C-a" . beginning-of-code-line-or-buffer)
   ("C-e" . end-of-code-line-or-buffer)
