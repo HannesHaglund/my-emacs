@@ -12,18 +12,11 @@
   ("avy"
    (("v" avy-goto-char "avy goto char")
     ("l" avy-goto-line "avy goto line"))
-   "Basic navigation"
-   (("e" end-of-code-line-or-buffer "end of line")
-    ("a" beginning-of-code-line-or-buffer "beginning of line")
-    ("f" forward-char "forward")
-    ("b" backward-char "back")
-    ("n" scroll-down-bind "down")
+   "Scrolling"
+   (("n" scroll-down-bind "down")
     ("p" scroll-up-bind "up"))
-   "File navigation"
-   (("xf" helm-find-files "find file")
-    ("cpf" helm-projectile-find-file "find file in project")
-    ("cpp" helm-projectile-switch-project "change project")
-    ("gp" helm-projectile-grep "grep project")
+   "Grep"
+   (("gp" helm-projectile-grep "grep project")
     ("gd" helm-do-ag "grep directory")
     ("g," helm-ag-pop-stack "grep pop stack"))
    "Search"
