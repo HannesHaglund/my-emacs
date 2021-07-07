@@ -8,6 +8,16 @@
   (interactive)
   (scroll-down-line 10))
 
+(defun scroll-down-bind-enter-hydra-nav ()
+  (interactive)
+  (scroll-down-bind)
+  (hydra-navigation/body))
+
+(defun scroll-up-bind-enter-hydra-nav ()
+  (interactive)
+  (scroll-up-bind)
+  (hydra-navigation/body))
+
 (defun wind-bck ()
   "Change window."
   (interactive)
