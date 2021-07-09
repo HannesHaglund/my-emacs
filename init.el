@@ -148,7 +148,6 @@
   ("C-h h"   . helm-apropos)
   ("C-h f"   . helm-apropos)
   ("C-h y"   . helm-apropos)
-  ("C-o"     . helm-occur)
   :config
   (require 'helm-projectile)
   (helm-projectile-on))
@@ -287,8 +286,11 @@
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
 
+(use-package swiper-helm
+  :ensure t)
+
 (use-package basic-keybinds
-  :after pretty-hydra
+  :after (pretty-hydra swiper-helm)
   :bind
   ("C-a" . beginning-of-code-line-or-buffer)
   ("C-e" . end-of-code-line-or-buffer)
@@ -298,7 +300,13 @@
   ("C-." . wind-bck)
   ("C-;" . other-frame)
   ("M-g" . goto-line)
-  ("C-z" . undo))
+  ("C-z" . undo)
+  ("C-o" . swiper-helm)
+  :config
+  (setq next-screen-context-lines 20))
+
+
+
 
 ;; ----------------------------------------------------------------
 ;; whitespace
@@ -440,7 +448,6 @@
   (setq dimmer-fraction 0.15)
   (dimmer-configure-helm)
   (dimmer-configure-hydra)
-  (dimmer-configure-magit)
   (dimmer-mode t))
 
 ;; Prevent startup screen

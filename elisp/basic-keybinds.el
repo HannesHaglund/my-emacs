@@ -1,12 +1,12 @@
 (defun scroll-down-bind ()
   "Scroll 10 lines down."
   (interactive)
-  (scroll-up-command 20))
+  (scroll-up))
 
 (defun scroll-up-bind ()
   "Scroll 10 lines up."
   (interactive)
-  (scroll-down-command 20))
+  (scroll-down))
 
 (pretty-hydra-define hydra-navigation (:title "↝ Navigation" :quit-key "q")
   ("avy"
@@ -18,7 +18,7 @@
    "Search"
    (("s" isearch-forward "isearch" :color blue)
     ("r" isearch-backward "isearch backward" :color blue)
-    ("o" helm-occur "occur"))
+    ("o" swiper-helm "occur (swiper)"))
    "Other"
    (("xb" helm-buffers-list "change buffer")
     ("," other-window "change window")
