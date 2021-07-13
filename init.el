@@ -254,29 +254,39 @@
 ;; ----------------------------------------------------------------
 (use-package lsp-mode
   :ensure t
+  :defer nil
+
   :init
   (setq lsp-keymap-prefix "C-c l")
   ;; This is recommended by https://emacs-lsp.github.io/lsp-mode/page/performance/
   (setq gc-cons-threshold (* 100 1000 1000))
   (setq read-process-output-max (* 1024 1024)) ;; 1mb
+
+  ;; Unbind key so it doesn't override our basic-keybinds keybind
+  :bind (:map lsp-signature-mode-map ("M-p" . nil))
+
   :hook ((c-mode . lsp)
          (c++-mode . lsp))
   :commands lsp)
 
 (use-package lsp-ui
   :ensure t
+  :after lsp-mode
   :commands lsp-ui-mode)
 
 (use-package helm-lsp
   :ensure t
+  :after (lsp-mode helm)
   :commands helm-lsp-workspace-symbol)
 
 (use-package dap-mode
-  :ensure t)
+  :ensure t
+  :after lsp-mode)
 
 ;; There are multiple python lsp's to choose from - this one had the least lag for me
 (use-package lsp-python-ms
   :ensure t
+  :after lsp-mode
   :init (setq lsp-python-ms-auto-install-server t)
   :hook (python-mode . (lambda ()
                          (require 'lsp-python-ms)
@@ -304,9 +314,6 @@
   ("C-o" . swiper-helm)
   :config
   (setq next-screen-context-lines 20))
-
-
-
 
 ;; ----------------------------------------------------------------
 ;; whitespace
