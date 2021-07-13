@@ -1,12 +1,12 @@
 (defun scroll-down-bind ()
   "Scroll 10 lines down."
   (interactive)
-  (scroll-up))
+  (scroll-up 40))
 
 (defun scroll-up-bind ()
   "Scroll 10 lines up."
   (interactive)
-  (scroll-down))
+  (scroll-down 40))
 
 (pretty-hydra-define hydra-navigation (:title "↝ Navigation" :quit-key "q")
   ("avy"

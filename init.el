@@ -311,9 +311,7 @@
   ("C-;" . other-frame)
   ("M-g" . goto-line)
   ("C-z" . undo)
-  ("C-o" . swiper-helm)
-  :config
-  (setq next-screen-context-lines 20))
+  ("C-o" . swiper-helm))
 
 ;; ----------------------------------------------------------------
 ;; whitespace
