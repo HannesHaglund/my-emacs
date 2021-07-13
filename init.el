@@ -447,15 +447,11 @@
                     :background "purple4"
                     :foreground "snow")
 
-;; Dims unfocused buffers
-(use-package dimmer
+;; Keep highlighted window at appropriate size
+(use-package golden-ratio
   :ensure t
   :config
-  (setq dimmer-adjustment-mode :both)
-  (setq dimmer-fraction 0.15)
-  (dimmer-configure-helm)
-  (dimmer-configure-hydra)
-  (dimmer-mode t))
+  (golden-ratio-mode 1))
 
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
