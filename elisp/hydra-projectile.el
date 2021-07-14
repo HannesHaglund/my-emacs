@@ -20,13 +20,13 @@
    "Buffers"
    (("i"   projectile-ibuffer)
     ("b"   helm-projectile-switch-to-buffer "switch to buffer")
-    ("K" projectile-kill-buffers "Kill all buffers"))
+    ("K"   projectile-kill-buffers "Kill all buffers"))
 
    "Cache"
-   (("c"   projectile-invalidate-cache "clear cache")
-    ("x"   projectile-remove-known-project "remove known project")
+   (("x"   projectile-remove-known-project "remove known project")
     ("X"   projectile-cleanup-known-projects "cleanup non-existing")
-    ("z"   projectile-cache-current-file "cache current"))
+    ("z"   projectile-cache-current-file "cache current" :color red)
+    ("c"   projectile-invalidate-cache "clear cache" :color red))
 
    "Project"
    (("p"   helm-projectile-switch-project "switch project"))))
