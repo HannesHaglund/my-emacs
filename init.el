@@ -280,11 +280,11 @@
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
 
-(use-package swiper-helm
+(use-package helm-swoop
   :ensure t)
 
 (use-package basic-keybinds
-  :after (pretty-hydra swiper-helm)
+  :after (pretty-hydra helm-swoop)
   :bind
   ("C-a" . beginning-of-code-line-or-buffer)
   ("C-e" . end-of-code-line-or-buffer)
@@ -296,7 +296,7 @@
   ("C-;" . other-frame)
   ("M-g" . goto-line)
   ("C-z" . undo)
-  ("C-o" . swiper-helm))
+  ("C-o" . helm-swoop))
 
 ;; ----------------------------------------------------------------
 ;; whitespace
