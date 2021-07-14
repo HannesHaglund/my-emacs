@@ -304,6 +304,7 @@
   :bind
   ("C-a" . beginning-of-code-line-or-buffer)
   ("C-e" . end-of-code-line-or-buffer)
+  ("C-k" . kill-whole-line)
   ("M-p" . scroll-up-bind)
   ("M-n" . scroll-down-bind)
   ("C-," . other-window)
