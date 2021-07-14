@@ -1,12 +1,14 @@
 (defun scroll-down-bind ()
   "Scroll 10 lines down."
   (interactive)
-  (scroll-up 40))
+  (next-line 20)
+  (recenter nil t))
 
 (defun scroll-up-bind ()
   "Scroll 10 lines up."
   (interactive)
-  (scroll-down 40))
+  (previous-line 20)
+  (recenter nil t))
 
 ;; The hydra-repeat supplied by the hydra package is not using universal argument correctly
 ;; This is a fixed version
