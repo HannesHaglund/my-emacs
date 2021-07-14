@@ -304,8 +304,8 @@
   :bind
   ("C-a" . beginning-of-code-line-or-buffer)
   ("C-e" . end-of-code-line-or-buffer)
-  ("M-p" . scroll-up-bind-enter-hydra-nav)
-  ("M-n" . scroll-down-bind-enter-hydra-nav)
+  ("M-p" . scroll-up-bind)
+  ("M-n" . scroll-down-bind)
   ("C-," . other-window)
   ("C-." . wind-bck)
   ("C-;" . other-frame)
@@ -338,7 +338,8 @@
 ;; ----------------------------------------------------------------
 (use-package avy
   :ensure t
-  :bind ("C-v" . avy-goto-char))
+  :bind ("C-v" . avy-goto-char)
+  :bind ("M-v" . avy-goto-char-timer))
 
 ;; ----------------------------------------------------------------
 ;; persistent-scratch

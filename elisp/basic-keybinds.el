@@ -8,22 +8,6 @@
   (interactive)
   (scroll-down 40))
 
-(pretty-hydra-define hydra-navigation (:title "↝ Navigation" :quit-key "q")
-  ("avy"
-   (("v" avy-goto-char "avy goto char")
-    ("l" avy-goto-line "avy goto line"))
-   "Scrolling"
-   (("n" scroll-down-bind "down")
-    ("p" scroll-up-bind "up"))
-   "Search"
-   (("s" isearch-forward "isearch" :color blue)
-    ("r" isearch-backward "isearch backward" :color blue)
-    ("o" swiper-helm "occur (swiper)"))
-   "Other"
-   (("xb" helm-buffers-list "change buffer")
-    ("," other-window "change window")
-    ("." hydra-repeat "repeat"))))
-
 ;; The hydra-repeat supplied by the hydra package is not using universal argument correctly
 ;; This is a fixed version
 (defun hydra-repeat (&optional arg)
@@ -37,16 +21,6 @@ When ARG is non-nil, use that instead."
     (setq hydra-repeat--prefix-arg arg))
   (setq current-prefix-arg hydra-repeat--prefix-arg)
   (call-interactively hydra-repeat--command)) ; call-interactively instead of funcall
-
-(defun scroll-down-bind-enter-hydra-nav ()
-  (interactive)
-  (hydra-navigation/body)
-  (scroll-down-bind))
-
-(defun scroll-up-bind-enter-hydra-nav ()
-  (interactive)
-  (hydra-navigation/body)
-  (scroll-up-bind))
 
 (defun wind-bck ()
   "Change window."
