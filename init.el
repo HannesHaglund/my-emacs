@@ -38,30 +38,14 @@
 (use-package useful-commands)
 
 ;; ----------------------------------------------------------------
-;; Attempt to install system dependencies
+;; exec-path-from-shell
 ;; ----------------------------------------------------------------
 
-;; Inherit PATH from system
 (use-package exec-path-from-shell
   :ensure t
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
-
-(use-package system-packages
-  :ensure t)
-
-(use-package ensure-system-package
-  :demand t
-  :after (exec-path-from-shell system-packages)
-  :config
-  (ensure-system-package "python3" "python.exe" "Please download and install it via https://www.python.org/downloads/ .")
-  (ensure-system-package "git" "git.exe" "Please download and install it via https://git-scm.com/downloads .")
-  (ensure-system-package "universal-ctags" "ctags.exe"
-                         "Please download a binary from https://github.com/universal-ctags/ctags-win32/releases and copy it to somewhere under C:\\Program Files .")
-  (ensure-system-package "ripgrep" "rg.exe"
-                         "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
-  (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php ."))
 
 ;; ----------------------------------------------------------------
 ;; hydra
@@ -599,4 +583,29 @@
 ;; ================================================================
 
 ;; local-init.el is intended for machine-local configuration. Load it now.
-(load-file (expand-file-name "local-init.el" (file-name-directory (or load-file-name (buffer-file-name)))))
+(use-package local-init-lib
+  :config
+  (initialize-local-init)
+  (message "Loading local-init.el...")
+  (load-file local-init-file-name))
+
+;; ================================================================
+;; Verify needed system packages are installed
+;; ================================================================
+
+;; We do this after local-init to give the user an option to set up machine-local PATH
+
+(use-package system-packages
+  :ensure t)
+
+(use-package ensure-system-package
+  :demand t
+  :after (exec-path-from-shell system-packages)
+  :config
+  (ensure-system-package "python3" "python.exe" "Please download and install it via https://www.python.org/downloads/ .")
+  (ensure-system-package "git" "git.exe" "Please download and install it via https://git-scm.com/downloads .")
+  (ensure-system-package "universal-ctags" "ctags.exe"
+                         "Please download a binary from https://github.com/universal-ctags/ctags-win32/releases and copy it to somewhere under C:\\Program Files .")
+  (ensure-system-package "ripgrep" "rg.exe"
+                         "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
+  (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php ."))
