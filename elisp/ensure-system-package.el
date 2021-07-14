@@ -20,9 +20,9 @@
             ;; If it can be found in program files, add it to the path
             (progn
               (display-warning :debug
-                               (concat "The system executable " binary-name " was not found on the system PATH, "
+                               (concat "The system executable " binary-name " was not found on exec-path, "
                                        "but was found at " exe-win-path " through a (slow) recursive search. "
-                                       "Emacs will work properly, but you may want to add it to PATH to speed up startup time."))
+                                       "Emacs will work properly, but you may want to add it to PATH or exec-path to speed up startup time."))
               (add-to-list 'exec-path exe-win-path)
               (setenv "PATH"  (concat (getenv "PATH") ";" exe-win-path)))
           ;; It's not even in program files, ask the user to install it
