@@ -62,9 +62,13 @@
 ;; ----------------------------------------------------------------
 (use-package helm
   :ensure t
+  :defer nil
+  :bind (:map helm-grep-map
+              ("C-c C-e" . helm-grep-run-save-buffer))
   :config
   (helm-mode t)
-  (setq helm-buffer-max-length nil))
+  (setq helm-buffer-max-length nil)
+  (add-hook 'helm-grep-mode-hook 'wgrep-change-to-wgrep-mode))
 
 ;; ----------------------------------------------------------------
 ;; helm-xref
@@ -220,18 +224,33 @@
 ;; ----------------------------------------------------------------
 ;; wgrep
 ;; ----------------------------------------------------------------
+
+(defun wgrep-abort-changes-and-exit ()
+  (interactive)
+  (wgrep-abort-changes)
+  (kill-buffer-and-window))
+
+(defun wgrep-finish-edit-and-exit ()
+  (interactive)
+  (wgrep-finish-edit)
+  (kill-buffer-and-window))
+
+(defun bind-wgrep-keys ()
+  (define-key wgrep-original-mode-map (kbd "C-c C-g") 'wgrep-abort-changes-and-exit)
+  (define-key wgrep-original-mode-map (kbd "C-x C-s") 'wgrep-finish-edit-and-exit))
+
 (use-package wgrep
   :ensure t
+  :commands (wgrep-change-to-wgrep-mode)
   :config
-  (require 'wgrep)
+  ;; Due to wgrep being weird, keybinds must be set up in a hook...
+  (add-hook 'wgrep-setup-hook #'bind-wgrep-keys)
   (setq wgrep-auto-save-buffer t)
-  (setq wgrep-enable-key "\C-c\C-e"))
+  (setq wgrep-enable-key "\C-c \C-e"))
 
 (use-package wgrep-helm
   :ensure t
-  :after (wgrep helm)
-  :config
-  (require 'wgrep-helm))
+  :after (wgrep helm))
 
 ;; ----------------------------------------------------------------
 ;; lsp-mode
@@ -296,7 +315,8 @@
   ("C-;" . other-frame)
   ("M-g" . goto-line)
   ("C-z" . undo)
-  ("C-o" . helm-swoop))
+  ("C-o" . helm-swoop)
+  ("C-x k" . kill-buffer-and-window))
 
 ;; ----------------------------------------------------------------
 ;; whitespace
