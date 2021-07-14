@@ -300,7 +300,16 @@
 ;; ----------------------------------------------------------------
 
 (use-package helm-swoop
-  :ensure t)
+  :ensure t
+  :config
+  (setq helm-multi-swoop-edit-save t)
+  (setq helm-swoop-use-fuzzy-match t)
+  ;; Use region for pre-input
+  (setq helm-swoop-pre-input-function
+        (lambda ()
+          (if mark-active
+              (buffer-substring-no-properties (mark) (point))
+            ""))))
 
 (use-package basic-keybinds
   :after (pretty-hydra helm-swoop)
@@ -360,7 +369,7 @@
 (use-package dumb-jump
   :ensure t
   :config
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  (add-to-list 'xref-backend-functions #'dumb-jump-xref-activate t)
   (setq dumb-jump-prefer-searcher 'rg))
 
 ;; ----------------------------------------------------------------
