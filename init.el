@@ -440,6 +440,7 @@
 (bind-key "b" 'shell-here            dired-mode-map) ; mnemonic: b for bash; s and S is taken
 (bind-key "r" 'revert-buffer         dired-mode-map)
 (bind-key "g" 'helm-ag               dired-mode-map)
+(setq dired-listing-switches "-alh")    ; List file sizes in a human-readable format
 
 ;; ----------------------------------------------------------------
 ;; misc.
