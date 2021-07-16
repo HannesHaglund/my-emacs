@@ -26,7 +26,7 @@
 
 (defun write-to-run-shell-background-buffer (msg)
   (with-current-buffer (get-buffer-create run-shell-background-output-buffer-name)
-    (prog-mode)
+    (comint-mode)
     ;; Write text
     (save-excursion
       (goto-char (point-max))
