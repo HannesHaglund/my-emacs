@@ -440,7 +440,20 @@
 (bind-key "b" 'shell-here            dired-mode-map) ; mnemonic: b for bash; s and S is taken
 (bind-key "r" 'revert-buffer         dired-mode-map)
 (bind-key "g" 'helm-ag               dired-mode-map)
+(bind-key "C-o" 'helm-swoop          dired-mode-map)
+(bind-key "o" 'dired-display-file    dired-mode-map)
 (setq dired-listing-switches "-alh")    ; List file sizes in a human-readable format
+
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :config
+  (defun dired-subtree-expand-recursive ()
+    ;; Insert dired-subtree at point and recursively in all dirs that show up
+    (interactive)
+    (dired-subtree-cycle 999))          ; Arbitrary large number
+  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
+  (bind-key "<C-tab>" #'dired-subtree-expand-recursive))
 
 ;; ----------------------------------------------------------------
 ;; misc.
