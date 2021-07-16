@@ -1,10 +1,16 @@
 (setq run-shell-background-output-buffer-name "*run-shell-background output*")
 
+(defun cd-command (to-what-dir)
+  (concat
+   ;; On windows cmd, we first need to change the drive we are operating on
+   (when (eq system-type 'windows-nt) (concat (substring to-what-dir 0 2) " && "))
+   ;; The actual cd
+   "cd " to-what-dir))
+
 (defun run-shell-background (command cwd)
   (interactive "sShell command: \nDCWD: ")
-  (let ((full-command (concat "cd " cwd " && " command)))
-    (write-to-run-shell-background-buffer command)
-    (write-to-run-shell-background-buffer (concat "in " cwd))
+  (let ((full-command (concat (cd-command cwd) " && " command)))
+    (write-to-run-shell-background-buffer full-command)
     (let ((proc (start-process-shell-command (replace-in-string "%" "%%" command)
                                              run-shell-background-output-buffer-name
                                              full-command)))
@@ -153,5 +159,24 @@ will be killed."
   (if default-directory
       (browse-url-of-file (expand-file-name default-directory))
     (error "No `default-directory' to open")))
+
+(defun bind-caps-lock-to-ctrl ()
+  "Attempt to remap caps lock to CTRL in the OS. Requires emacs to be run with administrator priveleges.
+May brick your operative system. Use at your own risk."
+  (interactive)
+  (when (eq system-type 'windows-nt)
+    (run-shell-background
+     ;; COMMAND
+     ;; Source: https://superuser.com/questions/949385/map-capslock-to-control-in-windows-10
+     (concat
+      "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -command \""
+      "$hexified = \"\"\"00,00,00,00,00,00,00,00,02,00,00,00,1d,00,3a,00,00,00,00,00\"\"\".Split(',') | % { \"\"\"0x$_\"\"\"}; "
+      "$kbLayout = 'HKLM:\\System\\CurrentControlSet\\Control\\Keyboard Layout'; "
+      "New-ItemProperty -Path $kbLayout -Name \"\"\"Scancode Map\"\"\" -PropertyType Binary -Value ([byte[]]$hexified); "
+      "\"")
+     ;; WORKING DIRECTORY
+     "c:"))
+  (when (eq systep-type 'gnu/linux)
+    (message "Not yet implemented. Please do this manually via e.g. gnome-tweak-tool settings")))
 
 (provide 'useful-commands)
