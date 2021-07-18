@@ -68,7 +68,17 @@
 ;; ----------------------------------------------------------------
 (use-package helm
   :ensure t
+  :demand t
   :defer nil
+  :bind
+  ("M-x"     . helm-M-x)
+  ("C-x b"   . helm-buffers-list)
+  ("C-x C-b" . helm-buffers-list)
+  ("C-x C-f" . helm-find-files)
+  ("C-c C-y" . helm-show-kill-ring)
+  ("C-h h"   . helm-apropos)
+  ("C-h f"   . helm-apropos)
+  ("C-h y"   . helm-apropos)
   :bind (:map helm-grep-map
               ("C-c C-e" . helm-grep-run-save-buffer))
   :config
@@ -135,15 +145,6 @@
   :ensure t
   :demand t                             ; Not having this causes some dependenant hydras to not load
   :after (helm projectile)
-  :bind
-  ("M-x"     . helm-M-x)
-  ("C-x b"   . helm-buffers-list)
-  ("C-x C-b" . helm-buffers-list)
-  ("C-x C-f" . helm-find-files)
-  ("C-c C-y" . helm-show-kill-ring)
-  ("C-h h"   . helm-apropos)
-  ("C-h f"   . helm-apropos)
-  ("C-h y"   . helm-apropos)
   :config
   (require 'helm-projectile)
   (helm-projectile-on))
@@ -154,7 +155,7 @@
 (use-package default-text-scale
   :ensure t
   :after pretty-hydra
-  :bind ("C-c z"   . hydra-text-scale/body)
+  :bind ("C-c z" . hydra-text-scale/body)
   :config
   (pretty-hydra-define hydra-text-scale (:color red :title "🔍 Zoom" quit-key "q" :pre (default-text-scale-mode))
     ("Actions"
