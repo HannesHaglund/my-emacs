@@ -438,8 +438,7 @@
 (bind-key "C-x d" 'dired-here)
 (bind-key "C-d" 'open-file-directory dired-mode-map) ; d and D is taken
 (bind-key "b" 'shell-here            dired-mode-map) ; mnemonic: b for bash; s and S is taken
-(bind-key "r" 'revert-buffer         dired-mode-map)
-(bind-key "g" 'helm-ag               dired-mode-map)
+(bind-key "G" 'helm-ag               dired-mode-map)
 (bind-key "C-o" 'helm-swoop          dired-mode-map)
 (bind-key "o" 'dired-display-file    dired-mode-map)
 (setq dired-listing-switches "-alh")    ; List file sizes in a human-readable format
