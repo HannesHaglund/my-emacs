@@ -40,12 +40,18 @@
 ;; ----------------------------------------------------------------
 ;; exec-path-from-shell
 ;; ----------------------------------------------------------------
-
 (use-package exec-path-from-shell
   :ensure t
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
+
+;; ----------------------------------------------------------------
+;; diminish
+;; ----------------------------------------------------------------
+(use-package diminish
+  :ensure t
+  :commands (diminish))
 
 ;; ----------------------------------------------------------------
 ;; hydra
@@ -68,7 +74,8 @@
   :config
   (helm-mode t)
   (setq helm-buffer-max-length nil)
-  (add-hook 'helm-grep-mode-hook 'wgrep-change-to-wgrep-mode))
+  (add-hook 'helm-grep-mode-hook 'wgrep-change-to-wgrep-mode)
+  (diminish 'helm-mode))
 
 ;; ----------------------------------------------------------------
 ;; helm-xref
@@ -116,6 +123,7 @@
   :ensure t
   :config
   (projectile-mode +1)
+  (diminish 'projectile-mode)
   (projectile-global-mode)
   (require 'subr-x) ; Tags generation from projectile crashes otherwise
   (setq projectile-switch-project-action 'projectile-dired)
@@ -217,6 +225,7 @@
               ("C-`"      . 'company-select-previous))
   :config
   (require 'company)
+  (diminish 'company-mode)
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.05)
   (setq company-eclim-auto-save nil))
@@ -335,7 +344,8 @@
   (setq whitespace-style '(face tabs lines-tail))
   (set-face-foreground 'whitespace-line nil)
   (setq whitespace-line-column 120)
-  (global-whitespace-mode t))
+  (global-whitespace-mode t)
+  (diminish 'global-whitespace-mode))
 
 ;; ----------------------------------------------------------------
 ;; expand-region
@@ -477,7 +487,8 @@
 (use-package golden-ratio
   :ensure t
   :config
-  (golden-ratio-mode 1))
+  (golden-ratio-mode 1)
+  (diminish 'golden-ratio-mode))
 
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
@@ -529,7 +540,8 @@
   :ensure t
   :config
   (global-aggressive-indent-mode 1)
-  (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
+  (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+  (diminish 'aggressive-indent-mode))
 
 ;; ----------------------------------------------------------------
 ;; c-mode
