@@ -197,7 +197,25 @@
      (("l" mc/edit-lines "edit lines" :exit t)
       ("a" mc/mark-all-like-this "mark all" :exit t)
       ("s" mc/mark-all-in-region-regexp "search" :exit t)
-      ("c" mc/clear-cmds-to-run "clear commands")))))
+      ("c" mc/clear-cmds-to-run "clear commands"))))
+
+  (dolist (cmd '('hydra-multiple-cursors/mc/mark-previous-like-this
+                 'hydra-multiple-cursors/mc/skip-to-previous-like-this
+                 'hydra-multiple-cursors/mc/unmark-previous-like-this
+                 'hydra-multiple-cursors/mc/mark-next-like-this
+                 'hydra-multiple-cursors/mc/skip-to-next-like-this
+                 'hydra-multiple-cursors/mc/unmark-next-like-this
+                 'hydra-multiple-cursors/mc/insert-numbers
+                 'hydra-multiple-cursors/mc/insert-numbers-and-exit
+                 'hydra-multiple-cursors/mc/insert-letters
+                 'hydra-multiple-cursors/mc/insert-letters-and-exit
+                 'hydra-multiple-cursors/mc/edit-lines
+                 'hydra-multiple-cursors/mc/mark-all-like-this
+                 'hydra-multiple-cursors/mc/mark-all-in-region-regexp
+                 'hydra-multiple-cursors/mc/clear-cmds-to-run
+                 'beginning-of-code-line-or-buffer
+                 'end-of-code-line-or-buffer)
+               (add-to-list 'mc/cmds-to-run-once cmd))))
 
 ;; ----------------------------------------------------------------
 ;; restart-emacs
