@@ -393,6 +393,10 @@
   :config
   (global-diff-hl-mode))
 
+(use-package git-timemachine
+  :ensure t
+  :commands git-timemachine)
+
 (use-package hydra-p4
   :commands (hydra-p4/body)
   :after pretty-hydra)
