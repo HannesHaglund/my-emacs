@@ -386,6 +386,7 @@
 ;; ----------------------------------------------------------------
 ;; version control
 ;; ----------------------------------------------------------------
+
 (use-package hydra-p4
   :commands (hydra-p4/body)
   :after pretty-hydra)
@@ -403,17 +404,22 @@
   (setq p4-global-key-prefix nil))
 
 (use-package magit
-  :commands (magit-dispatch magit-file-dispatch magit-status)
+  :commands (magit-dispatch magit-file-dispatch magit-status magit-toplevel)
   :ensure t)
 
-(pretty-hydra-define hydra-vc (:color teal :title "⎆ Choose VC backend..." :quit-key "q")
-  (""
+(pretty-hydra-define hydra-vc (:color teal :title "⎆ Choose VC frontend..." :quit-key "q")
+  ("Available frontends"
    (("g" magit-status  "magit")
     ("p" hydra-p4/body "p4"))))
 
 (defun appropriate-vc-hydra-body ()
+  "Try to open UI for the version control used in default-directory. Prompt the user with a hydra if this is not possible."
   (interactive)
-  (if (string= (vc-backend buffer-file-name) "Git") (magit-status) (hydra-vc/body)))
+  (if (or (string= (vc-backend buffer-file-name) "Git") (magit-toplevel default-directory))
+      ;; We are in a git project...
+      (magit-status)
+    ;; We are not. Prompt the user.
+    (hydra-vc/body)))
 
 (global-set-key (kbd "C-c v")   'appropriate-vc-hydra-body)
 
