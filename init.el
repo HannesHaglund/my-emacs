@@ -519,8 +519,13 @@
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
 
-;; linum and column in prog mode
-(add-hook 'prog-mode-hook 'linum-mode)
+;; nlinum is a faster linum-mode
+(use-package nlinum
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'nlinum-mode))
+
+;; Show column number in modeline
 (add-hook 'prog-mode-hook 'column-number-mode)
 
 ;; truncate long lines
@@ -559,8 +564,6 @@
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 (add-hook 'prog-mode-hook 'apply-tab-settings)
-(add-hook 'prog-mode-hook 'linum-mode)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (use-package aggressive-indent
   :ensure t
