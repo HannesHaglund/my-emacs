@@ -572,6 +572,13 @@
   (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
   (diminish 'aggressive-indent-mode))
 
+;; Delete trailing whitespace on save
+(use-package ws-butler
+  :ensure t
+  :config
+  (setq ws-butler-keep-whitespace-before-point nil)
+  (add-hook 'prog-mode-hook #'ws-butler-mode))
+
 ;; Have emacs respect .editorconfig
 (use-package editorconfig
   :ensure t
