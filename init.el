@@ -572,6 +572,12 @@
   (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
   (diminish 'aggressive-indent-mode))
 
+;; Have emacs respect .editorconfig
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
+
 ;; ----------------------------------------------------------------
 ;; c-mode
 ;; ----------------------------------------------------------------
