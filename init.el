@@ -387,6 +387,12 @@
 ;; version control
 ;; ----------------------------------------------------------------
 
+;; Display whether a line is changed in VC on fringe
+(use-package diff-hl
+  :ensure t
+  :config
+  (global-diff-hl-mode))
+
 (use-package hydra-p4
   :commands (hydra-p4/body)
   :after pretty-hydra)
