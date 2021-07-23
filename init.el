@@ -172,10 +172,32 @@
   :config
   (require 'multiple-cursors)
 
+  (defun mc/add-default-cmds-to-run-once ()
+    (dolist (cmd '('hydra-multiple-cursors/mc/mark-previous-like-this
+                   'hydra-multiple-cursors/mc/skip-to-previous-like-this
+                   'hydra-multiple-cursors/mc/unmark-previous-like-this
+                   'hydra-multiple-cursors/mc/mark-next-like-this
+                   'hydra-multiple-cursors/mc/skip-to-next-like-this
+                   'hydra-multiple-cursors/mc/unmark-next-like-this
+                   'hydra-multiple-cursors/mc/insert-numbers
+                   'hydra-multiple-cursors/mc/insert-numbers-and-exit
+                   'hydra-multiple-cursors/mc/insert-letters
+                   'hydra-multiple-cursors/mc/insert-letters-and-exit
+                   'hydra-multiple-cursors/mc/edit-lines
+                   'hydra-multiple-cursors/mc/mark-all-like-this
+                   'hydra-multiple-cursors/mc/mark-all-in-region-regexp
+                   'hydra-multiple-cursors/mc/clear-cmds-to-run
+                   'beginning-of-code-line-or-buffer
+                   'end-of-code-line-or-buffer)
+                 (add-to-list 'mc/cmds-to-run-once cmd))))
+
+  (mc/add-default-cmds-to-run-once)
+
   (defun mc/clear-cmds-to-run ()
     (interactive)
     (setq mc/cmds-to-run-once nil)
-    (setq mc/cmds-to-run-for-all nil))
+    (setq mc/cmds-to-run-for-all nil)
+    (mc/add-default-cmds-to-run-once))
 
   (pretty-hydra-define hydra-multiple-cursors
     (:title "⤲ Multiple cursors - %(mc/num-cursors) active" :quit-key "q")
@@ -197,25 +219,7 @@
      (("l" mc/edit-lines "edit lines" :exit t)
       ("a" mc/mark-all-like-this "mark all" :exit t)
       ("s" mc/mark-all-in-region-regexp "search" :exit t)
-      ("c" mc/clear-cmds-to-run "clear commands"))))
-
-  (dolist (cmd '('hydra-multiple-cursors/mc/mark-previous-like-this
-                 'hydra-multiple-cursors/mc/skip-to-previous-like-this
-                 'hydra-multiple-cursors/mc/unmark-previous-like-this
-                 'hydra-multiple-cursors/mc/mark-next-like-this
-                 'hydra-multiple-cursors/mc/skip-to-next-like-this
-                 'hydra-multiple-cursors/mc/unmark-next-like-this
-                 'hydra-multiple-cursors/mc/insert-numbers
-                 'hydra-multiple-cursors/mc/insert-numbers-and-exit
-                 'hydra-multiple-cursors/mc/insert-letters
-                 'hydra-multiple-cursors/mc/insert-letters-and-exit
-                 'hydra-multiple-cursors/mc/edit-lines
-                 'hydra-multiple-cursors/mc/mark-all-like-this
-                 'hydra-multiple-cursors/mc/mark-all-in-region-regexp
-                 'hydra-multiple-cursors/mc/clear-cmds-to-run
-                 'beginning-of-code-line-or-buffer
-                 'end-of-code-line-or-buffer)
-               (add-to-list 'mc/cmds-to-run-once cmd))))
+      ("c" mc/clear-cmds-to-run "clear commands")))))
 
 ;; ----------------------------------------------------------------
 ;; restart-emacs
@@ -487,7 +491,7 @@
 ;; dired-mode
 ;; ----------------------------------------------------------------
 (use-package dired
-  :config
+  :config
   (setq dired-listing-switches "-alh")    ; List file sizes in a human-readable format
   (defun dired-here () (interactive) (dired default-directory))
   (bind-key "C-x d" 'dired-here)
@@ -579,9 +583,15 @@
   (setq default-tab-width 4)
   (infer-indentation-style))
 
+(defun indent-buffer ()
+  "Indent current buffer"
+  (when (derived-mode-p 'prog-mode)
+    (indent-region (point-min) (point-max))))
+
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 (add-hook 'prog-mode-hook 'apply-tab-settings)
+(add-hook 'before-save-hook 'indent-buffer)
 
 (use-package aggressive-indent
   :ensure t
