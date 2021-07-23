@@ -290,8 +290,8 @@
   :init
   (setq lsp-keymap-prefix "C-c l")
   ;; This is recommended by https://emacs-lsp.github.io/lsp-mode/page/performance/
-  (setq gc-cons-threshold (* 100 1000 1000))
-  (setq read-process-output-max (* 1024 1024)) ;; 1mb
+  (setq gc-cons-threshold (* 100 1000 1000))   ; 100mb
+  (setq read-process-output-max (* 1024 1024)) ; 1mb
 
   ;; Unbind key so it doesn't override our basic-keybinds keybind
   :bind (:map lsp-signature-mode-map ("M-p" . nil))
