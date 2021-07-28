@@ -729,6 +729,7 @@
   :config
   (ensure-system-package "python3" "python.exe" "Please download and install it via https://www.python.org/downloads/ .")
   (ensure-system-package "git" "git.exe" "Please download and install it via https://git-scm.com/downloads .")
+  (ensure-system-package "sh" "sh.exe" "Please download and install it via https://git-scm.com/downloads .")
   (ensure-system-package "universal-ctags" "ctags.exe"
                          "Please download a binary from https://github.com/universal-ctags/ctags-win32/releases and copy it to somewhere under C:\\Program Files .")
   (ensure-system-package "ripgrep" "rg.exe"

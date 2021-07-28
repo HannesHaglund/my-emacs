@@ -8,7 +8,7 @@
    (file-name-directory
     (car
      (split-string
-      (shell-command-to-string (concat "dir \"c:\\Program Files\" /s /b | findstr /i " file-name))
+      (shell-command-to-string (concat "dir \"c:\\Program Files\" /s /b | findstr /i \\\\" file-name))
       "\n")))))
 
 (defun ensure-system-binary-windows (binary-name install-instructions)
