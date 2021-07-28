@@ -585,7 +585,7 @@
 
 (defun indent-buffer ()
   "Indent current buffer"
-  (when (derived-mode-p 'prog-mode)
+  (when (and (derived-mode-p 'prog-mode) (not (derived-mode-p 'python-mode)))
     (indent-region (point-min) (point-max))))
 
 (setq show-paren-delay 0)
