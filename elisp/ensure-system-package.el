@@ -40,4 +40,18 @@
   (ensure-system-package-linux linux-package-name)
   (ensure-system-binary-windows windows-binary-name windows-install-instructions))
 
+(defun pip-list ()
+  (if (eq system-type 'windows-nt)
+      ;; python3 is called python on Windows
+      (shell-command-to-string "python -m pip list")
+    (shell-command-to-string "python3 -m pip list")))
+
+(defun ensure-pip-module (module-name)
+  (when (not (string-match-p (regexp-quote module-name) (pip-list)))
+    (display-warning :warning
+                     (concat "The pip module " module-name " was not found among installed pip modules. "
+                             "It not being available may cause some packages to not work correctly. "
+                             "Please install it via \"pip install " module-name "\", and then restart emacs."))))
+
+
 (provide 'ensure-system-package)

@@ -301,8 +301,18 @@
   :bind (:map lsp-signature-mode-map ("M-p" . nil))
 
   :hook ((c-mode . lsp)
-         (c++-mode . lsp))
+         (c++-mode . lsp)
+         (python-mode . lsp))
   :commands lsp)
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode)
+  :config
+  (when (eq system-type 'windows-nt)
+    ;; Fixes a bug where the linters are not found on Windows
+    (setq flycheck-python-pylint-executable "pylint")
+    (setq flycheck-python-flake8-executable "flake8")))
 
 (use-package lsp-ui
   :ensure t
@@ -317,15 +327,6 @@
 (use-package dap-mode
   :ensure t
   :after lsp-mode)
-
-;; There are multiple python lsp's to choose from - this one had the least lag for me
-(use-package lsp-python-ms
-  :ensure t
-  :after lsp-mode
-  :init (setq lsp-python-ms-auto-install-server t)
-  :hook (python-mode . (lambda ()
-                         (require 'lsp-python-ms)
-                         (lsp))))
 
 ;; ----------------------------------------------------------------
 ;; basic-keybinds
@@ -734,4 +735,5 @@
                          "Please download a binary from https://github.com/universal-ctags/ctags-win32/releases and copy it to somewhere under C:\\Program Files .")
   (ensure-system-package "ripgrep" "rg.exe"
                          "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
-  (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php ."))
+  (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php .")
+  (ensure-pip-module "python-lsp-server"))
