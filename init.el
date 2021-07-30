@@ -493,7 +493,7 @@
 ;; dired-mode
 ;; ----------------------------------------------------------------
 (use-package dired
-  :config
+  :config
   (setq dired-listing-switches "-alh")    ; List file sizes in a human-readable format
   (defun dired-here () (interactive) (dired default-directory))
   (bind-key "C-x d" 'dired-here)
