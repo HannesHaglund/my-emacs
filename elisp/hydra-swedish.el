@@ -1,3 +1,5 @@
+(require 'pretty-hydra)
+
 (pretty-hydra-define hydra-swedish (:color pink
                                            :title "⚑ Swedish"
                                            :quit-key "q")
@@ -10,3 +12,4 @@
     ("\"" (insert "Ä")))))
 
 (provide 'hydra-swedish)
+;;; hydra-swedish.el ends here

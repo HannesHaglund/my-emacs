@@ -1,3 +1,5 @@
+(require 'pretty-hydra)
+
 (pretty-hydra-define hydra-registers (:color blue :title "🕮 Registers" :quit-key "q")
   ("Point"
    (("r" point-to-register "point to register")
@@ -15,3 +17,4 @@
    (("v" helm-register "view registers"))))
 
 (provide 'hydra-registers)
+;;; hydra-registers.el ends here

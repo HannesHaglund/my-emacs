@@ -1,3 +1,5 @@
+(require 'pretty-hydra)
+
 (pretty-hydra-define hydra-p4 (:color teal :title "⎆ P4" :quit-key "q")
   ("Files"
    (("a"         p4-add              "open file for add")
@@ -51,3 +53,4 @@
     ("-"         p4-ediff            "ediff"))))
 
 (provide 'hydra-p4)
+;;; hydra-p4.el ends here

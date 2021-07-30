@@ -1,3 +1,5 @@
+(require 'pretty-hydra)
+
 (pretty-hydra-define hydra-macro (:color pink
                                          :title "🤖 Macro"
                                          :quit-key "q"
@@ -35,3 +37,4 @@
     ("." edit-kbd-macro "oldest"))))
 
 (provide 'hydra-macro)
+;;; hydra-macro.el ends here

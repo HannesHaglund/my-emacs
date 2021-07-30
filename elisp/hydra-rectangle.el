@@ -1,3 +1,5 @@
+(require 'pretty-hydra)
+
 (pretty-hydra-define hydra-rectangle (:body-pre (rectangle-mark-mode 1)
                                                 :color pink
                                                 :hint nil
@@ -29,3 +31,4 @@
            (rectangle-mark-mode 1)) "reset-region-mark"))))
 
 (provide 'hydra-rectangle)
+;;; hydra-rectangle.el ends here

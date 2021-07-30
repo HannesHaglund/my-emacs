@@ -1,5 +1,7 @@
+(require 'pretty-hydra)
+
 (defun helm-projectile-grep-project-root ()
-  "Run helm-projectile-grep on (projectile-project-root)"
+  "Run helm-projectile-grep on (projectile-project-root)."
   (interactive)
   (helm-projectile-grep (projectile-project-root)))
 
@@ -32,3 +34,4 @@
    (("p"   helm-projectile-switch-project "switch project"))))
 
 (provide 'hydra-projectile)
+;;; hydra-projectile.el ends here

@@ -1,28 +1,14 @@
 (defun scroll-down-bind ()
   "Scroll 10 lines down."
   (interactive)
-  (next-line 20)
+  (forward-line 20)
   (recenter nil t))
 
 (defun scroll-up-bind ()
   "Scroll 10 lines up."
   (interactive)
-  (previous-line 20)
+  (forward-line -20)
   (recenter nil t))
-
-;; The hydra-repeat supplied by the hydra package is not using universal argument correctly
-;; This is a fixed version
-(defun hydra-repeat (&optional arg)
-  "Repeat last command with last prefix arg.
-When ARG is non-nil, use that instead."
-  (interactive "p")
-  (if (eq arg 1)
-      (unless (string-match "hydra-repeat$" (symbol-name last-command))
-        (setq hydra-repeat--command last-command)
-        (setq hydra-repeat--prefix-arg last-prefix-arg))
-    (setq hydra-repeat--prefix-arg arg))
-  (setq current-prefix-arg hydra-repeat--prefix-arg)
-  (call-interactively hydra-repeat--command)) ; call-interactively instead of funcall
 
 (defun wind-bck ()
   "Change window."
@@ -33,10 +19,10 @@ When ARG is non-nil, use that instead."
   "Indent line and move to next."
   (interactive)
   (indent-according-to-mode)
-  (next-line))
+  (forward-line 1))
 
-(setq beginning-of-code-line-or-bugger-original-point nil)
-(setq beginning-of-code-line-or-buffer-times-pressed 0)
+(defvar beginning-of-code-line-or-bugger-original-point nil)
+(defvar beginning-of-code-line-or-buffer-times-pressed 0)
 (defun beginning-of-code-line-or-buffer ()
   "Move point to beginning of code, line or buffer depending on times pressed."
   (interactive)
@@ -57,8 +43,8 @@ When ARG is non-nil, use that instead."
         (goto-char (point-min))
         (setq beginning-of-code-line-or-buffer-times-pressed 0)))))
 
-(setq end-of-code-line-or-bugger-original-point nil)
-(setq end-of-code-line-or-buffer-times-pressed 0)
+(defvar end-of-code-line-or-bugger-original-point nil)
+(defvar end-of-code-line-or-buffer-times-pressed 0)
 (defun end-of-code-line-or-buffer ()
   "Move point to end of code, line or buffer depending on times pressed."
   (interactive)
@@ -80,3 +66,4 @@ When ARG is non-nil, use that instead."
         (setq end-of-code-line-or-buffer-times-pressed 0)))))
 
 (provide 'basic-keybinds)
+;;; basic-keybinds.el ends here
