@@ -11,11 +11,9 @@
 (require 'package)
 
 ;; Setup...
-(defun setup-melpa ()
-  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                           ("melpa" . "http://melpa.org/packages/"))))
 (package-initialize)
-(setup-melpa)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.org/packages/")))
 
 ;; ----------------------------------------------------------------
 ;; use-package
@@ -258,16 +256,19 @@
 ;; ----------------------------------------------------------------
 
 (defun wgrep-abort-changes-and-exit ()
+  "Abort wgrep and kill buffer."
   (interactive)
   (wgrep-abort-changes)
   (kill-buffer-and-window))
 
 (defun wgrep-finish-edit-and-exit ()
+  "Finish wgrep edit and kill buffer."
   (interactive)
   (wgrep-finish-edit)
   (kill-buffer-and-window))
 
 (defun bind-wgrep-keys ()
+  "Bind custom wgrep-mode keys."
   (define-key wgrep-original-mode-map (kbd "C-c C-g") 'wgrep-abort-changes-and-exit)
   (define-key wgrep-original-mode-map (kbd "C-x C-s") 'wgrep-finish-edit-and-exit))
 
@@ -446,7 +447,7 @@
     ("p" hydra-p4/body "p4"))))
 
 (defun appropriate-vc-hydra-body ()
-  "Try to open UI for the version control used in default-directory. Prompt the user with a hydra if this is not possible."
+  "Try to open UI for the version control used in 'default-directory'.  Prompt the user with a hydra if this is not possible."
   (interactive)
   (if (or (string= (vc-backend buffer-file-name) "Git") (magit-toplevel default-directory))
       ;; We are in a git project...
@@ -569,6 +570,7 @@
 
 ;; src: https://www.emacswiki.org/emacs/NoTabs
 (defun infer-indentation-style ()
+  "Set 'indent-tabs-mode' intelligently based on the contents of the current buffer."
   ;; if our source file uses tabs, we use tabs, if spaces spaces, and if
   ;; neither, we use the indent-tabs-mode nil
   (setq indent-tabs-mode nil)
@@ -578,6 +580,7 @@
     (if (> tab-count space-count) (setq indent-tabs-mode t))))
 
 (defun apply-tab-settings ()
+  "Apply custom tab settings."
   (setq-default indent-tabs-mode nil)
   (setq tab-stop-list (number-sequence 4 200 4))
   (setq tab-width 4)
@@ -585,7 +588,7 @@
   (infer-indentation-style))
 
 (defun indent-buffer ()
-  "Indent current buffer"
+  "Indent current buffer."
   (when (and (derived-mode-p 'prog-mode) (not (derived-mode-p 'python-mode)))
     (indent-region (point-min) (point-max))))
 
@@ -667,7 +670,7 @@
 ;; Change behavior of incremental search to inherit region
 ;; source: https://www.reddit.com/r/emacs/comments/b7yjje/isearch_region_search/
 (defun isearch-region-to-advice (&optional not-regexp no-recursive-edit)
-  "If a region is active, make this the isearch default search pattern."
+  "If a region is active, make this the isearch default search pattern (arguments NOT-REGEXP and NO-RECURSIVE-EDIT are not used)."
   (interactive "P\np")
   (when (use-region-p)
     (let ((search (buffer-substring-no-properties
@@ -737,3 +740,6 @@
                          "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
   (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php .")
   (ensure-pip-module "python-lsp-server"))
+
+(provide 'init)
+;;; init.el ends here
