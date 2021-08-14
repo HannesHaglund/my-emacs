@@ -41,6 +41,12 @@
                                 (goto-char (point-max))
                                 (recenter -1 t)))))
 
+(defun clear-run-shell-background-output-buffer ()
+  "Clear buffer with name 'run-shell-background-output-buffer-name'."
+  (interactive)
+  (with-current-buffer (get-buffer-create run-shell-background-output-buffer-name)
+    (erase-buffer)))
+
 (defun replace-in-string (what with in)
   "Replace WHAT with WITH in string IN."
   (when in (replace-regexp-in-string (regexp-quote what) with in nil 'literal)))
@@ -72,10 +78,10 @@
 ;; Source: https://emacs.stackexchange.com/questions/24459/revert-all-open-buffers-and-ignore-errors
 (defun revert-all-file-buffers ()
   "Refresh all open file buffers without confirmation.
-Buffers in modified (not yet saved) state in Emacs will not be reverted.
-They will be reverted though if they were modified outside Emacs.
-Buffers visiting files which do not exist any more or are no longer readable
-will be killed."
+  Buffers in modified (not yet saved) state in Emacs will not be reverted.
+  They will be reverted though if they were modified outside Emacs.
+  Buffers visiting files which do not exist any more or are no longer readable
+  will be killed."
   (interactive)
   (dolist (buf (buffer-list))
     (let ((filename (buffer-file-name buf)))
