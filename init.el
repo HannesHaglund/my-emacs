@@ -387,8 +387,7 @@
 ;; ----------------------------------------------------------------
 (use-package avy
   :ensure t
-  :bind ("C-v" . avy-goto-char)
-  :bind ("M-v" . avy-goto-char-timer))
+  :bind ("C-v" . avy-goto-char-timer))
 
 ;; ----------------------------------------------------------------
 ;; persistent-scratch
