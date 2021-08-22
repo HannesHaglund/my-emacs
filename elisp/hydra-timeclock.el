@@ -1,5 +1,4 @@
 (require 'timeclock)
-(require 'cal-iso)
 
 (defun timeclock-project-summary-format-time-date (time)
   """Format TIME seconds since 1970 as a date string."""
