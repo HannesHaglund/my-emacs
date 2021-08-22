@@ -102,15 +102,25 @@
   (interactive)
   (timeclock-out ""))
 
+(defun timeclock-out-lunch ()
+  """Run timeclock-out, with Lunch as REASON"""
+  (interactive)
+  (timeclock-out "Lunch"))
+
+
 (pretty-hydra-define hydra-timeclock (:color teal :quit-key "q"
                                              :pre (timeclock-reread-log)
                                              :title "🕑 Timeclock: %(timeclock-status-string)")
-  ("Edit"
-   (("i" timeclock-in "In")
-    ("c" timeclock-out "Change project")
-    ("o" timeclock-out-no-reason "Out")
+  ("Report IN"
+   (("i" timeclock-in "In"))
+   "Report OUT"
+   (("o" timeclock-out-no-reason "Out")
     ("O" timeclock-out "Out with reason")
-    ("f" timeclock-visit-timelog "Find timelog"))
+    ("l" timeclock-out-no-reason "Out for lunch"))
+   "Report CHANGE"
+   (("c" timeclock-out "Change project"))
+   "Manual edit"
+   (("f" timeclock-visit-timelog "Find timelog"))
    "Summarize"
    (("s" timeclock-project-summary "Project summary"))))
 
