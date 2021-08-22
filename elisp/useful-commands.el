@@ -58,22 +58,19 @@
     (message (concat "Shell output:\n" output))
     (kill-new output)))
 
-(defun overwrite-emacs-d (repo-dir)
-  "Overwrite contents in ~/.emacs.d/ with the contents of the my-emacs repository, REPO-DIR."
+(defun my-emacs-configure-load-on-startup (repo-dir)
+  "Add line in .emacs loading REPO-DIR/init.el."
   (interactive (list (read-directory-name "my-emacs directory: "
                                           ;; folder of init.el buffer if it exists, or nil
                                           (let ((init-el-buffer (get-buffer "init.el")))
                                             (if init-el-buffer
                                                 (file-name-directory (buffer-file-name init-el-buffer))
                                               nil)))))
-  (let ((emacs-d       "~/.emacs.d")
-        (init-el       "~/.emacs.d/init.el")
-        (elisp         "~/.emacs.d/elisp"))
-    (when (file-directory-p elisp)   (delete-directory elisp t t))
-    (when (file-exists-p    init-el) (delete-file      init-el))
-    (copy-directory (expand-file-name "elisp"   repo-dir) elisp t t nil)
-    (copy-file      (expand-file-name "init.el" repo-dir) init-el t t t t)
-    (message (concat "Wrote " repo-dir " to " emacs-d))))
+  (let ((dot-emacs "~/.emacs")
+        (string-to-add (format "(load-file \"%s\")" (concat repo-dir "init.el"))))
+    (when (not (file-exists-p dot-emacs)) (write-region "" nil dot-emacs))
+    (write-region string-to-add nil dot-emacs 'append)
+    (message (concat "Wrote to " dot-emacs))))
 
 ;; Source: https://emacs.stackexchange.com/questions/24459/revert-all-open-buffers-and-ignore-errors
 (defun revert-all-file-buffers ()

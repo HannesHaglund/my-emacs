@@ -2,8 +2,13 @@
 ;; Set up path
 ;; ================================================================
 (message "Loading init.el...")
-(add-to-list 'load-path "~/.emacs.d/elisp/")
-(add-to-list 'load-path "./elisp/")
+
+(defun relative-path (path)
+  """Return <path to file being evaluated>/PATH."""
+  (concat (file-name-directory (or load-file-name buffer-file-name))
+          path))
+
+(add-to-list 'load-path (relative-path "elisp"))
 
 ;; ================================================================
 ;; Fetch packages
@@ -720,21 +725,8 @@
 (setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
 
 ;; ================================================================
-;; local-init
-;; ================================================================
-
-;; local-init.el is intended for machine-local configuration. Load it now.
-(use-package local-init-lib
-  :config
-  (initialize-local-init)
-  (message "Loading local-init.el...")
-  (load-file local-init-file-name))
-
-;; ================================================================
 ;; Verify needed system packages are installed
 ;; ================================================================
-
-;; We do this after local-init to give the user an option to set up machine-local PATH
 
 (use-package system-packages
   :ensure t)
