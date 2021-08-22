@@ -77,7 +77,8 @@
 
           ;; Handle missing out on previous date. Reset prev-in-time when changing date.
           (when (not (string= event-date prev-date))
-            (setq prev-in-time event-time))
+            (setq prev-in-time event-time)
+            (setq prev-in-reason "ERROR"))
           (setq prev-date event-date)
 
           ;; Process in
