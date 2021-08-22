@@ -487,6 +487,11 @@
   :after pretty-hydra
   :bind
   ("C-c p" . hydra-projectile/body))
+(use-package hydra-timeclock
+  :after pretty-hydra
+  :bind
+  ("C-c c" . hydra-timeclock/body))
+
 
 ;; ----------------------------------------------------------------
 ;; dired-mode
