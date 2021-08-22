@@ -22,7 +22,7 @@
          (month (string-to-number (nth 1 date-split)))
          (day   (string-to-number (nth 2 date-split)))
          (encoded-date     (encode-time (list 0 0 12 day month year nil nil nil))))
-    (format "%s - Spent %s in %s"
+    (format "%s - Spent %s on %s"
             (timeclock-project-summary-format-time-date encoded-date)
             (timeclock-project-summary-format-time time-sum)
             project)))
@@ -40,25 +40,22 @@
     (princ "\n")
     (princ (timeclock-project-summary-string))))
 
-(defvar timeclock-project-total-string "total")
-
 (defun timeclock-time-per-project-per-day ()
   """Generate alist based on timelog mapping (PROJECT DATE) to hours worked in the project at that day."""
   (when (file-readable-p timeclock-file)
-    (let* ((event nil)
-           (event-time nil)
+    (let* ((event              nil)
+           (event-time         nil)
            (event-time-decoded nil)
-           (event-date nil)
-           (event-direction nil)
-           (event-reason nil)
-           (prev-date nil)
-           (prev-in-time nil)
-           (prev-in-reason nil)
-           (project-accum '()))
+           (event-date         nil)
+           (event-direction    nil)
+           (event-reason       nil)
+           (prev-date          nil)
+           (prev-in-time       nil)
+           (prev-in-reason     nil)
+           (project-accum      '()))
 
       (with-temp-buffer
         (insert-file-contents timeclock-file)
-        ;; (widen)
         (goto-char 0)
 
         (while (setq event (timeclock-read-moment))
@@ -73,10 +70,10 @@
                                    (nth 4 event-time-decoded) ; month
                                    (nth 3 event-time-decoded))) ; day
 
-          (message (concat "Processing "
-                           event-direction " "
-                           (prin1-to-string event-time-decoded) " "
-                           event-reason))
+          ;; (message (concat "Processing "
+          ;;                  event-direction " "
+          ;;                  (prin1-to-string event-time-decoded) " "
+          ;;                  event-reason))
 
           ;; Handle missing out on previous date. Reset prev-in-time when changing date.
           (when (not (string= event-date prev-date))
@@ -93,15 +90,10 @@
             ;; Ignore entry if it's the first one of the day. First should be an "i".
             (when (and prev-in-time prev-in-reason)
               (let* ((time-diff (time-subtract event-time prev-in-time))
-                     (cur-val   (alist-get (list prev-in-reason                 event-date) project-accum nil nil #'equal))
-                     (cur-total (alist-get (list timeclock-project-total-string event-date) project-accum nil nil #'equal)))
-                ;; Add cur-total (0 if nil) + time_diff to special total value
-                (setf (alist-get (list timeclock-project-total-string event-date) project-accum nil nil #'equal)
-                      (+ time-diff (if cur-total cur-total 0)))
-                ;; ... and to the actual out value
+                     (cur-val   (alist-get (list prev-in-reason event-date) project-accum nil nil #'equal)))
+                ;; Update total for that project
                 (setf (alist-get (list prev-in-reason event-date) project-accum nil nil #'equal)
-                      (+ time-diff (if cur-val cur-val 0)))))))
-        )
+                      (+ time-diff (if cur-val cur-val 0))))))))
       ;; Return value
       project-accum)))
 
@@ -115,9 +107,9 @@
                                              :title "🕑 Timeclock: %(timeclock-status-string)")
   ("Edit"
    (("i" timeclock-in "In")
+    ("c" timeclock-out "Change project")
     ("o" timeclock-out-no-reason "Out")
     ("O" timeclock-out "Out with reason")
-    ("c" timeclock-out "Change project")
     ("f" timeclock-visit-timelog "Find timelog"))
    "Summarize"
    (("s" timeclock-project-summary "Project summary"))))
