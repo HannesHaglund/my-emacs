@@ -718,12 +718,11 @@
 
 ;; Other
 (defalias 'yes-or-no-p 'y-or-n-p)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(auto-revert-mode 1)
 (setq kill-buffer-query-functions nil)  ; Do not ask for confirmation when killing process buffers
 (setq tags-add-tables nil)              ; Never ask "keep current list of tags table?"
 (setq ring-bell-function 'ignore)       ; Disable warning sounds
 (setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
+(diminish 'eldoc-mode)
 
 ;; ================================================================
 ;; Verify needed system packages are installed
