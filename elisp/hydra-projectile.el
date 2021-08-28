@@ -5,6 +5,12 @@
   (interactive)
   (helm-projectile-grep (projectile-project-root)))
 
+(defun helm-projectile-ag-project-root ()
+  "Run helm-projectile-grep on (projectile-project-root)."
+  (interactive)
+  (helm-do-ag (projectile-project-root) nil nil))
+
+
 (pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
                                               :title "📁 Projectile in %(projectile-project-root)")
   ("Find file"
@@ -14,8 +20,7 @@
     ("d"   helm-projectile-find-dir "dir"))
 
    "Search/Tags"
-   (("a"   helm-do-ag-project-root "ag")
-    ("g"   helm-projectile-grep-project-root "git grep")
+   (("g"   helm-projectile-ag-project-root "grep")
     ("t"   ggtags-update-tags "update gtags")
     ("o"   projectile-multi-occur "multi-occur"))
 

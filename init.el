@@ -107,8 +107,10 @@
   :after helm
   :config
   (setq helm-ag-use-temp-buffer t)
-  (setq helm-ag-insert-at-point t)
-  (setq helm-ag-fuzzy-match t)
+  (setq helm-ag-insert-at-point nil)
+  (setq helm-ag-fuzzy-match nil)
+
+  (advice-add 'helm-ag--save-current-context :before 'xref-push-marker-stack)
 
   (when (eq system-type 'windows-nt)
     ;; Always use rg
@@ -342,7 +344,9 @@
   :ensure t
   :config
   (setq helm-multi-swoop-edit-save t)
-  (setq helm-swoop-use-fuzzy-match t)
+  (setq helm-swoop-use-fuzzy-match nil)
+  ;; We hijack the xref marker stack
+  (add-hook 'helm-swoop-before-goto-line-action-hook 'xref-push-marker-stack)
   ;; Use region for pre-input
   (setq helm-swoop-pre-input-function
         (lambda ()
