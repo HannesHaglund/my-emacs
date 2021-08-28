@@ -480,10 +480,6 @@
   :after pretty-hydra
   :bind
   ("C-c ;" . hydra-swedish/body))      ; C-c ö, kind of
-(use-package hydra-eval
-  :after pretty-hydra
-  :bind
-  ("C-c e" . hydra-eval/body))
 (use-package hydra-macro
   :after pretty-hydra
   :bind
