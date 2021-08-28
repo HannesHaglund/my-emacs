@@ -178,23 +178,22 @@
   (require 'multiple-cursors)
 
   (defun mc/add-default-cmds-to-run-once ()
-    (dolist (cmd '('hydra-multiple-cursors/mc/mark-previous-like-this
-                   'hydra-multiple-cursors/mc/skip-to-previous-like-this
-                   'hydra-multiple-cursors/mc/unmark-previous-like-this
-                   'hydra-multiple-cursors/mc/mark-next-like-this
-                   'hydra-multiple-cursors/mc/skip-to-next-like-this
-                   'hydra-multiple-cursors/mc/unmark-next-like-this
-                   'hydra-multiple-cursors/mc/insert-numbers
-                   'hydra-multiple-cursors/mc/insert-numbers-and-exit
-                   'hydra-multiple-cursors/mc/insert-letters
-                   'hydra-multiple-cursors/mc/insert-letters-and-exit
-                   'hydra-multiple-cursors/mc/edit-lines
-                   'hydra-multiple-cursors/mc/mark-all-like-this
-                   'hydra-multiple-cursors/mc/mark-all-in-region-regexp
-                   'hydra-multiple-cursors/mc/clear-cmds-to-run
-                   'beginning-of-code-line-or-buffer
-                   'end-of-code-line-or-buffer)
-                 (add-to-list 'mc/cmds-to-run-once cmd))))
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-previous-like-this)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/skip-to-previous-like-this)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/unmark-previous-like-this)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-next-like-this)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/skip-to-next-like-this)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/unmark-next-like-this)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/insert-numbers)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/insert-numbers-and-exit)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/insert-letters)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/insert-letters-and-exit)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/edit-lines)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-like-this)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-in-region-regexp)
+    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/clear-cmds-to-run)
+    (add-to-list 'mc/cmds-to-run-once 'beginning-of-code-line-or-buffer)
+    (add-to-list 'mc/cmds-to-run-once 'end-of-code-line-or-buffer))
 
   (mc/add-default-cmds-to-run-once)
 
