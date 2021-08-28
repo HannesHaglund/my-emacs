@@ -617,13 +617,15 @@
   :ensure t
   :config
   (setq ws-butler-keep-whitespace-before-point nil)
-  (add-hook 'prog-mode-hook #'ws-butler-mode))
+  (add-hook 'prog-mode-hook #'ws-butler-mode)
+  (diminish 'ws-butler-mode))
 
 ;; Have emacs respect .editorconfig
 (use-package editorconfig
   :ensure t
   :config
-  (editorconfig-mode 1))
+  (editorconfig-mode 1)
+  (diminish 'editorconfig-mode))
 
 ;; ----------------------------------------------------------------
 ;; c-mode
