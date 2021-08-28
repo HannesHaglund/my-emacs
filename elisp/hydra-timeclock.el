@@ -86,7 +86,7 @@
             (setq prev-in-reason event-reason))
 
           ;; Process out
-          (when (string= "o" event-direction)
+          (when (or (string= "o" event-direction) (string= "O" event-direction))
             ;; Ignore entry if it's the first one of the day. First should be an "i".
             (when (and prev-in-time prev-in-reason)
               (let* ((time-diff (time-subtract event-time prev-in-time))
