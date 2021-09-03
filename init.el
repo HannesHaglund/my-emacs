@@ -363,7 +363,7 @@
   ("M-g" . goto-line)
   ("C-z" . undo)
   ("C-o" . helm-swoop)
-  ("C-x k" . kill-buffer-and-window)
+  ("C-x K" . kill-buffer-and-window)
   ("C-c C-f" . revert-buffer))
 
 ;; ----------------------------------------------------------------
