@@ -345,10 +345,9 @@
   (add-hook 'helm-swoop-before-goto-line-action-hook 'xref-push-marker-stack)
   ;; Use region for pre-input
   (setq helm-swoop-pre-input-function
-        (lambda ()
-          (if mark-active
-              (buffer-substring-no-properties (mark) (point))
-            ""))))
+        (lambda () (if mark-active
+                       (buffer-substring-no-properties (mark) (point))
+                     ""))))
 
 (use-package basic-keybinds
   :after (pretty-hydra helm-swoop)
@@ -431,13 +430,12 @@
 
 (use-package p4
   :ensure t
-  :commands (
-             p4-add p4-edit p4-move p4-delete p4-revert p4-opened p4-status p4-annotate
-             p4-filelog p4-diff p4-submit p4-update p4-reconcile p4-client p4-branch p4-branches
-             p4-changes p4-diff2 p4-describe p4-reopen p4-depot-find-file p4-files p4-get-client-name p4-help
-             p4-integ p4-have p4-info p4-job p4-jobs p4-label p4-labels p4-labelsync
-             p4-print p4-set-p4-port p4-refresh p4-resolve p4-toggle-vc-mode p4-user p4-users p4-version
-             p4-where p4-fix p4-diff-all-opened p4-ediff)
+  :commands (p4-add p4-edit p4-move p4-delete p4-revert p4-opened p4-status p4-annotate
+                    p4-filelog p4-diff p4-submit p4-update p4-reconcile p4-client p4-branch p4-branches
+                    p4-changes p4-diff2 p4-describe p4-reopen p4-depot-find-file p4-files p4-get-client-name p4-help
+                    p4-integ p4-have p4-info p4-job p4-jobs p4-label p4-labels p4-labelsync
+                    p4-print p4-set-p4-port p4-refresh p4-resolve p4-toggle-vc-mode p4-user p4-users p4-version
+                    p4-where p4-fix p4-diff-all-opened p4-ediff)
   :config
   (setq p4-global-key-prefix nil))
 
