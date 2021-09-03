@@ -307,9 +307,7 @@
   ;; Unbind key so it doesn't override our basic-keybinds keybind
   :bind (:map lsp-signature-mode-map ("M-p" . nil))
 
-  :hook ((c-mode . lsp)
-         (c++-mode . lsp)
-         (python-mode . lsp))
+  :hook ((python-mode . lsp))
   :commands lsp)
 
 (use-package flycheck
@@ -496,7 +494,6 @@
   :bind
   ("C-c c" . hydra-timeclock/body))
 
-
 ;; ----------------------------------------------------------------
 ;; dired-mode
 ;; ----------------------------------------------------------------
@@ -534,8 +531,6 @@
 ;; Visuals
 ;; ================================================================
 
-;; Theme
-(load-theme 'wombat t)
 ;; Improve helm selection face
 (set-face-attribute 'helm-selection nil
                     :background "purple4"
@@ -595,15 +590,9 @@
   (setq default-tab-width 4)
   (infer-indentation-style))
 
-(defun indent-buffer ()
-  "Indent current buffer."
-  (when (and (derived-mode-p 'prog-mode) (not (derived-mode-p 'python-mode)))
-    (indent-region (point-min) (point-max))))
-
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 (add-hook 'prog-mode-hook 'apply-tab-settings)
-(add-hook 'before-save-hook 'indent-buffer)
 
 (use-package aggressive-indent
   :ensure t

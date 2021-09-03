@@ -174,5 +174,11 @@
   (when (eq system-type 'gnu/linux)
     (message "Not yet implemented. Please do this manually via e.g. gnome-tweak-tool settings")))
 
+(defun indent-buffer ()
+  "Indent current buffer."
+  (interactive)
+  (when (and (derived-mode-p 'prog-mode) (not (derived-mode-p 'python-mode)))
+    (indent-region (point-min) (point-max))))
+
 (provide 'useful-commands)
 ;;; useful-commands.el ends here
