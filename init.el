@@ -544,11 +544,8 @@
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
 
-;; nlinum is a faster linum-mode
-(use-package nlinum
-  :ensure t
-  :config
-  (add-hook 'prog-mode-hook 'nlinum-mode))
+;; Global line numbers
+(add-hook 'prog-mode-hook 'linum-mode)
 
 ;; Show column number in modeline
 (add-hook 'prog-mode-hook 'column-number-mode)
