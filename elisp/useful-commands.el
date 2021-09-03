@@ -180,5 +180,19 @@
   (when (and (derived-mode-p 'prog-mode) (not (derived-mode-p 'python-mode)))
     (indent-region (point-min) (point-max))))
 
+(defun insert-skeleton-editorconfig ()
+  "Insert some skeleton .editorconfig file contents."
+  (interactive)
+  (insert (concat
+           "root                     = true # This is the topmost.editorconfig" "\n\n"
+           "[*] # On all files..."                                              "\n"
+           "insert_final_newline     = false"                                   "\n"
+           "charset                  = utf-8"                                   "\n"
+           "indent_style             = space"                                   "\n"
+           "indent_size              = 4"                                       "\n"
+           "trim_trailing_whitespace = true"                                    "\n\n"
+           "[*.{md,py,c,h,cpp,hpp,sh}]"                                         "\n"
+           "indent_size = 4"                                                    "\n")))
+
 (provide 'useful-commands)
 ;;; useful-commands.el ends here

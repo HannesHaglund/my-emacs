@@ -260,7 +260,6 @@
 ;; ----------------------------------------------------------------
 ;; wgrep
 ;; ----------------------------------------------------------------
-
 (defun wgrep-abort-changes-and-exit ()
   "Abort wgrep and kill buffer."
   (interactive)
@@ -571,28 +570,8 @@
 ;; Languages
 ;; ================================================================
 
-;; src: https://www.emacswiki.org/emacs/NoTabs
-(defun infer-indentation-style ()
-  "Set 'indent-tabs-mode' intelligently based on the contents of the current buffer."
-  ;; if our source file uses tabs, we use tabs, if spaces spaces, and if
-  ;; neither, we use the indent-tabs-mode nil
-  (setq indent-tabs-mode nil)
-  (let ((space-count (how-many "^  " (point-min) (point-max)))
-        (tab-count (how-many "^\t" (point-min) (point-max))))
-    (if (> space-count tab-count) (setq indent-tabs-mode nil))
-    (if (> tab-count space-count) (setq indent-tabs-mode t))))
-
-(defun apply-tab-settings ()
-  "Apply custom tab settings."
-  (setq-default indent-tabs-mode nil)
-  (setq tab-stop-list (number-sequence 4 200 4))
-  (setq tab-width 4)
-  (setq default-tab-width 4)
-  (infer-indentation-style))
-
 (setq show-paren-delay 0)
 (show-paren-mode 1)
-(add-hook 'prog-mode-hook 'apply-tab-settings)
 
 (use-package aggressive-indent
   :ensure t
@@ -619,8 +598,7 @@
 ;; ----------------------------------------------------------------
 ;; c-mode
 ;; ----------------------------------------------------------------
-(setq c-default-style "linux"
-      c-basic-offset 4)
+(setq c-default-style "linux")
 
 ;; ----------------------------------------------------------------
 ;; octave-mode
@@ -631,10 +609,7 @@
 (setq octave-mode-hook
       (lambda () (progn (setq octave-comment-char ?%)
                         (setq comment-start "%")
-                        (setq indent-tabs-mode nil)
                         (setq comment-add 0)
-                        (setq tab-width 4)
-                        (setq tab-stop-list (number-sequence 4 200 4))
                         (setq octave-block-offset 4)
                         (define-key octave-mode-map (kbd "M-.") 'xref-find-definitions)
                         (defun octave-indent-comment ()
@@ -716,7 +691,6 @@
 ;; ================================================================
 ;; Verify needed system packages are installed
 ;; ================================================================
-
 (use-package system-packages
   :ensure t)
 

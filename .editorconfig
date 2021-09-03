@@ -1,0 +1,10 @@
+root                     = true # This is the topmost.editorconfig
+
+[*] # On all files...
+insert_final_newline     = false
+charset                  = utf-8
+indent_style             = space
+trim_trailing_whitespace = true
+
+[*.{md,py,c,h,cpp,hpp,sh}]
+indent_size = 4
