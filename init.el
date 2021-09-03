@@ -562,12 +562,13 @@
 ;; No scroll bar
 (scroll-bar-mode -1)
 
+;; Show paren
+(setq show-paren-delay 0)
+(show-paren-mode 1)
+
 ;; ================================================================
 ;; Languages
 ;; ================================================================
-
-(setq show-paren-delay 0)
-(show-paren-mode 1)
 
 (use-package aggressive-indent
   :ensure t
