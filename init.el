@@ -535,11 +535,11 @@
                     :foreground "snow")
 
 ;; Keep highlighted window at appropriate size
-(use-package golden-ratio
+(use-package zoom
   :ensure t
   :config
-  (golden-ratio-mode 1)
-  (diminish 'golden-ratio-mode))
+  (setq zoom-size '(0.618 . 0.618))     ; Golden ratio
+  (zoom-mode t))
 
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
@@ -566,10 +566,29 @@
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 
+;; Sublime-like overview
+(use-package minimap
+  :ensure t
+  :commands minimap-mode
+  :bind  ("C-c n" . minimap-mode)
+  :config
+  ;; We need to avoid minimap buffer getting auto resized
+  (defun minimap-set-fix-size ()
+    (with-selected-window (get-buffer-window minimap-buffer-name)
+      (setq window-size-fixed t)
+      ;; Set to 24 columns wide
+      (window-resize (selected-window) (- 24 (window-total-width)) t t)))
+  (add-hook 'minimap-sb-mode-hook 'minimap-set-fix-size))
+
+;; Highlight point when jumping
+(use-package beacon
+  :ensure t
+  :config
+  (beacon-mode 1))
+
 ;; ================================================================
 ;; Languages
 ;; ================================================================
-
 (use-package aggressive-indent
   :ensure t
   :config
