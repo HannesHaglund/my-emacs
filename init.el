@@ -563,6 +563,15 @@
 ;; No scroll bar
 (scroll-bar-mode -1)
 
+;; Enable these via mouse
+(defun toggle-mouse-help-modes ()
+  "Toggle mode useful for mouse navigation."
+  (interactive)
+  (if (bound-and-true-p menu-bar-mode) (menu-bar-mode -1) (menu-bar-mode t))
+  (if (bound-and-true-p scroll-bar-mode) (scroll-bar-mode -1) (scroll-bar-mode t))
+  (if (bound-and-true-p tool-bar-mode) (tool-bar-mode -1) (tool-bar-mode t)))
+(define-key global-map (kbd "<mouse-3>") 'toggle-mouse-help-modes)
+
 ;; Show paren
 (setq show-paren-delay 0)
 (show-paren-mode 1)
