@@ -586,6 +586,13 @@
   :config
   (beacon-mode 1))
 
+;; Nyan mode to highlight buffer scroll
+(use-package nyan-mode
+  :ensure t
+  :config
+  (nyan-mode 1)
+  (diminish 'nyan-mode))
+
 ;; ================================================================
 ;; Languages
 ;; ================================================================
