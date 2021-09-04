@@ -539,7 +539,8 @@
   :ensure t
   :config
   (setq zoom-size '(0.618 . 0.618))     ; Golden ratio
-  (zoom-mode t))
+  (zoom-mode t)
+  (diminish 'zoom-mode))
 
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
@@ -572,6 +573,7 @@
   :commands minimap-mode
   :bind  ("C-c n" . minimap-mode)
   :config
+  (diminish 'minimap-mode)
   ;; We need to avoid minimap buffer getting auto resized
   (defun minimap-set-fix-size ()
     (with-selected-window (get-buffer-window minimap-buffer-name)
@@ -584,7 +586,8 @@
 (use-package beacon
   :ensure t
   :config
-  (beacon-mode 1))
+  (beacon-mode 1)
+  (diminish 'beacon-mode))
 
 ;; Nyan mode to highlight buffer scroll
 (use-package nyan-mode
