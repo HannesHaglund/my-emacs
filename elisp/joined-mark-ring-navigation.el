@@ -1,6 +1,7 @@
 (require 'subr-x)
 
 (defvar joined-mark-ring '())
+(defvar joined-mark-ring-source-commands '())
 (defvar joined-mark-ring-index 0)
 (defvar joined-mark-ring-max-size 12)
 
@@ -11,14 +12,17 @@
   ;; Pop elements we've diverged from
   (while (> joined-mark-ring-index 0)
     (setq joined-mark-ring-index (- joined-mark-ring-index 1))
-    (setq joined-mark-ring (cdr joined-mark-ring)))
+    (setq joined-mark-ring (cdr joined-mark-ring))
+    (setq joined-mark-ring-source-commands (cdr joined-mark-ring-source-commands)))
   ;; Actually add... if it is not a duplicate
   (unless (and (car joined-mark-ring) (string= (marker-to-string element)
                                                (marker-to-string (car joined-mark-ring))))
-    (setq joined-mark-ring (cons element joined-mark-ring)))
+    (setq joined-mark-ring (cons element joined-mark-ring))
+    (setq joined-mark-ring-source-commands (cons this-command joined-mark-ring-source-commands)))
   ;; Pop elements if we have too many
   (while (> (length joined-mark-ring) joined-mark-ring-max-size)
-    (setq joined-mark-ring (butlast joined-mark-ring))))
+    (setq joined-mark-ring (butlast joined-mark-ring))
+    (setq joined-mark-ring-source-commands (butlast joined-mark-ring-source-commands))))
 
 (defun joined-mark-ring-push-mark (&optional a b c)
   (add-to-joined-mark-ring (copy-marker (mark-marker))))
@@ -33,8 +37,8 @@
       (goto-char marker)
       (line-number-at-pos))))
 
-(defun joined-mark-ring-string-format-mark (mark)
-  (format " %s:%d" (marker-buffer mark) (marker-line mark)))
+(defun joined-mark-ring-string-format-mark (mark command)
+  (format " %s:%d -- %s" (marker-buffer mark) (marker-line mark) command))
 
 (defun beginning-of-line-point ()
   (save-excursion
@@ -49,8 +53,10 @@
 ;; TODO: Display what command was ran when populating X marker
 (defun joined-mark-ring-string ()
   (with-temp-buffer
-    (insert (string-join (mapcar 'joined-mark-ring-string-format-mark
-                                 joined-mark-ring) "\n"))
+    (dotimes (i (length joined-mark-ring))
+      (insert (joined-mark-ring-string-format-mark (nth i joined-mark-ring)
+                                                   (nth i joined-mark-ring-source-commands)))
+      (insert "\n"))
     (goto-char (point-min))
     (forward-line joined-mark-ring-index)
     (add-text-properties (point-min) (point) '(comment t face font-lock-comment-face))
@@ -67,7 +73,6 @@
   (goto-char mark))
 
 (defun move-joined-mark-ring-index (diff)
-  ;; TODO Push current when popping for the first time?
   (if (= (length joined-mark-ring) 0) (message "joined-mark-ring is empty.")
     (progn
       ;; On first non-repeated command...
