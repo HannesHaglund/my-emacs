@@ -335,6 +335,15 @@
 ;; ----------------------------------------------------------------
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
+(use-package joined-mark-ring-navigation
+  :demand t                             ; We want this to load regardless of binds
+  :bind
+  ("M-,"   .   pop-joined-mark-ring)
+  ("C-M-," . unpop-joined-mark-ring)
+  :config
+  (add-hook 'helm-swoop-before-goto-line-action-hook 'joined-mark-ring-push-point)
+  (advice-add 'helm-ag--save-current-context :before 'joined-mark-ring-push-point)
+  (advice-add 'xref-push-marker-stack        :before 'joined-mark-ring-push-point))
 
 (use-package helm-swoop
   :ensure t
