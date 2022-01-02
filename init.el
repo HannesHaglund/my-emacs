@@ -305,6 +305,7 @@
 
   ;; Unbind key so it doesn't override our basic-keybinds keybind
   :bind (:map lsp-signature-mode-map ("M-p" . nil))
+  :bind (:map lsp-signature-mode-map ("M-n" . nil))
 
   :hook ((python-mode . lsp))
   :commands lsp)
