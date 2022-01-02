@@ -751,7 +751,7 @@
   (ensure-system-package "ripgrep" "rg.exe"
                          "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
   (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php .")
-  (ensure-pip-module "python-lsp-server"))
+  (ensure-pip-module "python-lsp-server==0.19.0"))
 
 (provide 'init)
 ;;; init.el ends here
