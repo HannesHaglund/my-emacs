@@ -405,6 +405,16 @@
   :bind ("C-v" . avy-goto-char-timer))
 
 ;; ----------------------------------------------------------------
+;; good-scroll
+;; ----------------------------------------------------------------
+
+;; Enable pixel scrolling that works better than the built-in one
+(use-package good-scroll
+  :ensure t
+  :config
+  (good-scroll-mode 1))
+
+;; ----------------------------------------------------------------
 ;; persistent-scratch
 ;; ----------------------------------------------------------------
 (use-package persistent-scratch
