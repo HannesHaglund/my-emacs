@@ -529,6 +529,46 @@
   (bind-key "<C-tab>" #'dired-subtree-expand-recursive))
 
 ;; ----------------------------------------------------------------
+;; git bash shell setup
+;; ----------------------------------------------------------------
+
+(defun file-has-str-p (filepath str)
+  """Return t if STR exists in file on FILEPATH"""
+  (with-temp-buffer
+    (insert-file-contents filepath)
+    (goto-char (point-min))
+    (search-forward str nil t)))
+
+;; Set up git bash terminal on windows systems
+(when (eq system-type 'windows-nt)
+
+  (unless explicit-shell-file-name
+    ;; Somewhat sane default
+    (setq explicit-shell-file-name  "c:/Program Files/Git/bin/bash.exe"))
+
+  (unless (file-exists-p explicit-shell-file-name)
+    (display-warning :warning
+                     (concat "explicit-shell-file-name points to non-existant file. "
+                             "It is recommended to point it to bash.exe "
+                             "inside your git for windows installation.")))
+
+  (let ((new-ps1-l "if [ -n \"$INSIDE_EMACS\" ]; then export PS1='\\[\\033[32m\\]\\u@\\h \\[\\033[33m\\]\\w\\[\\033[36m\\]`__git_ps1`\\[\\033[0m\\]\\n$ '; fi"))
+    (setq explicit-bash.exe-args '("--login" "-i")) ; Is this needed?
+    (setq explicit-bash-args '("--login" "-i"))
+    (prefer-coding-system 'utf-8)
+
+    ;; Set up bash_profile that avoids a bunch of junk in shell output
+    (unless (file-exists-p "~/.bash_profile")
+      ;; Create empty file
+      (write-region "" nil "~/.bash_profile"))
+    ;; Append command to it unless it's already in file
+
+    (unless (file-has-str-p "~/.bash_profile" new-ps1-l)
+      (write-region (concat "\n" new-ps1-l) nil "~/.bash_profile" 'append))))
+
+
+
+;; ----------------------------------------------------------------
 ;; misc.
 ;; ----------------------------------------------------------------
 (use-package avy
