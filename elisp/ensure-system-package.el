@@ -4,7 +4,7 @@
   "Return windows-style path to first occurence of folder under Program Files containing FILE-NAME."
   (replace-in-string
    "/"
-   "\\"
+   "\\\\"
    (file-name-directory
     (car
      (split-string

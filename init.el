@@ -100,16 +100,6 @@
   (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
 
 ;; ----------------------------------------------------------------
-;; helm-tramp
-;; ----------------------------------------------------------------
-(use-package helm-tramp
-  :ensure t
-  :after helm
-  :config
-  (setq tramp-default-method "ssh")
-  (define-key global-map (kbd "C-c t") 'Helm-Tramp))
-
-;; ----------------------------------------------------------------
 ;; helm-ag
 ;; ----------------------------------------------------------------
 (use-package helm-ag
@@ -119,8 +109,27 @@
   (setq helm-ag-use-temp-buffer t)
   (setq helm-ag-insert-at-point nil)
   (setq helm-ag-fuzzy-match nil)
-  (setq helm-ag-use-grep-ignore-list t)
-  (advice-add 'helm-ag--save-current-context :before 'xref-push-marker-stack))
+
+  (advice-add 'helm-ag--save-current-context :before 'xref-push-marker-stack)
+
+  (when (eq system-type 'windows-nt)
+    ;; Always use rg
+    (setq helm-ag-base-command "rg --no-heading --vimgrep"))
+
+  (when (eq system-type 'gnu/linux)
+    ;; Use rg if available
+    (when (string= "" (shell-command-to-string "hash rg"))
+      (setq helm-ag-base-command "rg --no-heading"))))
+
+;; ----------------------------------------------------------------
+;; helm-tramp
+;; ----------------------------------------------------------------
+(use-package helm-tramp
+  :ensure t
+  :after helm
+  :config
+  (setq tramp-default-method "ssh")
+  (define-key global-map (kbd "C-c t") 'Helm-Tramp))
 
 ;; ----------------------------------------------------------------
 ;; projectile
@@ -420,7 +429,7 @@
   :ensure t
   :config
   (add-to-list 'xref-backend-functions #'dumb-jump-xref-activate t)
-  (setq dumb-jump-prefer-searcher 'ag))
+  (setq dumb-jump-prefer-searcher 'rg))
 
 ;; ----------------------------------------------------------------
 ;; version control
@@ -789,8 +798,8 @@
   (ensure-system-package "sh" "sh.exe" "Please download and install it via https://git-scm.com/downloads .")
   (ensure-system-package "universal-ctags" "ctags.exe"
                          "Please download a binary from https://github.com/universal-ctags/ctags-win32/releases and copy it to somewhere under C:\\Program Files .")
-  (ensure-system-package "silversearcher" "ag.exe"
-                         "Please download a binary from https://github.com/k-takata/the_silver_searcher-win32 and copy it to somewhere under C:\\Program Files .")
+  (ensure-system-package "ripgrep" "rg.exe"
+                         "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
   (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php .")
   (ensure-pip-module "python-lsp-server==0.19.0"))
 
