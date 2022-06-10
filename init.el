@@ -74,6 +74,13 @@
   :init
   (vertico-mode))
 
+(use-package vertico-posframe
+  :ensure t
+  :after vertico
+  :config
+  (vertico-posframe-mode 1)
+  (diminish 'vertico-posframe-mode))
+
 ;; Keeps all history, especially useful for vertico,
 ;; since it ranks by history
 (use-package savehist
