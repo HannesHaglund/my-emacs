@@ -376,15 +376,6 @@
   (define-key lisp-interaction-mode-map (kbd "C-j") nil))
 
 ;; ----------------------------------------------------------------
-;; projectile
-;; ----------------------------------------------------------------
-(use-package projectile
-  :ensure t
-  :config
-  (projectile-mode)
-  (diminish 'projectile-mode))
-
-;; ----------------------------------------------------------------
 ;; avy
 ;; ----------------------------------------------------------------
 (use-package avy
@@ -490,10 +481,10 @@
   :after pretty-hydra
   :bind
   ("C-c o" . hydra-macro/body))
-(use-package hydra-projectile
+(use-package hydra-project
   :after pretty-hydra
   :bind
-  ("C-c p" . hydra-projectile/body))
+  ("C-c p" . hydra-project/body))
 (use-package hydra-timeclock
   :after pretty-hydra
   :bind
@@ -751,6 +742,9 @@
 ;; Shell environment
 (setenv "PAGER"  "cat")
 (setenv "EDITOR" "emacs")
+
+;; Use rg for faster find
+(setq find-program "rg --files")
 
 ;; No backup/lock files
 (setq make-backup-files nil)
