@@ -67,92 +67,88 @@
   :after hydra)
 
 ;; ----------------------------------------------------------------
-;; helm
+;; vertico
 ;; ----------------------------------------------------------------
-(use-package helm
+(use-package vertico
   :ensure t
-  :demand t
-  :defer nil
+  :init
+  (vertico-mode))
+
+;; Keeps all history, especially useful for vertico,
+;; since it ranks by history
+(use-package savehist
+  :init
+  (savehist-mode)
+  (diminish 'savehist-mode))
+
+(use-package orderless
+  :ensure t
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+
+;; ----------------------------------------------------------------
+;; consult
+;; ----------------------------------------------------------------
+(use-package consult
+  :ensure t
+  :config
+
+  (defun consult-ripgrep-default-directory ()
+    "Run consult-ripgrep in default-directory"
+    (interactive)
+    (consult-ripgrep default-directory))
+
+  ;; Bind live preview to a key for some modes.
+  (consult-customize
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-recent-file
+   consult--source-project-recent-file
+   :preview-key (kbd "C-j")))
+
+;; ----------------------------------------------------------------
+;; marginalia
+;; ----------------------------------------------------------------
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode)
+  (diminish 'marginalia-mode))
+
+;; ----------------------------------------------------------------
+;; embark
+;; ----------------------------------------------------------------
+
+(use-package embark
+  :ensure t
   :bind
-  ("M-x"     . helm-M-x)
-  ("C-x b"   . helm-buffers-list)
-  ("C-x C-b" . helm-buffers-list)
-  ("C-x C-f" . helm-find-files)
-  ("C-c C-y" . helm-show-kill-ring)
-  ("C-h h"   . helm-apropos)
-  ("C-h f"   . helm-apropos)
-  ("C-h y"   . helm-apropos)
-  :bind (:map helm-grep-map
-              ("C-c C-e" . helm-grep-run-save-buffer))
-  :config
-  (helm-mode t)
-  (setq helm-buffer-max-length nil)
-  (add-hook 'helm-grep-mode-hook 'wgrep-change-to-wgrep-mode)
-  (diminish 'helm-mode))
+  (("C-." . embark-act)
+   ("C-M-." . embark-dwim)
+   ("C-h B" . embark-bindings))
 
-;; ----------------------------------------------------------------
-;; helm-xref
-;; ----------------------------------------------------------------
-(use-package helm-xref
+  :init
+  ;; Replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  :config
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
   :ensure t
-  :after helm
-  :config
-  (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
-
-;; ----------------------------------------------------------------
-;; helm-ag
-;; ----------------------------------------------------------------
-(use-package helm-ag
-  :ensure t
-  :after helm
-  :config
-  (setq helm-ag-use-temp-buffer t)
-  (setq helm-ag-insert-at-point nil)
-  (setq helm-ag-fuzzy-match nil)
-
-  (advice-add 'helm-ag--save-current-context :before 'xref-push-marker-stack)
-
-  (when (eq system-type 'windows-nt)
-    ;; Always use rg
-    (setq helm-ag-base-command "rg --no-heading --vimgrep"))
-
-  (when (eq system-type 'gnu/linux)
-    ;; Use rg if available
-    (when (string= "" (shell-command-to-string "hash rg"))
-      (setq helm-ag-base-command "rg --no-heading"))))
-
-;; ----------------------------------------------------------------
-;; helm-tramp
-;; ----------------------------------------------------------------
-(use-package helm-tramp
-  :ensure t
-  :after helm
-  :config
-  (setq tramp-default-method "ssh")
-  (define-key global-map (kbd "C-c t") 'Helm-Tramp))
-
-;; ----------------------------------------------------------------
-;; projectile
-;; ----------------------------------------------------------------
-(use-package projectile
-  :ensure t
-  :config
-  (projectile-mode +1)
-  (diminish 'projectile-mode)
-  (projectile-global-mode)
-  (require 'subr-x) ; Tags generation from projectile crashes otherwise
-  (setq projectile-switch-project-action 'projectile-dired)
-  (setq projectile-use-git-grep t)
-  (setq projectile-enable-caching t)
-  (setq projectile-indexing-method 'alien))
-
-(use-package helm-projectile
-  :ensure t
-  :demand t                             ; Not having this causes some dependenant hydras to not load
-  :after (helm projectile)
-  :config
-  (require 'helm-projectile)
-  (helm-projectile-on))
+  :after (embark consult)
+  :demand t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 ;; ----------------------------------------------------------------
 ;; default-text-scale
@@ -286,10 +282,6 @@
   (setq wgrep-auto-save-buffer t)
   (setq wgrep-enable-key "\C-c \C-e"))
 
-(use-package wgrep-helm
-  :ensure t
-  :after (wgrep helm))
-
 ;; ----------------------------------------------------------------
 ;; lsp-mode
 ;; ----------------------------------------------------------------
@@ -324,11 +316,6 @@
   :after lsp-mode
   :commands lsp-ui-mode)
 
-(use-package helm-lsp
-  :ensure t
-  :after (lsp-mode helm)
-  :commands helm-lsp-workspace-symbol)
-
 (use-package dap-mode
   :ensure t
   :after lsp-mode)
@@ -342,25 +329,10 @@
   ("M-,"   .   pop-joined-mark-ring)
   ("C-M-," . unpop-joined-mark-ring)
   :config
-  (add-hook 'helm-swoop-before-goto-line-action-hook 'joined-mark-ring-push-point)
-  (advice-add 'helm-ag--save-current-context :before 'joined-mark-ring-push-point)
-  (advice-add 'xref-push-marker-stack        :before 'joined-mark-ring-push-point))
-
-(use-package helm-swoop
-  :ensure t
-  :config
-  (setq helm-multi-swoop-edit-save t)
-  (setq helm-swoop-use-fuzzy-match nil)
-  ;; We hijack the xref marker stack
-  (add-hook 'helm-swoop-before-goto-line-action-hook 'xref-push-marker-stack)
-  ;; Use region for pre-input
-  (setq helm-swoop-pre-input-function
-        (lambda () (if mark-active
-                       (buffer-substring-no-properties (mark) (point))
-                     ""))))
+  (advice-add 'xref-push-marker-stack :before 'joined-mark-ring-push-point))
 
 (use-package basic-keybinds
-  :after (pretty-hydra helm-swoop)
+  :after (pretty-hydra consult)
   :bind
   ("C-a" . beginning-of-code-line-or-buffer)
   ("C-e" . end-of-code-line-or-buffer)
@@ -368,11 +340,10 @@
   ("M-p" . scroll-up-bind)
   ("M-n" . scroll-down-bind)
   ("C-," . other-window)
-  ("C-." . wind-bck)
   ("C-;" . other-frame)
   ("M-g" . goto-line)
+  ("C-o" . consult-line)
   ("C-z" . undo)
-  ("C-o" . helm-swoop)
   ("C-x K" . kill-buffer-and-window)
   ("C-c C-f" . revert-buffer))
 
@@ -396,6 +367,15 @@
   :init
   ;; Make sure our binding isn't overriden by this binding
   (define-key lisp-interaction-mode-map (kbd "C-j") nil))
+
+;; ----------------------------------------------------------------
+;; projectile
+;; ----------------------------------------------------------------
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode)
+  (diminish 'projectile-mode))
 
 ;; ----------------------------------------------------------------
 ;; avy
@@ -515,16 +495,18 @@
 ;; ----------------------------------------------------------------
 ;; dired-mode
 ;; ----------------------------------------------------------------
+
 (use-package dired
+  :after consult
   :config
   (setq dired-listing-switches "-alh")    ; List file sizes in a human-readable format
   (defun dired-here () (interactive) (dired default-directory))
   (bind-key "C-x d" 'dired-here)
   (bind-key "C-d" 'open-file-directory dired-mode-map) ; d and D is taken
   (bind-key "b" 'shell-here            dired-mode-map) ; mnemonic: b for bash; s and S is taken
-  (bind-key "G" 'helm-ag               dired-mode-map)
-  (bind-key "C-o" 'helm-swoop          dired-mode-map)
-  (bind-key "o" 'dired-display-file    dired-mode-map))
+  (bind-key "i" 'dired-display-file    dired-mode-map)
+  (bind-key "o" 'consult-line          dired-mode-map)
+  (bind-key "G" 'consult-ripgrep-default-directory dired-mode-map))
 
 (use-package dired-subtree
   :ensure t
@@ -551,7 +533,7 @@
 ;; Set up git bash terminal on windows systems
 (when (eq system-type 'windows-nt)
 
-  (unless explicit-shell-file-name
+  (unless (boundp 'explicit-shell-file-name)
     ;; Somewhat sane default
     (setq explicit-shell-file-name  "c:/Program Files/Git/bin/bash.exe"))
 
@@ -588,11 +570,6 @@
 ;; ================================================================
 ;; Visuals
 ;; ================================================================
-
-;; Improve helm selection face
-(set-face-attribute 'helm-selection nil
-                    :background "purple4"
-                    :foreground "snow")
 
 ;; Keep highlighted window at appropriate size
 (use-package zoom

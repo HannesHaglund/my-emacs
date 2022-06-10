@@ -1,32 +1,21 @@
 (require 'pretty-hydra)
 
-(defun helm-projectile-grep-project-root ()
-  "Run helm-projectile-grep on (projectile-project-root)."
-  (interactive)
-  (helm-projectile-grep (projectile-project-root)))
-
-(defun helm-projectile-ag-project-root ()
-  "Run helm-projectile-grep on (projectile-project-root)."
-  (interactive)
-  (helm-do-ag (projectile-project-root) nil nil))
-
-
 (pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
                                               :title "📁 Projectile in %(projectile-project-root)")
   ("Find file"
-   (("f"   helm-projectile-find-file "file")
-    ("s-f" helm-projectile-find-file-dwim "file dwim")
-    ("r"   helm-projectile-recentf "recent file")
-    ("d"   helm-projectile-find-dir "dir"))
+   (("f"   projectile-find-file "file")
+    ("s-f" projectile-find-file-dwim "file dwim")
+    ("r"   projectile-recentf "recent file")
+    ("d"   projectile-find-dir "dir"))
 
    "Search/Tags"
-   (("g"   helm-projectile-ag-project-root "grep")
+   (("g"   consult-ripgrep "grep")
     ("t"   ggtags-update-tags "update gtags")
     ("o"   projectile-multi-occur "multi-occur"))
 
    "Buffers"
    (("i"   projectile-ibuffer)
-    ("b"   helm-projectile-switch-to-buffer "switch to buffer")
+    ("b"   projectile-switch-to-buffer "switch to buffer")
     ("K"   projectile-kill-buffers "Kill all buffers"))
 
    "Cache"
@@ -36,7 +25,7 @@
     ("c"   projectile-invalidate-cache "clear cache" :color red))
 
    "Project"
-   (("p"   helm-projectile-switch-project "switch project"))))
+   (("p"   projectile-switch-project "switch project"))))
 
 (provide 'hydra-projectile)
 ;;; hydra-projectile.el ends here

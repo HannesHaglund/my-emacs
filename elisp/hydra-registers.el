@@ -14,7 +14,7 @@
    (("m" kmacro-to-register "store macro")
     ("e" jump-to-register "execute"))
    "Miscellaneous"
-   (("v" helm-register "view registers"))))
+   (("v" consult-register "view registers"))))
 
 (provide 'hydra-registers)
 ;;; hydra-registers.el ends here
