@@ -125,6 +125,9 @@
   :ensure t
   :config
   (marginalia-mode)
+  ;; Disable file annotators in project find (I find the permissions distracting)
+  (setq marginalia-annotator-registry
+        (assq-delete-all 'project-file marginalia-annotator-registry))
   (diminish 'marginalia-mode))
 
 ;; ----------------------------------------------------------------
