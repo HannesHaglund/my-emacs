@@ -180,7 +180,7 @@
   :config
   (require 'multiple-cursors)
 
-  (defun mc/add-default-cmds-to-run-once ()
+  (defun mc/add-default-cmds-to-run ()
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-previous-like-this)
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/skip-to-previous-like-this)
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/unmark-previous-like-this)
@@ -195,16 +195,17 @@
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-like-this)
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-in-region-regexp)
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/clear-cmds-to-run)
-    (add-to-list 'mc/cmds-to-run-once 'beginning-of-code-line-or-buffer)
-    (add-to-list 'mc/cmds-to-run-once 'end-of-code-line-or-buffer))
+    (add-to-list 'mc/cmds-to-run-for-all 'beginning-of-code-line-or-buffer)
+    (add-to-list 'mc/cmds-to-run-for-all 'end-of-code-line-or-buffer)
+    (add-to-list 'mc/cmds-to-run-for-all 'er/expand-region))
 
-  (mc/add-default-cmds-to-run-once)
+  (mc/add-default-cmds-to-run)
 
   (defun mc/clear-cmds-to-run ()
     (interactive)
     (setq mc/cmds-to-run-once nil)
     (setq mc/cmds-to-run-for-all nil)
-    (mc/add-default-cmds-to-run-once))
+    (mc/add-default-cmds-to-run))
 
   (pretty-hydra-define hydra-multiple-cursors
     (:title "⤲ Multiple cursors - %(mc/num-cursors) active" :quit-key "q")
