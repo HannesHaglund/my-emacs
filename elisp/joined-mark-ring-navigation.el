@@ -3,7 +3,7 @@
 (defvar joined-mark-ring '())
 (defvar joined-mark-ring-source-commands '())
 (defvar joined-mark-ring-index 0)
-(defvar joined-mark-ring-max-size 12)
+(defvar joined-mark-ring-max-size 48)
 
 (defun marker-to-string (marker)
   (format "%s" marker))
@@ -30,42 +30,14 @@
 (defun joined-mark-ring-push-point (&optional a b c)
   (add-to-joined-mark-ring (copy-marker (point-marker))))
 
-(defun marker-line (marker)
-  (save-excursion
-    (switch-to-buffer (marker-buffer marker))
-    (save-excursion
-      (goto-char marker)
-      (line-number-at-pos))))
-
-(defun joined-mark-ring-string-format-mark (mark command)
-  (format " %s:%d -- %s" (marker-buffer mark) (marker-line mark) command))
-
-(defun beginning-of-line-point ()
-  (save-excursion
-    (beginning-of-line)
-    (point)))
-
-(defun end-of-line-point ()
-  (save-excursion
-    (end-of-line)
-    (point)))
-
-;; TODO: Display what command was ran when populating X marker
 (defun joined-mark-ring-string ()
   (with-temp-buffer
-    (dotimes (i (length joined-mark-ring))
-      (insert (joined-mark-ring-string-format-mark (nth i joined-mark-ring)
-                                                   (nth i joined-mark-ring-source-commands)))
-      (insert "\n"))
-    (goto-char (point-min))
-    (forward-line joined-mark-ring-index)
+    (insert (format "[%d/%d] " (+ 1 joined-mark-ring-index) (length joined-mark-ring)))
     (add-text-properties (point-min) (point) '(comment t face font-lock-comment-face))
-    (insert ">")
-    (add-text-properties (beginning-of-line-point) (end-of-line-point) '(comment t face font-lock-keyword-face))
-    (goto-char (point-min))
-    (insert "joined-mark-ring:\n")
-    (goto-char (point-min))
-    (add-text-properties (beginning-of-line-point) (end-of-line-point) '(face link-visited))
+    (dotimes (i (length joined-mark-ring))
+      (when (< i joined-mark-ring-index) (insert "."))
+      (when (= i joined-mark-ring-index) (insert "|"))
+      (when (> i joined-mark-ring-index) (insert "-")))
     (buffer-substring (point-min) (point-max))))
 
 (defun goto-marker (mark)
@@ -87,8 +59,7 @@
       (when (>= joined-mark-ring-index (length joined-mark-ring)) (setq joined-mark-ring-index (- (length joined-mark-ring) 1)))
       ;; Update point and display results
       (message (joined-mark-ring-string))
-      (goto-marker (nth joined-mark-ring-index joined-mark-ring))
-      (nav-flash-show))))
+      (goto-marker (nth joined-mark-ring-index joined-mark-ring)))))
 
 (defun pop-joined-mark-ring ()
   (interactive)
