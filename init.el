@@ -72,7 +72,8 @@
 (use-package vertico
   :ensure t
   :init
-  (vertico-mode))
+  (vertico-mode)
+  (diminish 'vertico-mode))
 
 (use-package vertico-posframe
   :ensure t
@@ -625,21 +626,6 @@
 ;; Show paren
 (setq show-paren-delay 0)
 (show-paren-mode 1)
-
-;; Sublime-like overview
-(use-package minimap
-  :ensure t
-  :commands minimap-mode
-  :bind  ("C-c n" . minimap-mode)
-  :config
-  (diminish 'minimap-mode)
-  ;; We need to avoid minimap buffer getting auto resized
-  (defun minimap-set-fix-size ()
-    (with-selected-window (get-buffer-window minimap-buffer-name)
-      (setq window-size-fixed t)
-      ;; Set to 24 columns wide
-      (window-resize (selected-window) (- 24 (window-total-width)) t t)))
-  (add-hook 'minimap-sb-mode-hook 'minimap-set-fix-size))
 
 ;; Highlight point when jumping
 (use-package beacon
