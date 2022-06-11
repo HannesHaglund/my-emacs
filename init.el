@@ -116,10 +116,24 @@
   :ensure t
   :config
 
+  (defun region-when-active ()
+    "Return region when region-active-p"
+    (if (region-active-p) (buffer-substring (region-beginning) (region-end)) nil))
+
   (defun consult-ripgrep-default-directory ()
     "Run consult-ripgrep in default-directory"
     (interactive)
-    (consult-ripgrep default-directory))
+    (consult-ripgrep default-directory (region-when-active)))
+
+  (defun consult-ripgrep-inherit-region ()
+    "Run consult-ripgrep, but inherit region when active"
+    (interactive)
+    (consult-ripgrep nil (region-when-active)))
+
+  (defun consult-line-inherit-region ()
+    "Run consult-line, but inherit region if active"
+    (interactive)
+    (consult-line (region-when-active)))
 
   ;; Bind live preview to a key for some modes.
   (consult-customize
@@ -364,7 +378,7 @@
   ("C-," . other-window)
   ("C-;" . other-frame)
   ("M-g" . goto-line)
-  ("C-o" . consult-line)
+  ("C-o" . consult-line-inherit-region)
   ("C-z" . undo)
   ("C-x K" . kill-buffer-and-window)
   ("C-c C-f" . revert-buffer-no-confirm))
@@ -510,7 +524,7 @@
   (bind-key "C-d" 'open-file-directory dired-mode-map) ; d and D is taken
   (bind-key "b" 'shell-here            dired-mode-map) ; mnemonic: b for bash; s and S is taken
   (bind-key "i" 'dired-display-file    dired-mode-map)
-  (bind-key "o" 'consult-line          dired-mode-map)
+  (bind-key "o" 'consult-line-inherit-region dired-mode-map)
   (bind-key "G" 'consult-ripgrep-default-directory dired-mode-map))
 
 (use-package dired-subtree
@@ -546,7 +560,7 @@
 (use-package project
   :demand t
   :bind ("C-x p p" . project-find-project-then-find)
-  :bind ("C-x p g" . consult-ripgrep)
+  :bind ("C-x p g" . consult-ripgrep-inherit-region)
   :init
   (defun project-find-project-then-find (dir)
     "\"Switch\" to another project by running an Emacs command.
