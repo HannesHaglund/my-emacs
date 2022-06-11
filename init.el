@@ -577,6 +577,9 @@
   (zoom-mode t)
   (diminish 'zoom-mode))
 
+;; Apply hack font
+(when (font-available-p "hack") (set-frame-font "hack"))
+
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
 
@@ -779,7 +782,9 @@
   (ensure-system-package "ripgrep" "rg.exe"
                          "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
   (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php .")
-  (ensure-pip-module "python-lsp-server==0.19.0"))
+  (ensure-pip-module "python-lsp-server==0.19.0")
+  (ensure-font-installed "hack" "Download it from https://github.com/source-foundry/Hack and install it."))
+
 
 (provide 'init)
 ;;; init.el ends here

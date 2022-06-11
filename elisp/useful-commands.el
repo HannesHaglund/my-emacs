@@ -1,5 +1,9 @@
 (defvar run-shell-background-output-buffer-name "*run-shell-background output*")
 
+(defun font-available-p (font-name)
+  "Return t if font FONT-NAME is available"
+  (find-font (font-spec :name font-name)))
+
 (defun cd-command (to-what-dir)
   "Return shell command used to change working directory to TO-WHAT-DIR."
   (concat

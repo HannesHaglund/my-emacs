@@ -58,6 +58,11 @@
                              "It not being available may cause some packages to not work correctly. "
                              "Please install it via \"pip install " module-name "\", and then restart emacs."))))
 
+(defun ensure-font-installed (font-name install-instructions)
+  "Ensure font FONT-NAME is installed, providing INSTALL-INSTRUCTIONS for how to install it if it isn't"
+  (unless (font-available-p font-name)
+    (display-warning :warning
+                     (concat "The font " font-name " could not be found on your system. " install-instructions))))
 
 (provide 'ensure-system-package)
 ;;; ensure-system-package.el ends here
