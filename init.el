@@ -4,7 +4,7 @@
 (message "Loading init.el...")
 
 (defun relative-path (path)
-  """Return <path to file being evaluated>/PATH."""
+  "Return <path to file being evaluated>/PATH."
   (concat (file-name-directory (or load-file-name buffer-file-name))
           path))
 
@@ -539,7 +539,7 @@
 ;; ----------------------------------------------------------------
 
 (defun file-has-str-p (filepath str)
-  """Return t if STR exists in file on FILEPATH"""
+  "Return t if STR exists in file on FILEPATH."
   (with-temp-buffer
     (insert-file-contents filepath)
     (goto-char (point-min))
