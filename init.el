@@ -488,10 +488,6 @@
   :after pretty-hydra
   :bind
   ("C-c a" . hydra-align/body))
-(use-package hydra-swedish
-  :after pretty-hydra
-  :bind
-  ("C-c ;" . hydra-swedish/body))      ; C-c ö, kind of
 (use-package hydra-macro
   :after pretty-hydra
   :bind
