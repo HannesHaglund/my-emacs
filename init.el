@@ -540,6 +540,21 @@
           context-menu-minor))
   (context-menu-mode +1))
 
+;; ----------------------------------------------------------------
+;; project
+;; ----------------------------------------------------------------
+(use-package project
+  :demand t
+  :bind ("C-x p p" . project-find-project-then-find)
+  :bind ("C-x p g" . consult-ripgrep)
+  :init
+  (defun project-find-project-then-find (dir)
+    "\"Switch\" to another project by running an Emacs command.
+When called in a program, it will use the project corresponding to directory DIR."
+    (interactive (list (project-prompt-project-dir)))
+    (let ((default-directory dir)
+          (project-current-inhibit-prompt t))
+      (call-interactively 'project-find-file))))
 
 ;; ----------------------------------------------------------------
 ;; git bash shell setup
