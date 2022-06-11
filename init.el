@@ -496,10 +496,6 @@
   :after pretty-hydra
   :bind
   ("C-c o" . hydra-macro/body))
-(use-package hydra-project
-  :after pretty-hydra
-  :bind
-  ("C-c p" . hydra-project/body))
 (use-package hydra-timeclock
   :after pretty-hydra
   :bind
