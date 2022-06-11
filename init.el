@@ -353,7 +353,7 @@
   ("C-o" . consult-line)
   ("C-z" . undo)
   ("C-x K" . kill-buffer-and-window)
-  ("C-c C-f" . revert-buffer))
+  ("C-c C-f" . revert-buffer-no-confirm))
 
 ;; ----------------------------------------------------------------
 ;; whitespace

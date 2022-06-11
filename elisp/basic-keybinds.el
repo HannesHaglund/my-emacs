@@ -65,5 +65,10 @@
         (goto-char (point-max))
         (setq end-of-code-line-or-buffer-times-pressed 0)))))
 
+(defun revert-buffer-no-confirm ()
+  "Revert current buffer without asking for confirmation."
+  (interactive)
+  (revert-buffer nil t))
+
 (provide 'basic-keybinds)
 ;;; basic-keybinds.el ends here
