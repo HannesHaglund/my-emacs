@@ -83,7 +83,9 @@
   :ensure t
   :init
   (vertico-mode)
-  (diminish 'vertico-mode))
+  (diminish 'vertico-mode)
+  :config
+  (setq vertico-count 24))
 
 (use-package vertico-posframe
   :ensure t
