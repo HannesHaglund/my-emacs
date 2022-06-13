@@ -410,6 +410,15 @@
   (define-key lisp-interaction-mode-map (kbd "C-j") nil))
 
 ;; ----------------------------------------------------------------
+;; projectile
+;; ----------------------------------------------------------------
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode)
+  (diminish 'projectile-mode))
+
+;; ----------------------------------------------------------------
 ;; avy
 ;; ----------------------------------------------------------------
 (use-package avy
@@ -511,6 +520,10 @@
   :after pretty-hydra
   :bind
   ("C-c o" . hydra-macro/body))
+(use-package hydra-projectile
+  :after pretty-hydra
+  :bind
+  ("C-c p" . hydra-projectile/body))
 (use-package hydra-timeclock
   :after pretty-hydra
   :bind
@@ -779,9 +792,6 @@ When called in a program, it will use the project corresponding to directory DIR
 ;; Shell environment
 (setenv "PAGER"  "cat")
 (setenv "EDITOR" "emacs")
-
-;; Use rg for faster find
-(setq find-program "rg --files")
 
 ;; No backup/lock files
 (setq make-backup-files nil)
