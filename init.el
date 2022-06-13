@@ -40,6 +40,9 @@
 ;; to overwrite it again even if we get an error
 (use-package useful-commands)
 
+;; Also useful :)
+(use-package grep-toolbox)
+
 ;; ----------------------------------------------------------------
 ;; exec-path-from-shell
 ;; ----------------------------------------------------------------
