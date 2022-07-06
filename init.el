@@ -661,13 +661,6 @@ When called in a program, it will use the project corresponding to directory DIR
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 
-;; Highlight point when jumping
-(use-package beacon
-  :ensure t
-  :config
-  (beacon-mode 1)
-  (diminish 'beacon-mode))
-
 ;; Nyan mode to highlight buffer scroll
 (use-package nyan-mode
   :ensure t
