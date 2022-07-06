@@ -334,6 +334,7 @@
   :ensure t
   :init (global-flycheck-mode)
   :config
+  (setq flycheck-checker-error-threshold (* 10 1000))
   (when (eq system-type 'windows-nt)
     ;; Fixes a bug where the linters are not found on Windows
     (setq flycheck-python-pylint-executable "pylint")
