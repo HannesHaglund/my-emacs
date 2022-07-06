@@ -1,4 +1,5 @@
 (require 'pretty-hydra)
+(require 'grep-toolbox)
 
 (pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
                                               :title "📁 Projectile in %(projectile-project-root)")
@@ -9,7 +10,7 @@
     ("d"   projectile-find-dir "dir"))
 
    "Search/Tags"
-   (("g"   consult-ripgrep "grep")
+   (("g"   grep-toolbox-consult-ripgrep "grep")
     ("t"   ggtags-update-tags "update gtags")
     ("o"   projectile-multi-occur "multi-occur"))
 

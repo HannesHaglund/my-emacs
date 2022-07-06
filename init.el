@@ -127,26 +127,6 @@
 (use-package consult
   :ensure t
   :config
-
-  (defun region-when-active ()
-    "Return region when region-active-p"
-    (if (region-active-p) (buffer-substring (region-beginning) (region-end)) nil))
-
-  (defun consult-ripgrep-default-directory ()
-    "Run consult-ripgrep in default-directory"
-    (interactive)
-    (consult-ripgrep default-directory (region-when-active)))
-
-  (defun consult-ripgrep-inherit-region ()
-    "Run consult-ripgrep, but inherit region when active"
-    (interactive)
-    (consult-ripgrep nil (region-when-active)))
-
-  (defun consult-line-inherit-region ()
-    "Run consult-line, but inherit region if active"
-    (interactive)
-    (consult-line (region-when-active)))
-
   ;; Bind live preview to a key for some modes.
   (consult-customize
    consult-ripgrep consult-git-grep consult-grep
@@ -380,7 +360,7 @@
   (advice-add 'xref-push-marker-stack :before 'joined-mark-ring-push-point))
 
 (use-package basic-keybinds
-  :after (pretty-hydra consult)
+  :after (pretty-hydra consult grep-toolbox)
   :bind
   ("C-a" . beginning-of-code-line-or-buffer)
   ("C-e" . end-of-code-line-or-buffer)
@@ -390,7 +370,7 @@
   ("C-," . other-window)
   ("C-;" . other-frame)
   ("M-g" . goto-line)
-  ("C-o" . consult-line-inherit-region)
+  ("C-o" . grep-toolbox-consult-line)
   ("C-z" . undo)
   ("C-x K" . kill-buffer-and-window)
   ("C-c C-f" . revert-buffer-no-confirm))
@@ -549,8 +529,8 @@
   (bind-key "C-d" 'open-file-directory dired-mode-map) ; d and D is taken
   (bind-key "b" 'shell-here            dired-mode-map) ; mnemonic: b for bash; s and S is taken
   (bind-key "i" 'dired-display-file    dired-mode-map)
-  (bind-key "o" 'consult-line-inherit-region dired-mode-map)
-  (bind-key "G" 'consult-ripgrep-default-directory dired-mode-map))
+  (bind-key "o" 'grep-toolbox-consult-line dired-mode-map)
+  (bind-key "G" 'grep-toolbox-consult-ripgrep-default-directory dired-mode-map))
 
 (use-package dired-subtree
   :ensure t
