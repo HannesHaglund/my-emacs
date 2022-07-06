@@ -687,6 +687,7 @@ When called in a program, it will use the project corresponding to directory DIR
   (doom-themes-org-config)
   (setq doom-peacock-brighter-comments t)
   (setq doom-peacock-brighter-modeline t)
+  (setq doom-peacock-comment-bg nil)
   (load-theme 'doom-peacock))
 
 (use-package doom-modeline
@@ -809,7 +810,6 @@ When called in a program, it will use the project corresponding to directory DIR
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq kill-buffer-query-functions nil)  ; Do not ask for confirmation when killing process buffers
 (setq tags-add-tables nil)              ; Never ask "keep current list of tags table?"
-(setq ring-bell-function 'ignore)       ; Disable warning sounds
 (setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
 (diminish 'eldoc-mode)
 
