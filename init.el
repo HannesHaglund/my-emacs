@@ -642,9 +642,6 @@ When called in a program, it will use the project corresponding to directory DIR
 ;; Prevent startup screen
 (setq inhibit-startup-screen t)
 
-;; Global line numbers
-(add-hook 'prog-mode-hook 'linum-mode)
-
 ;; Show column number in modeline
 (add-hook 'prog-mode-hook 'column-number-mode)
 
@@ -677,6 +674,26 @@ When called in a program, it will use the project corresponding to directory DIR
   :config
   (nyan-mode 1)
   (diminish 'nyan-mode))
+
+;; ----------------------------------------------------------------
+;; Themes
+;; ----------------------------------------------------------------
+(use-package doom-themes
+  :ensure t
+  :config
+  (setq doom-themes-enable-bold t)
+  (setq doom-themes-enable-italic t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config)
+  (setq doom-peacock-brighter-comments t)
+  (setq doom-peacock-brighter-modeline t)
+  (load-theme 'doom-peacock))
+
+(use-package doom-modeline
+  :ensure t
+  :init
+  (doom-modeline-mode 1)
+  (diminish 'doom-modeline-mode))
 
 ;; ================================================================
 ;; Languages
