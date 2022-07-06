@@ -69,6 +69,13 @@
   (diminish 'which-key-mode)
   (which-key-setup-side-window-right))
 
+(use-package which-key-posframe
+  :ensure t
+  :after which-key
+  :config
+  (which-key-posframe-mode)
+  (diminish 'which-key-posframe))
+
 ;; ----------------------------------------------------------------
 ;; hydra
 ;; ----------------------------------------------------------------
