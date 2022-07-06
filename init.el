@@ -678,10 +678,9 @@ When called in a program, it will use the project corresponding to directory DIR
   (setq doom-themes-enable-italic t)
   (doom-themes-visual-bell-config)
   (doom-themes-org-config)
-  (setq doom-peacock-brighter-comments t)
-  (setq doom-peacock-brighter-modeline t)
-  (setq doom-peacock-comment-bg nil)
-  (load-theme 'doom-peacock))
+  (setq doom-vibrant-brighter-comments t)
+  (setq doom-vibrant-brighter-modeline t)
+  (load-theme 'doom-vibrant))
 
 (use-package doom-modeline
   :ensure t
