@@ -680,7 +680,7 @@ When called in a program, it will use the project corresponding to directory DIR
   (doom-themes-org-config)
   (setq doom-vibrant-brighter-comments t)
   (setq doom-vibrant-brighter-modeline t)
-  (load-theme 'doom-vibrant))
+  (load-theme 'doom-vibrant t))
 
 (use-package doom-modeline
   :ensure t
