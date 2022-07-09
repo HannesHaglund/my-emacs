@@ -383,6 +383,13 @@
   ("C-c C-f" . revert-buffer-no-confirm))
 
 ;; ----------------------------------------------------------------
+;; shell-repl
+;; ----------------------------------------------------------------
+(use-package shell-repl
+  :commands shell-repl
+  :bind ("M-!" . shell-repl))
+
+;; ----------------------------------------------------------------
 ;; whitespace
 ;; ----------------------------------------------------------------
 (use-package whitespace
@@ -596,9 +603,11 @@ When called in a program, it will use the project corresponding to directory DIR
 ;; Set up git bash terminal on windows systems
 (when (eq system-type 'windows-nt)
 
+  (setq shell-file-name "c:/Program Files/Git/bin/bash.exe")
+
   (unless (boundp 'explicit-shell-file-name)
     ;; Somewhat sane default
-    (setq explicit-shell-file-name  "c:/Program Files/Git/bin/bash.exe"))
+    (setq explicit-shell-file-name shell-file-name))
 
   (unless (file-exists-p explicit-shell-file-name)
     (display-warning :warning
