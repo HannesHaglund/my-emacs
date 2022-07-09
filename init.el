@@ -688,6 +688,13 @@ When called in a program, it will use the project corresponding to directory DIR
   (doom-modeline-mode 1)
   (diminish 'doom-modeline-mode))
 
+;; ----------------------------------------------------------------
+;; All-the-icons
+;; ----------------------------------------------------------------
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p))
+
 ;; ================================================================
 ;; Languages
 ;; ================================================================
@@ -824,7 +831,15 @@ When called in a program, it will use the project corresponding to directory DIR
                          "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
   (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php .")
   (ensure-pip-module "python-lsp-server==0.19.0")
-  (ensure-font-installed "hack" "Download it from https://github.com/source-foundry/Hack and install it."))
+  (ensure-font-installed "hack" "Download it from https://github.com/source-foundry/Hack and install it.")
+  ;; all-the-icons fonts
+  (let ((all-the-icons-msg "Run M-x all-the-icons-install-fonts, and install the fonts downloaded."))
+    (ensure-font-installed "all-the-icons" all-the-icons-msg)
+    (ensure-font-installed "file-icons" all-the-icons-msg)
+    (ensure-font-installed "fontawesome" all-the-icons-msg)
+    (ensure-font-installed "Material Icons" all-the-icons-msg)
+    (ensure-font-installed "github-octicons" all-the-icons-msg)
+    (ensure-font-installed "Weather Icons Regular" all-the-icons-msg)))
 
 
 (provide 'init)
