@@ -661,6 +661,11 @@ When called in a program, it will use the project corresponding to directory DIR
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 
+;; Relative line numbers
+(add-hook 'prog-mode-hook '(lambda ()
+                             (display-line-numbers-mode 1)
+                             (setq display-line-numbers 'relative)))
+
 ;; Nyan mode to highlight buffer scroll
 (use-package nyan-mode
   :ensure t
