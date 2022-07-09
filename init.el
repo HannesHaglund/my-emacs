@@ -215,8 +215,8 @@
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-like-this)
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-in-region-regexp)
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/clear-cmds-to-run)
-    (add-to-list 'mc/cmds-to-run-for-all 'beginning-of-code-line-or-buffer)
-    (add-to-list 'mc/cmds-to-run-for-all 'end-of-code-line-or-buffer)
+    (add-to-list 'mc/cmds-to-run-for-all 'mwim-beginning)
+    (add-to-list 'mc/cmds-to-run-for-all 'mwim-end)
     (add-to-list 'mc/cmds-to-run-for-all 'er/expand-region))
 
   (mc/add-default-cmds-to-run)
@@ -360,11 +360,17 @@
   :config
   (advice-add 'xref-push-marker-stack :before 'joined-mark-ring-push-point))
 
+(use-package avy
+  :ensure t)
+
+(use-package mwim
+  :ensure t)
+
 (use-package basic-keybinds
-  :after (pretty-hydra consult grep-toolbox)
+  :after (pretty-hydra consult grep-toolbox avy mwim)
   :bind
-  ("C-a" . beginning-of-code-line-or-buffer)
-  ("C-e" . end-of-code-line-or-buffer)
+  ("C-a" . mwim-beginning)
+  ("C-e" . mwim-end)
   ("C-k" . kill-whole-line)
   ("M-p" . scroll-up-bind)
   ("M-n" . scroll-down-bind)
@@ -614,15 +620,6 @@ When called in a program, it will use the project corresponding to directory DIR
     (unless (file-has-str-p "~/.bash_profile" new-ps1-l)
       (write-region (concat "\n" new-ps1-l) nil "~/.bash_profile" 'append))))
 
-
-
-;; ----------------------------------------------------------------
-;; misc.
-;; ----------------------------------------------------------------
-(use-package avy
-  :ensure t)
-(use-package mwim
-  :ensure t)
 
 ;; ================================================================
 ;; Visuals
