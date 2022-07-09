@@ -557,6 +557,13 @@
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<C-tab>" #'dired-subtree-expand-recursive))
 
+(use-package all-the-icons-dired
+  :ensure t
+  :after (dired all-the-icons)
+  :config
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+  (diminish 'all-the-icons-dired-mode))
+
 ;; ----------------------------------------------------------------
 ;; context-menu
 ;; ----------------------------------------------------------------
