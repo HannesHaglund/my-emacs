@@ -713,6 +713,14 @@ When called in a program, it will use the project corresponding to directory DIR
   :ensure t
   :if (display-graphic-p))
 
+(use-package all-the-icons-completion
+  :ensure t
+  :after all-the-icons
+  :config
+  (all-the-icons-completion-mode 1)
+  (diminish 'all-the-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
+
 ;; ================================================================
 ;; Languages
 ;; ================================================================
