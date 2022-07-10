@@ -1,4 +1,5 @@
 (require 'subr-x)
+(require 'dired)
 
 (defun shell-repl-read-input (output-to-display)
   "Prompt user for shell command and return it.  Message OUTPUT-TO-DISPLAY."

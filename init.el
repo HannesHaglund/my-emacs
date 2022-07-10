@@ -387,7 +387,10 @@
 ;; ----------------------------------------------------------------
 (use-package shell-repl
   :commands shell-repl
-  :bind ("M-!" . shell-repl))
+  :bind (("M-!" . shell-repl)
+         :map dired-mode-map
+         ("M-!" . shell-repl)))
+
 
 ;; ----------------------------------------------------------------
 ;; whitespace
