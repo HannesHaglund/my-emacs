@@ -1,8 +1,11 @@
 (require 'pretty-hydra)
 (require 'grep-toolbox)
+(require 'all-the-icons)
 
 (pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
-                                              :title "📁 Projectile in %(projectile-project-root)")
+                                              :title (concat (all-the-icons-faicon "folder-open")
+                                                             " Projectile in "
+                                                             (projectile-project-root)))
   ("Find file"
    (("f"   projectile-find-file "file")
     ("s-f" projectile-find-file-dwim "file dwim")

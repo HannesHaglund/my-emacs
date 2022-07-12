@@ -1,4 +1,5 @@
 (require 'timeclock)
+(require 'all-the-icons)
 
 (defun timeclock-project-summary-format-time-date (time)
   """Format TIME seconds since 1970 as a date string."""
@@ -104,7 +105,7 @@
 
 (pretty-hydra-define hydra-timeclock (:color teal :quit-key "q"
                                              :pre (timeclock-reread-log)
-                                             :title "🕑 Timeclock: %(timeclock-status-string)")
+                                             :title (concat (all-the-icons-faicon "clock-o") " Timeclock: " (timeclock-status-string)))
   ("Report"
    (("i" timeclock-in "In")
     ("c" timeclock-change "Change project")

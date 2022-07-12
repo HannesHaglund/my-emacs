@@ -1,6 +1,9 @@
 (require 'pretty-hydra)
+(require 'all-the-icons)
 
-(pretty-hydra-define hydra-registers (:color blue :title "🕮 Registers" :quit-key "q")
+(pretty-hydra-define hydra-registers (:color blue
+                                             :title (concat (all-the-icons-faicon "list-ol") " Registers")
+                                             :quit-key "q")
   ("Point"
    (("r" point-to-register "point to register")
     ("j" jump-to-register "jump to register"))

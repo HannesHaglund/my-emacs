@@ -1,10 +1,11 @@
 (require 'pretty-hydra)
+(require 'all-the-icons)
 
 (pretty-hydra-define hydra-rectangle (:body-pre (rectangle-mark-mode 1)
                                                 :color pink
                                                 :hint nil
                                                 :post (deactivate-mark)
-                                                :title "⬕ Rectangle"
+                                                :title (concat (all-the-icons-faicon "square") " Rectangle")
                                                 :quit-key "q")
   ("Movement"
    (("p" rectangle-previous-line "↑")

@@ -1,6 +1,6 @@
 (require 'pretty-hydra)
 
-(pretty-hydra-define hydra-p4 (:color teal :title "⎆ P4" :quit-key "q")
+(pretty-hydra-define hydra-p4 (:color teal :title "P4" :quit-key "q")
   ("Files"
    (("a"         p4-add              "open file for add")
     ("e"         p4-edit             "open file for edit")

@@ -185,7 +185,11 @@
   :after pretty-hydra
   :bind ("C-c z" . hydra-text-scale/body)
   :config
-  (pretty-hydra-define hydra-text-scale (:color red :title "🔍 Zoom" quit-key "q" :pre (default-text-scale-mode))
+  (pretty-hydra-define hydra-text-scale (
+                                         :color red
+                                         :title (concat (all-the-icons-faicon "eye") " Zoom")
+                                         quit-key "q"
+                                         :pre (default-text-scale-mode))
     ("Actions"
      (("i" default-text-scale-increase "zoom in")
       ("o" default-text-scale-decrease "zoom out")))))
@@ -228,7 +232,7 @@
     (mc/add-default-cmds-to-run))
 
   (pretty-hydra-define hydra-multiple-cursors
-    (:title "⤲ Multiple cursors - %(mc/num-cursors) active" :quit-key "q")
+    (:title g(concat (all-the-icons-faicon "i-cursor") " Multiple Cursors") :quit-key "q")
     ("Up"
      (("p" mc/mark-previous-like-this "next")
       ("P" mc/skip-to-previous-like-this "skip")
@@ -490,7 +494,10 @@
   :commands (magit-dispatch magit-file-dispatch magit-status magit-toplevel)
   :ensure t)
 
-(pretty-hydra-define hydra-vc (:color teal :title "⎆ Choose VC frontend..." :quit-key "q")
+(pretty-hydra-define hydra-vc (
+                               :color teal
+                               :title (concat (all-the-icons-faicon "git") " Choose VC frontend...")
+                               :quit-key "q")
   ("Available frontends"
    (("g" magit-status  "magit")
     ("p" hydra-p4/body "p4"))))
