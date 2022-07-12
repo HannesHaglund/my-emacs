@@ -379,6 +379,7 @@
   ("M-g" . goto-line)
   ("C-o" . grep-toolbox-consult-line)
   ("C-z" . undo)
+  ("C-x C-b" . switch-to-buffer)
   ("C-x K" . kill-buffer-and-window)
   ("C-c C-f" . revert-buffer-no-confirm))
 
