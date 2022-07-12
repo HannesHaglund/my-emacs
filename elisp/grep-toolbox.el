@@ -50,8 +50,10 @@
        (when posframe-p (vertico-posframe-mode 1)))))
 
 (defun region-when-active ()
-  "Return region when region-active-p"
-  (if (region-active-p) (buffer-substring (region-beginning) (region-end)) nil))
+  "Return region when region-active-p and deactivate it."
+  (let ((result (if (region-active-p) (buffer-substring (region-beginning) (region-end)) nil)))
+    (when (region-active-p) (deactivate-mark))
+    result))
 
 (defun grep-toolbox-consult-ripgrep-default-directory ()
   "Run consult-ripgrep in default-directory"
