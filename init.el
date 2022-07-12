@@ -199,7 +199,7 @@
 ;; ----------------------------------------------------------------
 (use-package multiple-cursors
   :ensure t
-  :after pretty-hydra
+  :after (pretty-hydra all-the-icons)
   :bind ("C-c m"   . hydra-multiple-cursors/body)
   :config
   (require 'multiple-cursors)
@@ -232,7 +232,7 @@
     (mc/add-default-cmds-to-run))
 
   (pretty-hydra-define hydra-multiple-cursors
-    (:title g(concat (all-the-icons-faicon "i-cursor") " Multiple Cursors") :quit-key "q")
+    (:title (concat (all-the-icons-faicon "i-cursor") " Multiple Cursors") :quit-key "q")
     ("Up"
      (("p" mc/mark-previous-like-this "next")
       ("P" mc/skip-to-previous-like-this "skip")
