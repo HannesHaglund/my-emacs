@@ -1,6 +1,13 @@
 (require 'pretty-hydra)
 (require 'grep-toolbox)
 (require 'all-the-icons)
+(require 'shell-repl)
+(require 'projectile)
+
+(defun shell-repl-project-root ()
+  "Run shell-repl in projectile-project-root."
+  (interactive)
+  (shell-repl (projectile-project-root)))
 
 (pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
                                               :title (concat (all-the-icons-faicon "folder-open")
@@ -29,7 +36,11 @@
     ("c"   projectile-invalidate-cache "clear cache" :color red))
 
    "Project"
-   (("p"   projectile-switch-project "switch project"))))
+   (("p"   projectile-switch-project "switch project"))
+
+   "Misc"
+   (("M-!" shell-repl-project-root "shell")
+    ("1" shell-repl-project-root "  shell"))))
 
 (provide 'hydra-projectile)
 ;;; hydra-projectile.el ends here

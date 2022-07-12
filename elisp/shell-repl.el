@@ -79,12 +79,12 @@
         (recenter -1)))))
 
 
-(defun shell-repl ()
+(defun shell-repl (&optional dir)
   "Shell REPL - enter shell commands and get output.  Exit with empty input."
   (interactive)
   (let* ((input nil)
          (last-output "")
-         (default-directory default-directory)) ; So we can change it later
+         (default-directory (if dir dir default-directory))) ; So we can change it later
     (while (not (string-blank-p (setq input (shell-repl-read-input last-output))))
       (let* ((output (shell-repl-command-to-string-and-cwd input))
              (output-meat (cl-first output))
