@@ -62,11 +62,13 @@
   (with-current-buffer (get-buffer shell-repl-output-buffer)
     (save-excursion
       (goto-char (point-max))
-      (insert (propertize (format ">>> %s %s: %s\n"
-                                  (format-time-string "%H:%M:%S")
-                                  cwd
-                                  input)
-                          'face 'font-lock-function-name-face))
+      (insert (concat
+               (propertize ">>> "                           'face 'font-lock-function-name-face)
+               (propertize (format-time-string "%H:%M:%S ") 'face 'font-lock-function-name-face)
+               (propertize cwd                              'face 'link)
+               (propertize ": "                             'face 'font-lock-function-name-face)
+               (propertize input                            'face 'font-lock-function-name-face)
+               "\n"))
       (insert (format "%s\n" output))))
   ;; Scroll to EOB if it's open in a window.
   (let ((win (get-buffer-window shell-repl-output-buffer)))
