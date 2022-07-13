@@ -9,7 +9,8 @@
   (format "%s" marker))
 
 (defun add-to-joined-mark-ring (element)
-  (unless (or (eq this-command 'pop-joined-mark-ring)
+  (unless (or (not this-command)
+              (eq this-command 'pop-joined-mark-ring)
               (eq this-command 'unpop-joined-mark-ring))
     ;; Pop elements we've diverged from
     (while (> joined-mark-ring-index 0)
@@ -37,14 +38,17 @@
     (insert (format "[%d/%d] " (+ 1 joined-mark-ring-index) (length joined-mark-ring)))
     (add-text-properties (point-min) (point) '(comment t face font-lock-comment-face))
     (dotimes (i (length joined-mark-ring))
-      (let ((circ-face (if (marker-buffer (nth i joined-mark-ring)) 'default 'error)))
-        (when (< i joined-mark-ring-index) (insert (propertize "○" 'face circ-face)))
-        (when (= i joined-mark-ring-index) (insert (propertize "◉" 'face 'success)))
-        (when (> i joined-mark-ring-index) (insert (propertize "●" 'face circ-face)))))
-    (insert (propertize (format " %s - %s "
-                                (buffer-name (marker-buffer (nth joined-mark-ring-index joined-mark-ring)))
-                                (nth joined-mark-ring-index joined-mark-ring-source-commands))
-                        'face 'font-lock-string-face))
+      (let ((unsel-face (if (marker-buffer (nth i joined-mark-ring)) 'default 'error))
+            (selec-face (if (marker-buffer (nth i joined-mark-ring)) 'success 'error)))
+        (when (< i joined-mark-ring-index) (insert (propertize "○" 'face unsel-face)))
+        (when (= i joined-mark-ring-index) (insert (propertize "◉" 'face selec-face)))
+        (when (> i joined-mark-ring-index) (insert (propertize "●" 'face unsel-face)))))
+    (insert "  ")
+    (insert (propertize (format "%s" (nth joined-mark-ring-index joined-mark-ring-source-commands))
+                        'face 'font-lock-comment-face))
+    (insert " ➤ ")
+    (insert (propertize (format " %s " (buffer-name (marker-buffer (nth joined-mark-ring-index joined-mark-ring))))
+                        'face 'link))
     (buffer-substring (point-min) (point-max))))
 
 (defun goto-marker (mark)
@@ -66,13 +70,13 @@
       ;; Add diff
       (setq joined-mark-ring-index (+ joined-mark-ring-index diff))
       ;; Constrain to joined-mark-ring
-      (when (< joined-mark-ring-index 0) (setq joined-mark-ring-index 0))
-      (when (>= joined-mark-ring-index (length joined-mark-ring)) (setq joined-mark-ring-index (- (length joined-mark-ring) 1)))
+      (when (< joined-mark-ring-index 0)
+        (setq joined-mark-ring-index 0))
+      (when (>= joined-mark-ring-index (length joined-mark-ring))
+        (setq joined-mark-ring-index (- (length joined-mark-ring) 1)))
       ;; Update point and display results
       (message (joined-mark-ring-string))
-      (unless (goto-marker (nth joined-mark-ring-index joined-mark-ring))
-        ;; We failed to go to the buffer! Maybe it was closed. Go another step
-        (move-joined-mark-ring-index diff)))))
+      (goto-marker (nth joined-mark-ring-index joined-mark-ring)))))
 
 (defun pop-joined-mark-ring ()
   (interactive)
