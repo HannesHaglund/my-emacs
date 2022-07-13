@@ -9,8 +9,7 @@
   (format "%s" marker))
 
 (defun add-to-joined-mark-ring (element)
-  (unless (or (not this-command)
-              (eq this-command 'pop-joined-mark-ring)
+  (unless (or (eq this-command 'pop-joined-mark-ring)
               (eq this-command 'unpop-joined-mark-ring))
     ;; Pop elements we've diverged from
     (while (> joined-mark-ring-index 0)

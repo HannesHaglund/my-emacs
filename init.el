@@ -363,6 +363,7 @@
   ("M-,"   .   pop-joined-mark-ring)
   ("C-M-," . unpop-joined-mark-ring)
   :config
+  (advice-add 'switch-to-buffer          :before 'joined-mark-ring-push-point)
   (advice-add 'pop-to-buffer          :before 'joined-mark-ring-push-point)
   (advice-add 'consult--jump          :before 'joined-mark-ring-push-point)
   (advice-add 'xref-push-marker-stack :before 'joined-mark-ring-push-point))
