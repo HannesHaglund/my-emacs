@@ -35,9 +35,10 @@
     (insert (format "[%d/%d] " (+ 1 joined-mark-ring-index) (length joined-mark-ring)))
     (add-text-properties (point-min) (point) '(comment t face font-lock-comment-face))
     (dotimes (i (length joined-mark-ring))
-      (when (< i joined-mark-ring-index) (insert "●"))
-      (when (= i joined-mark-ring-index) (insert "◐"))
-      (when (> i joined-mark-ring-index) (insert "○")))
+      (let ((circ-face (if (marker-buffer (nth i joined-mark-ring)) 'default 'error)))
+        (when (< i joined-mark-ring-index) (insert (propertize "○" 'face circ-face)))
+        (when (= i joined-mark-ring-index) (insert (propertize "◉" 'face 'success)))
+        (when (> i joined-mark-ring-index) (insert (propertize "●" 'face circ-face)))))
     (insert (propertize (format " %s - %s "
                                 (buffer-name (marker-buffer (nth joined-mark-ring-index joined-mark-ring)))
                                 (nth joined-mark-ring-index joined-mark-ring-source-commands))
@@ -45,8 +46,12 @@
     (buffer-substring (point-min) (point-max))))
 
 (defun goto-marker (mark)
-  (switch-to-buffer (get-buffer (marker-buffer mark)))
-  (goto-char mark))
+  (if (and (marker-buffer mark)
+           (get-buffer (marker-buffer mark)))
+      (progn
+        (switch-to-buffer (get-buffer (marker-buffer mark)))
+        (goto-char mark))
+    nil))
 
 (defun move-joined-mark-ring-index (diff)
   (if (= (length joined-mark-ring) 0) (message "joined-mark-ring is empty.")
@@ -63,7 +68,9 @@
       (when (>= joined-mark-ring-index (length joined-mark-ring)) (setq joined-mark-ring-index (- (length joined-mark-ring) 1)))
       ;; Update point and display results
       (message (joined-mark-ring-string))
-      (goto-marker (nth joined-mark-ring-index joined-mark-ring)))))
+      (unless (goto-marker (nth joined-mark-ring-index joined-mark-ring))
+        ;; We failed to go to the buffer! Maybe it was closed. Go another step
+        (move-joined-mark-ring-index diff)))))
 
 (defun pop-joined-mark-ring ()
   (interactive)
