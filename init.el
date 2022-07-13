@@ -358,10 +358,13 @@
 ;; ----------------------------------------------------------------
 (use-package joined-mark-ring-navigation
   :demand t                             ; We want this to load regardless of binds
+  :after consult
   :bind
   ("M-,"   .   pop-joined-mark-ring)
   ("C-M-," . unpop-joined-mark-ring)
   :config
+  (advice-add 'pop-to-buffer          :before 'joined-mark-ring-push-point)
+  (advice-add 'consult--jump          :before 'joined-mark-ring-push-point)
   (advice-add 'xref-push-marker-stack :before 'joined-mark-ring-push-point))
 
 (use-package avy

@@ -35,9 +35,13 @@
     (insert (format "[%d/%d] " (+ 1 joined-mark-ring-index) (length joined-mark-ring)))
     (add-text-properties (point-min) (point) '(comment t face font-lock-comment-face))
     (dotimes (i (length joined-mark-ring))
-      (when (< i joined-mark-ring-index) (insert "."))
-      (when (= i joined-mark-ring-index) (insert "|"))
-      (when (> i joined-mark-ring-index) (insert "-")))
+      (when (< i joined-mark-ring-index) (insert "●"))
+      (when (= i joined-mark-ring-index) (insert "◐"))
+      (when (> i joined-mark-ring-index) (insert "○")))
+    (insert (propertize (format " %s - %s "
+                                (buffer-name (marker-buffer (nth joined-mark-ring-index joined-mark-ring)))
+                                (nth joined-mark-ring-index joined-mark-ring-source-commands))
+                        'face 'font-lock-string-face))
     (buffer-substring (point-min) (point-max))))
 
 (defun goto-marker (mark)
