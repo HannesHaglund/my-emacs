@@ -9,20 +9,22 @@
   (format "%s" marker))
 
 (defun add-to-joined-mark-ring (element)
-  ;; Pop elements we've diverged from
-  (while (> joined-mark-ring-index 0)
-    (setq joined-mark-ring-index (- joined-mark-ring-index 1))
-    (setq joined-mark-ring (cdr joined-mark-ring))
-    (setq joined-mark-ring-source-commands (cdr joined-mark-ring-source-commands)))
-  ;; Actually add... if it is not a duplicate
-  (unless (and (car joined-mark-ring) (string= (marker-to-string element)
-                                               (marker-to-string (car joined-mark-ring))))
-    (setq joined-mark-ring (cons element joined-mark-ring))
-    (setq joined-mark-ring-source-commands (cons this-command joined-mark-ring-source-commands)))
-  ;; Pop elements if we have too many
-  (while (> (length joined-mark-ring) joined-mark-ring-max-size)
-    (setq joined-mark-ring (butlast joined-mark-ring))
-    (setq joined-mark-ring-source-commands (butlast joined-mark-ring-source-commands))))
+  (unless (or (eq this-command 'pop-joined-mark-ring)
+              (eq this-command 'unpop-joined-mark-ring))
+    ;; Pop elements we've diverged from
+    (while (> joined-mark-ring-index 0)
+      (setq joined-mark-ring-index (- joined-mark-ring-index 1))
+      (setq joined-mark-ring (cdr joined-mark-ring))
+      (setq joined-mark-ring-source-commands (cdr joined-mark-ring-source-commands)))
+    ;; Actually add... if it is not a duplicate
+    (unless (and (car joined-mark-ring) (string= (marker-to-string element)
+                                                 (marker-to-string (car joined-mark-ring))))
+      (setq joined-mark-ring (cons element joined-mark-ring))
+      (setq joined-mark-ring-source-commands (cons this-command joined-mark-ring-source-commands)))
+    ;; Pop elements if we have too many
+    (while (> (length joined-mark-ring) joined-mark-ring-max-size)
+      (setq joined-mark-ring (butlast joined-mark-ring))
+      (setq joined-mark-ring-source-commands (butlast joined-mark-ring-source-commands)))))
 
 (defun joined-mark-ring-push-mark (&optional a b c)
   (add-to-joined-mark-ring (copy-marker (mark-marker))))
