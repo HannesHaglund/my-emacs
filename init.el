@@ -219,6 +219,7 @@
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-like-this)
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-in-region-regexp)
     (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/clear-cmds-to-run)
+    (add-to-list 'mc/cmds-to-run-for-all 'org-delete-char)
     (add-to-list 'mc/cmds-to-run-for-all 'mwim-beginning)
     (add-to-list 'mc/cmds-to-run-for-all 'mwim-end)
     (add-to-list 'mc/cmds-to-run-for-all 'er/expand-region))
@@ -771,6 +772,41 @@ When called in a program, it will use the project corresponding to directory DIR
   :config
   (editorconfig-mode 1)
   (diminish 'editorconfig-mode))
+
+;; ----------------------------------------------------------------
+;; org-mode
+;; ----------------------------------------------------------------
+(use-package org
+  :after all-the-icons
+  :config
+
+  ;; Adjust org heading face attributes
+  (dolist (face '((org-level-1 . 1.4)
+                  (org-level-2 . 1.3)
+                  (org-level-3 . 1.2)
+                  (org-level-4 . 1.1)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))
+
+  (setq org-ellipsis " ◢")
+  (setq org-adapt-indentation nil)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t))
+
+(use-package org-bullets
+  :after org
+  :ensure t
+  :commands org-bullets-mode
+  :hook (org-mode . org-bullets-mode)
+  :config
+  (setq org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(use-package org-chef
+  :after org
+  :ensure t)
 
 ;; ----------------------------------------------------------------
 ;; c-mode
