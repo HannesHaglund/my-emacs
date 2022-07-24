@@ -694,7 +694,7 @@ When called in a program, it will use the project corresponding to directory DIR
 
 ;; Relative line numbers
 (defun enable-display-line-numbers-relative ()
-  "Turn on display-line-numbers-mode, and display relative."
+  "Turn on 'display-line-numbers-mode', and display relative."
   (display-line-numbers-mode 1)
   (setq display-line-numbers 'relative))
 (add-hook 'prog-mode-hook 'enable-display-line-numbers-relative)
