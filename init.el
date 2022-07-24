@@ -279,11 +279,14 @@
               ("<C-tab>"  . 'company-select-next)
               ("C-`"      . 'company-select-previous))
   :config
-  (require 'company)
   (diminish 'company-mode)
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.05)
   (setq company-eclim-auto-save nil))
+
+(use-package company-box
+  :ensure t
+  :hook (company-mode . company-box-mode))
 
 ;; ----------------------------------------------------------------
 ;; wgrep
