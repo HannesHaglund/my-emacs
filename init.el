@@ -330,6 +330,9 @@
   (setq gc-cons-threshold (* 100 1000 1000))   ; 100mb
   (setq read-process-output-max (* 1024 1024)) ; 1mb
 
+  :config
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+
   ;; Unbind key so it doesn't override our basic-keybinds keybind
   :bind (:map lsp-signature-mode-map ("M-p" . nil))
   :bind (:map lsp-signature-mode-map ("M-n" . nil))
@@ -350,7 +353,10 @@
 (use-package lsp-ui
   :ensure t
   :after lsp-mode
-  :commands lsp-ui-mode)
+  :commands lsp-ui-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
 
 (use-package dap-mode
   :ensure t
@@ -650,7 +656,6 @@ When called in a program, it will use the project corresponding to directory DIR
       ;; Create empty file
       (write-region "" nil "~/.bash_profile"))
     ;; Append command to it unless it's already in file
-
     (unless (file-has-str-p "~/.bash_profile" new-ps1-l)
       (write-region (concat "\n" new-ps1-l) nil "~/.bash_profile" 'append))))
 
