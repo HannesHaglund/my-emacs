@@ -693,9 +693,12 @@ When called in a program, it will use the project corresponding to directory DIR
 (show-paren-mode 1)
 
 ;; Relative line numbers
-(setq display-line-numbers 'relative)
-(add-hook 'prog-mode-hook '(lambda () (display-line-numbers-mode 1)))
-(add-hook 'org-mode-hook  '(lambda () (display-line-numbers-mode 1)))
+(defun enable-display-line-numbers-relative ()
+  "Turn on display-line-numbers-mode, and display relative."
+  (display-line-numbers-mode 1)
+  (setq display-line-numbers 'relative))
+(add-hook 'prog-mode-hook 'enable-display-line-numbers-relative)
+(add-hook 'org-mode-hook  'enable-display-line-numbers-relative)
 
 ;; Nyan mode to highlight buffer scroll
 (use-package nyan-mode
