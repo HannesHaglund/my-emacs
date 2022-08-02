@@ -508,27 +508,6 @@
   :commands (magit-dispatch magit-file-dispatch magit-status magit-toplevel)
   :ensure t)
 
-(use-package blamer
-  :ensure t
-  :defer 0
-  :bind ("C-c b" . blamer-show-posframe-commit-info)
-
-  :custom-face
-  (blamer-face ((t :foreground "#36648b"
-                   :background nil
-                   :italic t)))
-  :config
-  (setq blamer-type 'visual)          ; helps performance
-  (setq blamer-idle-time 0.3)
-  (setq blamer-min-offset 60)
-  (setq blamer-max-commit-message-length 40)
-  (setq blamer-author-formatter "[%s")
-  (setq blamer-datetime-formatter ", %s]")
-  (setq blamer-commit-formatter " %s")
-  (setq blamer-uncommitted-changes-message "✎ Uncommitted changes")
-  (global-blamer-mode 1))
-
-
 (pretty-hydra-define hydra-vc (
                                :color teal
                                :title (concat (all-the-icons-faicon "git") " Choose VC frontend...")
