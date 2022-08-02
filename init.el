@@ -53,28 +53,19 @@
     (exec-path-from-shell-initialize)))
 
 ;; ----------------------------------------------------------------
-;; diminish
-;; ----------------------------------------------------------------
-(use-package diminish
-  :ensure t
-  :commands (diminish))
-
-;; ----------------------------------------------------------------
 ;; which-key
 ;; ----------------------------------------------------------------
 (use-package which-key
   :ensure t
   :config
   (which-key-mode)
-  (diminish 'which-key-mode)
   (which-key-setup-side-window-right))
 
 (use-package which-key-posframe
   :ensure t
   :after which-key
   :config
-  (which-key-posframe-mode)
-  (diminish 'which-key-posframe))
+  (which-key-posframe-mode))
 
 ;; ----------------------------------------------------------------
 ;; hydra
@@ -93,7 +84,6 @@
   :ensure t
   :init
   (vertico-mode)
-  (diminish 'vertico-mode)
   :config
   (setq vertico-count 24))
 
@@ -101,15 +91,13 @@
   :ensure t
   :after vertico
   :config
-  (vertico-posframe-mode 1)
-  (diminish 'vertico-posframe-mode))
+  (vertico-posframe-mode 1))
 
 ;; Keeps all history, especially useful for vertico,
 ;; since it ranks by history
 (use-package savehist
   :init
-  (savehist-mode)
-  (diminish 'savehist-mode))
+  (savehist-mode))
 
 (use-package orderless
   :ensure t
@@ -144,13 +132,11 @@
   (marginalia-mode)
   ;; Disable file annotators in project find (I find the permissions distracting)
   (setq marginalia-annotator-registry
-        (assq-delete-all 'project-file marginalia-annotator-registry))
-  (diminish 'marginalia-mode))
+        (assq-delete-all 'project-file marginalia-annotator-registry)))
 
 ;; ----------------------------------------------------------------
 ;; embark
 ;; ----------------------------------------------------------------
-
 (use-package embark
   :ensure t
   :bind
@@ -280,7 +266,6 @@
               ("<C-tab>"  . 'company-select-next)
               ("C-`"      . 'company-select-previous))
   :config
-  (diminish 'company-mode)
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.05)
   (setq company-eclim-auto-save nil))
@@ -419,8 +404,7 @@
   (setq whitespace-style '(face tabs lines-tail))
   (set-face-foreground 'whitespace-line nil)
   (setq whitespace-line-column 120)
-  (global-whitespace-mode t)
-  (diminish 'global-whitespace-mode))
+  (global-whitespace-mode t))
 
 ;; ----------------------------------------------------------------
 ;; expand-region
@@ -438,8 +422,7 @@
 (use-package projectile
   :ensure t
   :config
-  (projectile-mode)
-  (diminish 'projectile-mode))
+  (projectile-mode))
 
 ;; ----------------------------------------------------------------
 ;; avy
@@ -558,7 +541,6 @@
 ;; ----------------------------------------------------------------
 ;; dired-mode
 ;; ----------------------------------------------------------------
-
 (use-package dired
   :after consult
   :config
@@ -586,8 +568,7 @@
   :ensure t
   :after (dired all-the-icons)
   :config
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-  (diminish 'all-the-icons-dired-mode))
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 ;; ----------------------------------------------------------------
 ;; context-menu
@@ -624,7 +605,6 @@ When called in a program, it will use the project corresponding to directory DIR
 ;; ----------------------------------------------------------------
 ;; git bash shell setup
 ;; ----------------------------------------------------------------
-
 (defun file-has-str-p (filepath str)
   "Return t if STR exists in file on FILEPATH."
   (with-temp-buffer
@@ -670,8 +650,7 @@ When called in a program, it will use the project corresponding to directory DIR
   :ensure t
   :config
   (setq zoom-size '(0.618 . 0.618))     ; Golden ratio
-  (zoom-mode t)
-  (diminish 'zoom-mode))
+  (zoom-mode t))
 
 ;; Apply hack font
 (when (font-available-p "hack") (set-frame-font "hack"))
@@ -710,8 +689,7 @@ When called in a program, it will use the project corresponding to directory DIR
 (use-package nyan-mode
   :ensure t
   :config
-  (nyan-mode 1)
-  (diminish 'nyan-mode))
+  (nyan-mode 1))
 
 ;; ----------------------------------------------------------------
 ;; Themes
@@ -730,8 +708,7 @@ When called in a program, it will use the project corresponding to directory DIR
 (use-package doom-modeline
   :ensure t
   :init
-  (doom-modeline-mode 1)
-  (diminish 'doom-modeline-mode))
+  (doom-modeline-mode 1))
 
 ;; ----------------------------------------------------------------
 ;; All-the-icons
@@ -745,7 +722,6 @@ When called in a program, it will use the project corresponding to directory DIR
   :after all-the-icons
   :config
   (all-the-icons-completion-mode 1)
-  (diminish 'all-the-icons-completion-mode)
   (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
 
 ;; ================================================================
@@ -755,23 +731,20 @@ When called in a program, it will use the project corresponding to directory DIR
   :ensure t
   :config
   (global-aggressive-indent-mode 1)
-  (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
-  (diminish 'aggressive-indent-mode))
+  (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
 
 ;; Delete trailing whitespace on save
 (use-package ws-butler
   :ensure t
   :config
   (setq ws-butler-keep-whitespace-before-point nil)
-  (add-hook 'prog-mode-hook #'ws-butler-mode)
-  (diminish 'ws-butler-mode))
+  (add-hook 'prog-mode-hook #'ws-butler-mode))
 
 ;; Have emacs respect .editorconfig
 (use-package editorconfig
   :ensure t
   :config
-  (editorconfig-mode 1)
-  (diminish 'editorconfig-mode))
+  (editorconfig-mode 1))
 
 ;; ----------------------------------------------------------------
 ;; org-mode
@@ -899,7 +872,6 @@ When called in a program, it will use the project corresponding to directory DIR
 (setq kill-buffer-query-functions nil)  ; Do not ask for confirmation when killing process buffers
 (setq tags-add-tables nil)              ; Never ask "keep current list of tags table?"
 (setq large-file-warning-threshold (* 200 1000 1000)) ; 200 megabytes
-(diminish 'eldoc-mode)
 
 ;; ================================================================
 ;; Verify needed system packages are installed
