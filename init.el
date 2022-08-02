@@ -778,6 +778,7 @@ When called in a program, it will use the project corresponding to directory DIR
 ;; ----------------------------------------------------------------
 (use-package org
   :after all-the-icons
+  :mode (("\\.org$" . org-mode))
   :config
 
   ;; Adjust org heading face attributes
