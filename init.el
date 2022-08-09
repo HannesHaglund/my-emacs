@@ -677,19 +677,27 @@ When called in a program, it will use the project corresponding to directory DIR
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 
-;; Relative line numbers
-(defun enable-display-line-numbers-relative ()
-  "Turn on 'display-line-numbers-mode', and display relative."
-  (display-line-numbers-mode 1)
-  (setq display-line-numbers 'relative))
-(add-hook 'prog-mode-hook 'enable-display-line-numbers-relative)
-(add-hook 'org-mode-hook  'enable-display-line-numbers-relative)
-
 ;; Nyan mode to highlight buffer scroll
 (use-package nyan-mode
   :ensure t
   :config
   (nyan-mode 1))
+
+;; ----------------------------------------------------------------
+;; Relative line numbers
+;; ----------------------------------------------------------------
+(defun lines-buffer ()
+  "Return number of lines in current buffer."
+  (with-current-buffer (current-buffer) (line-number-at-pos (point-max) t)))
+
+(defun enable-display-line-numbers-relative ()
+  "Turn on 'display-line-numbers-mode', and display relative."
+  (display-line-numbers-mode 1)
+  (setq display-line-numbers 'relative)
+  (setq display-line-numbers-width (max 3 (length (number-to-string (lines-buffer))))))
+
+(add-hook 'prog-mode-hook 'enable-display-line-numbers-relative)
+(add-hook 'org-mode-hook  'enable-display-line-numbers-relative)
 
 ;; ----------------------------------------------------------------
 ;; Themes
