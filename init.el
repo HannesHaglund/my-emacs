@@ -778,6 +778,12 @@ When called in a program, it will use the project corresponding to directory DIR
   :config
   (setq org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+(use-package org-sticky-header
+  :after org
+  :ensure t
+  :commands org-sticky-header-mode
+  :hook (org-mode . org-sticky-header-mode))
+
 (use-package org-chef
   :after org
   :ensure t)
