@@ -801,6 +801,9 @@ When called in a program, it will use the project corresponding to directory DIR
   :after org
   :ensure t)
 
+(use-package org-chef-week-planning
+  :after org-chef)
+
 ;; ----------------------------------------------------------------
 ;; c-mode
 ;; ----------------------------------------------------------------
