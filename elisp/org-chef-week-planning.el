@@ -1,105 +1,77 @@
 (require 'org)
 (require 'org-chef)
-(require 'org-element)
-(require 'cl-lib)
 
-(defun ocwp-org-element-parse-file (file)
+(defun ocwp-buffer-recipes ()
+  "Return a list of all recipe headings in current buffer."
+  (let ((bufc (buffer-substring-no-properties (point-min) (point-max)))
+        (rslt '()))
+    (with-temp-buffer
+      (insert bufc)
+      (goto-char (point-min))
+      (while (search-forward ":servings: " nil t)
+        (save-excursion
+          (re-search-backward "^\\*+ ")  ; Search for header
+          (beginning-of-line)
+          (let* ((heading-beginning (point))
+                 (heading-asterix-end (progn (search-forward " ") (point)))
+                 (heading-asterixes (buffer-substring heading-beginning heading-asterix-end))
+                 (heading-end (if (re-search-forward (concat "^" (regexp-quote heading-asterixes)) nil t)
+                                  (progn (beginning-of-line) (point)) (point-max))))
+            (add-to-list 'rslt (buffer-substring heading-beginning heading-end))))))
+    rslt))
+
+
+(defun ocwp-heading-headline (heading)
+  "Return the headline of a HEADING."
   (with-temp-buffer
-    (insert-file-contents file)
-    (org-element--parse-elements
-     (point-min) (point-max)
-     'first-section nil 'object nil (list 'org-data nil))))
-
-(defun ocwp-two-consecutive-elements-in-list-p (lst e1 e2)
-  (if (and (equal (car lst) e1) (equal (cadr lst) e2)) t
-    (when (and lst (>= (length lst) 2))
-      ;; Recurse
-      (ocwp-two-consecutive-elements-in-list-p (cdr lst) e1 e2))))
+    (insert heading)
+    (goto-char (point-min))
+    (re-search-forward "^\\*+ ")
+    (let* ((a (point))
+           (b (progn (end-of-line) (point))))
+      (buffer-substring-no-properties a b))))
 
 
-(defun ocwp-ast-recipe-header-p (ast)
-  "Return AST if AST is a recipe header, otherwise nil."
-  (when (and
-         ;; Top element is a headline
-         (eq (car-safe ast) 'headline)
-         ;; Contains 1 or more sub-headlines called Ingredients
-         (cl-some (lambda (e) (and (listp e)
-                                   (eq (car e) 'headline)
-                                   (ocwp-two-consecutive-elements-in-list-p (nth 1 e) :raw-value "Ingredients")))
-                  (cdr ast)))
-    ast))                               ; Return value if t
+(defun ocwp-insert (heading servings)
+  "Insert HEADING and call org-chef-edit-servings to SERVINGS on it."
+  (save-excursion
+    (let ((start (point)))
+      (insert heading)
+      (goto-char start)
+      (forward-line 1)
+      (org-chef-edit-servings servings))))
 
 
+(defun ocwp-meal-plan-str (servings recipes)
+  "Make a meal plan with x SERVINGS based on RECIPES from an org-chef file, return it as str."
+  (with-temp-buffer
+    (let* ((cur-servings 0))
+      (while (< cur-servings servings)
+        (let* ((rand-recipe (seq-random-elt recipes))
+               (prompt (format "[%d/%d] Add servings of %s: "
+                               cur-servings
+                               servings
+                               (ocwp-heading-headline rand-recipe)))
+               (servs-to-add (read-number prompt)))
+          (when (> servs-to-add 0)
+            (goto-char (point-max))
+            (newline)
+            (ocwp-insert rand-recipe servs-to-add)
+            (setq cur-servings (+ cur-servings servs-to-add))))))
+    (buffer-substring-no-properties (point-min) (point-max))))
 
-(defun ocwp-headlines (ast)
-  ;; TODO make this recursive on sublists
-  ;; Right now it only finds top level headers
-  (remq nil (mapcar 'ocwp-ast-recipe-header-p ast)))
 
-(defun ocwp-nshuffle (sequence)
-  (cl-loop for i from (length sequence) downto 2
-           do (cl-rotatef (elt sequence (random i))
-                          (elt sequence (1- i))))
-  sequence)
-
-(defvar ocwp-alphabet (remq "" (split-string "abcdefghijklmnopqrstuvwxyz" "")))
-
-(defun ocwp-headline-letters (headlines)
-  (let* ((index 0))
-    (mapcar #'(lambda (_)
-                (setq index (+ index 1))
-                (nth (- index 1) ocwp-alphabet))
-            headlines)))
-
-(defun ocwp-headlines-titles (headlines) )
-
-(defun ocwp-choice-prompt (headlines headline-letters)
-  (concat
-   (string-join (mapcar #'(lambda (headlie-title letter)
-                            (format "%s) %s" letter headline-title))
-                        (ocwp-headlines-titles headlines) headline-letters) "\n")
-   "\n\nr) Reroll\nq) Quit\n\nChoose an option: "))
-
-(defun ocwp-choose-once (headlines num-choices)
-  (let* ((headlines-shuffled (ocwp-nshuffle headlines))
-         (choices (cl-subseq headlines-shuffled 0 (1- num-choices)))
-         (choice-chr (read-char-choice  (ocwp-choice-prompt choices
-                                                            (ocwp-headline-letters choices))
-                                        (ocwp-headline-letters choices))))
-
-    (cond ((string= choice-chr "e") nil) ; exit
-          ((string= choice-chr "r") (ocwp-choose-once headlines-num-choices)) ; recurse
-                                        ; otherwise...
-          ((nth (search choice-chr ocwp-alphabet) 'headlines-shuffled)))))
-
-(defun ocwp-choose-servings ()
-  (read-number "Servings: "))
-
-(defun org-chef-week-plan (num-choices servings input-recipe-file)
+(defun ocwp-meal-plan (servings recipes)
+  "Make a meal plan with x SERVINGS based on RECIPES from an org-chef file."
   (interactive (list
-                (read-number "Choices per iteration: ")
                 (read-number "Servings: ")
-                (if (derived-mode-p 'org-mode)
-                    (buffer-file-name)
-                  (read-file-name "Org cookbook: " default-directory))))
-  (let* ((ast (ocwp-org-element-parse-file input-recipe-file))
-         (recipes (ocwp-headlines ast))
-         (choices '())
-         (choices-servings '()))
-    (while (> servings (apply '+ choices-servings))
-      (let* ((choice (ocwp-choose-once recipes num-choices))
-             (servings (ocwp-choose-servings)))
-        (add-to-list 'choices choice)
-        (add-to-list 'choices-servings servings)))
-    choices
-    ))
-
-;; (let ((astfoo (ocwp-org-element-parse-file input-recipe-file))
-;;       (recipes (ocwp-headlines))
-;;       )
-;;   ))
-;;
-;; ast))
-
+                (ocwp-buffer-recipes)))
+  (with-current-buffer (get-buffer-create "*ocwp-meal-plan*")
+    (erase-buffer)
+    (insert (ocwp-meal-plan-str servings recipes))
+    (goto-char (point-min))
+    (org-mode)
+    (indent-buffer)
+    (display-buffer (current-buffer))))
 
 (provide 'org-chef-week-planning)
