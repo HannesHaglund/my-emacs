@@ -21,16 +21,23 @@
     rslt))
 
 
-(defun ocwp-heading-headline (heading)
-  "Return the headline of a HEADING."
+(defun ocwp-heading-between-thing-and-eol (heading thing)
+  "Search for THING in HEADING, and return substring between THING and eol."
   (with-temp-buffer
     (insert heading)
     (goto-char (point-min))
-    (re-search-forward "^\\*+ ")
+    (re-search-forward thing)
     (let* ((a (point))
            (b (progn (end-of-line) (point))))
       (buffer-substring-no-properties a b))))
 
+(defun ocwp-heading-headline (heading)
+  "Return the headline of a HEADING."
+  (ocwp-heading-between-thing-and-eol heading "^\\*+ "))
+
+(defun ocwp-heading-servings (heading)
+  "Return the number of servings of a HEADING."
+  (ocwp-heading-between-thing-and-eol heading (regexp-quote ":servings: ")))
 
 (defun ocwp-insert (heading servings)
   "Insert HEADING and call org-chef-edit-servings to SERVINGS on it."
@@ -48,10 +55,11 @@
     (let* ((cur-servings 0))
       (while (< cur-servings servings)
         (let* ((rand-recipe (seq-random-elt recipes))
-               (prompt (format "[%d/%d] Add servings of %s: "
+               (prompt (format "[%d/%d] Add servings of %s (written for %s): "
                                cur-servings
                                servings
-                               (ocwp-heading-headline rand-recipe)))
+                               (ocwp-heading-headline rand-recipe)
+                               (ocwp-heading-servings rand-recipe)))
                (servs-to-add (read-number prompt)))
           (when (> servs-to-add 0)
             (goto-char (point-max))
