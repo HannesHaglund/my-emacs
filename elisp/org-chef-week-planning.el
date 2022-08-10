@@ -69,6 +69,17 @@
     (buffer-substring-no-properties (point-min) (point-max))))
 
 
+(defun ocwp-show-ingredients ()
+  "Show ingredients headings in org buffer only."
+  (save-excursion
+    (org-shifttab 99)                      ; Shows headings
+    (goto-char (point-min))
+    (while (< (point) (point-max))
+      (org-next-visible-heading 1)
+      (when (string-match "\\*+ Ingredients" (thing-at-point 'line))
+        (org-show-entry)))))
+
+
 (defun ocwp-meal-plan (servings recipes)
   "Make a meal plan with x SERVINGS based on RECIPES from an org-chef file."
   (interactive (list
@@ -80,6 +91,7 @@
     (goto-char (point-min))
     (org-mode)
     (indent-buffer)
+    (ocwp-show-ingredients)
     (display-buffer (current-buffer))))
 
 (provide 'org-chef-week-planning)
