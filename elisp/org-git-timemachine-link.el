@@ -4,7 +4,14 @@
 (require 'vc)
 
 
-(defun org-vcfile-revision-completion-table (completions)
+(defvar org-vcfile-rev-file-sep "," "Sepearator for revision and file portions of link.")
+(defvar org-vcfile-use-fancy-read-revision-for-git t "Non-nil to use a fancier revision read for git files.")
+(defvar org-vcfile-fancy-read-revision-git-cmd
+  "git log --date=short --pretty=format:\"%h%x09%ad%x09%an%x09%s\" -- "
+  "Shell command used to fetch candidates for completing read on git revisions for a file.")
+
+
+(defun org-vcfile-git-revision-completion-table (completions)
   "Completion table that force COMPLETIONS to appear in original order."
   (lambda (string pred action)
     (if (eq action 'metadata)
@@ -12,20 +19,26 @@
       (complete-with-action action completions string pred))))
 
 
-;; TODO use vc-retrieve-revision outside of git
-;; With git, it doesn't give enough options, but we want to be able to support links that are not git
-(defun org-vcfile-read-revision (prompt file)
-  "Read a vc revision of FILE, with PROMPT."
+(defun org-vcfile-git-read-revision (prompt file)
+  "Read a git revision of FILE, with PROMPT.
+Git-specific, as vc-read-revision does not show individual SHAs."
   (let* ((default-directory (file-name-directory file))
          (revs-hist (split-string (shell-command-to-string
-                                   (concat "git log --date=relative --pretty=format:\"%h%x09%ad%x09%an%x09%s\" -- " file))
+                                   (concat org-vcfile-fancy-read-revision-git-cmd file))
                                   "\n"))
-         (completions (org-vcfile-revision-completion-table revs-hist))
+         (completions (org-vcfile-git-revision-completion-table revs-hist))
          (rev (completing-read prompt completions)))
     (car (split-string rev "	"))))
 
 
-(defvar org-vcfile-rev-file-sep "," "Sepearator for revision and file portions of link.")
+(defun org-vcfile-read-revision (prompt file)
+  "Read a vc revision of FILE, with PROMPT."
+  (if (and org-vcfile-use-fancy-read-revision-for-git
+           (equal (vc-responsible-backend file) 'Git))
+      ;; Then
+      (org-vcfile-git-read-revision prompt file)
+    ;; Else
+    (vc-read-revision prompt file)))
 
 
 (defun org-vcfile-link-complete ()
