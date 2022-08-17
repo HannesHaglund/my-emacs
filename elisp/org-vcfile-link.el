@@ -69,4 +69,4 @@ Git-specific, as vc-read-revision does not show individual SHAs."
                          :follow 'org-vcfile-link-follow)
 
 
-(provide 'org-git-timemachine-link)
+(provide 'org-vcfile-link)
