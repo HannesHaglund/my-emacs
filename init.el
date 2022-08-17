@@ -510,6 +510,17 @@
 
 (global-set-key (kbd "C-c v")   'appropriate-vc-hydra-body)
 
+(defun revert-vc-diff-buffer ()
+  "Revert *vc-diff* buffer."
+  (when (get-buffer "*vc-diff*")
+    ;; I would like to just wrap this in a save-excursion
+    ;; But it's not working for some reason...
+    (let ((orig-buf (current-buffer)))
+      (switch-to-buffer "*vc-diff*")
+      (revert-buffer t t t)
+      (switch-to-buffer orig-buf))))
+(add-hook 'after-save-hook 'revert-vc-diff-buffer)
+
 ;; ----------------------------------------------------------------
 ;; misc. hydras
 ;; ----------------------------------------------------------------
