@@ -6,9 +6,16 @@
 
 (defvar org-vcfile-rev-file-sep "," "Sepearator for revision and file portions of link.")
 (defvar org-vcfile-use-fancy-read-revision-for-git t "Non-nil to use a fancier revision read for git files.")
+(defvar org-vcfile-quit-with-q t "Bind q to 'quit-window' in opened vcfile links when non-nil.")
 (defvar org-vcfile-fancy-read-revision-git-cmd
   "git log --date=short --pretty=format:\"%h%x09%ad%x09%an%x09%s\" -- "
   "Shell command used to fetch candidates for completing read on git revisions for a file.")
+
+(define-minor-mode quit-with-q-mode
+  "Toggle quit-with-q-mode.
+Adds a keybinding to 'quit-window' by pressing q."
+  :init-value nil
+  :keymap '(([q] . quit-window)))
 
 
 (defun org-vcfile-git-revision-completion-table (completions)
@@ -61,7 +68,8 @@ Git-specific, as vc-read-revision does not show individual SHAs."
          (search (if line nil option)))
     (switch-to-buffer-other-window (vc-find-revision file rev))
     (when line (org-goto-line line))
-    (when search (org-link-search search))))
+    (when search (org-link-search search))
+    (when org-vcfile-quit-with-q (quit-with-q-mode 1))))
 
 
 (org-link-set-parameters "vcfile"
