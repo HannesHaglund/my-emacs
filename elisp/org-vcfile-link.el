@@ -104,31 +104,36 @@ Git-specific, as vc-read-revision does not show individual SHAs."
     (when org-vcfile-quit-with-q (quit-with-q-mode 1))))
 
 
+(defun org-vcfile-current-pos-args ()
+  "Args to provide to 'org-vcfile-link' to get a link to current pos."
+  (list (or
+         ;; Special handling for vc buffers, with the format <PATH>~<SHA>~
+         (and (string-match "^\\(.*\\)\\~\\(.*\\)\\~" (buffer-file-name)) (match-string 1 (buffer-file-name)))
+         (buffer-file-name))
+        (or
+         ;; First try to get revision through vc
+         (vc-working-revision (buffer-file-name))
+         ;; If that fails, first assume we are in a vc buffer and get it through the buffer name
+         (and (string-match "^\\(.*\\)\\~\\(.*\\)\\~" (buffer-file-name)) (match-string 2 (buffer-file-name)))
+         ;; Finally, just ask for it
+         (org-vcfile-read-revision "Could not find revision automatically. Revision: " (buffer-file-name)))
+        (line-number-at-pos (point) t)))
+
+
+;; TODO, would be nice if this respected org-link-file-path-type, but I don't know if that's possible
+(defun org-vcfile-store ()
+  "Store a vcfile link to current position."
+  (let* ((l (apply 'org-vcfile-link (org-vcfile-current-pos-args))))
+    (when l
+      (org-link-store-props :type "vcfile"
+                            :link l
+                            :description nil))))
+
+
 (org-link-set-parameters "vcfile"
                          :complete 'org-vcfile-link-complete
-                         :follow 'org-vcfile-link-follow)
-
-
-;; TODO this should probably be updated to be compatible with the whole store link machinery, if possible
-;; Would be nice if we could then get it to respect org-link-file-path-type
-(defun org-vcfile-kill-link (file revision line)
-  "Get a vcfile link to the current LINE in FILE of current REVISION."
-  (interactive (list (or
-                      ;; Special handling for vc buffers, with the format <PATH>~<SHA>~
-                      (and (string-match "^\\(.*\\)\\~\\(.*\\)\\~" (buffer-file-name)) (match-string 1 (buffer-file-name)))
-                      (buffer-file-name))
-                     (or
-                      ;; First try to get revision through vc
-                      (vc-working-revision (buffer-file-name))
-                      ;; If that fails, first assume we are in a vc buffer and get it through the buffer name
-                      (and (string-match "^\\(.*\\)\\~\\(.*\\)\\~" (buffer-file-name)) (match-string 2 (buffer-file-name)))
-                      ;; Finally, just ask for it
-                      (org-vcfile-read-revision "Could not find revision automatically. Revision: " (buffer-file-name)))
-                     (line-number-at-pos (point) t)))
-  (unless revision (user-error "Could not deduce revision"))
-  (let ((link (format "[[%s]]" (org-vcfile-link file revision line))))
-    (kill-new link)
-    (message "Added %s to kill-ring" link)))
+                         :follow 'org-vcfile-link-follow
+                         :store 'org-vcfile-store)
 
 
 (provide 'org-vcfile-link)
