@@ -779,6 +779,7 @@ When called in a program, it will use the project corresponding to directory DIR
   (setq org-startup-with-inline-images t)
   (setq org-src-fontify-natively t)
   (setq org-src-tab-acts-natively t)
+  (setq org-link-file-path-type 'relative)
 
   (bind-key "C-," nil org-mode-map)
   (bind-key "C-j" nil org-mode-map))
