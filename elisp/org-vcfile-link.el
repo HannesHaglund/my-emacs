@@ -67,18 +67,14 @@ Git-specific, as vc-read-revision does not show individual SHAs."
 
 (defun org-vcfile-split-link (link)
   "Return an association list with information contained in LINK."
-  (let* ((nil-val nil)
-         (option (or (and (string-match "^.*::\\(.*\\)\\'" link)
-		          (match-string 1 link))
-                     nil-val))
-         (rev    (or (and (string-match "^.*\\~\\(.*\\)\\~" link)
-	                  (match-string 1 link))
-                     nil-val))
-         (file   (or (and (string-match "^\\(.*\\)\\~.*\\~" link)
-                          (match-string 1 link))
-                     nil-val))
-         (option-line (if (and option (string-match-p "\\`[0-9]+\\'" option)) (string-to-number option) nil-val))
-         (option-search (if (equal option-line nil-val) option nil-val)))
+  (let* ((option (and (string-match "^.*::\\(.*\\)\\'" link)
+		      (match-string 1 link)))
+         (rev    (and (string-match "^.*\\~\\(.*\\)\\~" link)
+	              (match-string 1 link)))
+         (file   (and (string-match "^\\(.*\\)\\~.*\\~" link)
+                      (match-string 1 link)))
+         (option-line (if (and option (string-match-p "\\`[0-9]+\\'" option)) (string-to-number option) nil))
+         (option-search (if (equal option-line nil) option nil)))
     `((file          . ,file)
       (revision      . ,rev)
       (option        . ,option)
@@ -105,7 +101,8 @@ Git-specific, as vc-read-revision does not show individual SHAs."
 
 
 (defun org-vcfile-current-pos-args ()
-  "Args to provide to 'org-vcfile-link' to get a link to current pos."
+  "Args to provide to 'org-vcfile-link' to get a link to current pos.
+Also works in buffers created by 'vc-find-revision', despite not technically being under VC."
   (list (or
          ;; Special handling for vc buffers, with the format <PATH>~<SHA>~
          (and (string-match "^\\(.*\\)\\~\\(.*\\)\\~" (buffer-file-name)) (match-string 1 (buffer-file-name)))
