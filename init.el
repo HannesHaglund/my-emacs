@@ -521,6 +521,9 @@
       (switch-to-buffer orig-buf))))
 (add-hook 'after-save-hook 'revert-vc-diff-buffer)
 
+(advice-add 'diff-apply-hunk :after #'(lambda () (interactive) (save-some-buffers t nil)))
+(bind-key "k" 'diff-apply-hunk diff-mode-shared-map)
+
 ;; ----------------------------------------------------------------
 ;; misc. hydras
 ;; ----------------------------------------------------------------
