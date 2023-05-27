@@ -269,7 +269,8 @@
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.05)
   (setq company-eclim-auto-save nil)
-  (add-hook 'comint-mode-hook (lambda() (company-mode 0))))
+  (add-hook 'comint-mode-hook (lambda() (company-mode 0)))
+  (add-hook 'gptel-mode-hook  (lambda() (company-mode 0))))
 
 (use-package company-box
   :ensure t
@@ -560,6 +561,35 @@
           context-menu-local
           context-menu-minor))
   (context-menu-mode +1))
+
+;; ----------------------------------------------------------------
+;; AI copilot
+;; ----------------------------------------------------------------
+(use-package gptel
+  :ensure t
+  :config
+
+  (defun my-emacs-gptel-post-response ()
+    "Open gptel buffer and move the point to the end of it."
+    (with-current-buffer gptel-default-session
+      (goto-char (point-max))
+      (recenter -1)))
+
+  (add-hook 'gptel-post-response-hook 'my-emacs-gptel-post-response)
+
+  (setq gptel-max-tokens 400)
+
+  ;; On windows, give some instructions when API key is not set up.
+  (add-hook 'after-init-hook #'(lambda ()
+                                 (when (and (eq system-type 'windows-nt)
+                                            (eq gptel-api-key 'gptel-api-key-from-auth-source))
+                                   (display-warning :warning
+                                                    (concat
+                                                     "GTP API key not set up. "
+                                                     "Generate a key via https://platform.openai.com/account/api-keys")))))
+
+  ;; The preinstalled curl version doesn't work on windows
+  (setq gptel-use-curl nil))
 
 ;; ----------------------------------------------------------------
 ;; project
