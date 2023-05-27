@@ -319,17 +319,11 @@
 ;; ----------------------------------------------------------------
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
-(use-package joined-mark-ring-navigation
-  :demand t                             ; We want this to load regardless of binds
-  :after consult
+(use-package xref
   :bind
-  ("M-,"   .   pop-joined-mark-ring)
-  ("C-M-," . unpop-joined-mark-ring)
-  :config
-  (advice-add 'switch-to-buffer       :before 'joined-mark-ring-push-point)
-  (advice-add 'pop-to-buffer          :before 'joined-mark-ring-push-point)
-  (advice-add 'consult--jump          :before 'joined-mark-ring-push-point)
-  (advice-add 'xref-push-marker-stack :before 'joined-mark-ring-push-point))
+  ("M-,"   .   xref-pop-marker-stack)
+  ("M-."   .   xref-find-definitions)
+  ("M-?"   .   xref-find-references))
 
 (use-package avy
   :ensure t)
