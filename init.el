@@ -576,8 +576,11 @@
   (defun my-emacs-gptel-post-response ()
     "Open gptel buffer and move the point to the end of it."
     (with-current-buffer gptel-default-session
-      (goto-char (point-max))
-      (recenter -1)))
+      (goto-char (point-max)))
+    (when (get-buffer-window gptel-default-session)
+      (with-current-buffer gptel-default-session
+        (with-selected-window (get-buffer-window gptel-default-session)
+          (recenter -1)))))
 
   (add-hook 'gptel-post-response-hook 'my-emacs-gptel-post-response)
 
@@ -589,11 +592,12 @@
                                             (eq gptel-api-key 'gptel-api-key-from-auth-source))
                                    (display-warning :warning
                                                     (concat
-                                                     "GTP API key not set up. "
+                                                     "GPT API key not set up. "
                                                      "Generate a key via https://platform.openai.com/account/api-keys")))))
 
   ;; The preinstalled curl version doesn't work on windows
-  (setq gptel-use-curl nil))
+  (when (eq system-type 'windows-nt)
+    (setq gptel-use-curl nil)))
 
 ;; ----------------------------------------------------------------
 ;; project
