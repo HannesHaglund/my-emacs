@@ -641,18 +641,60 @@ When called in a program, it will use the project corresponding to directory DIR
                              "It is recommended to point it to bash.exe "
                              "inside your git for windows installation.")))
 
-  (let ((new-ps1-l "if [ -n \"$INSIDE_EMACS\" ]; then export PS1='\\[\\033[32m\\]\\u@\\h \\[\\033[33m\\]\\w\\[\\033[36m\\]`__git_ps1`\\[\\033[0m\\]\\n$ '; fi"))
-    (setq explicit-bash.exe-args '("--login" "-i")) ; Is this needed?
-    (setq explicit-bash-args '("--login" "-i"))
-    (prefer-coding-system 'utf-8)
+  (setq explicit-bash.exe-args '("--login" "-i")) ; Is this needed?
+  (setq explicit-bash-args     '("--login" "-i"))
+  (set-variable 'shell-command-switch "-ic")
+  (prefer-coding-system 'utf-8)
 
-    ;; Set up bash_profile that avoids a bunch of junk in shell output
-    (unless (file-exists-p "~/.bash_profile")
-      ;; Create empty file
-      (write-region "" nil "~/.bash_profile"))
-    ;; Append command to it unless it's already in file
-    (unless (file-has-str-p "~/.bash_profile" new-ps1-l)
-      (write-region (concat "\n" new-ps1-l) nil "~/.bash_profile" 'append))))
+  (setenv "PAGER"  "cat")
+  (setenv "EDITOR" "emacs")
+
+  (defface my-emacs-shell-plus-face
+    `((((class color) (background light))
+       ,@(and (>= emacs-major-version 27) '(:extend t))
+       :background "#ddffdd"
+       :foreground "#22aa22")
+      (((class color) (background dark))
+       ,@(and (>= emacs-major-version 27) '(:extend t))
+       :background "#335533"
+       :foreground "#ddffdd"))
+    "Face for lines that starts with plus in shell-mode."
+    :group 'magit-faces)
+
+  (defface my-emacs-shell-minus-face
+    `((((class color) (background light))
+       ,@(and (>= emacs-major-version 27) '(:extend t))
+       :background "#ffdddd"
+       :foreground "#aa2222")
+      (((class color) (background dark))
+       ,@(and (>= emacs-major-version 27) '(:extend t))
+       :background "#553333"
+       :foreground "#ffdddd"))
+    "Face for lines that starts with minus in shell-mode.")
+
+  (font-lock-add-keywords 'shell-mode '(("^\\+.*" . 'my-emacs-shell-plus-face)
+                                        ("^-.*"   . 'my-emacs-shell-minus-face)))
+
+  (defun windows-shell-advice (&optional a b c)
+    (when (get-buffer "*shell*")
+      (with-current-buffer "*shell*"
+        (goto-char (point-max))
+        (when (< (point) 16)          ; When the buffer is very short, i.e newly created
+
+          (insert "export PS1=\"\\\\n┃ \\\\w ➤ \"")
+          (comint-send-input)
+
+          (insert "export EDITOR='/c/windows/system32/notepad.exe'")
+          (comint-send-input)
+
+          (insert "alias gitlog='git log --pretty=format:\"%h%x09%an%x09%ad%x09%s\" --date=short --reverse | tail -48'")
+          (comint-send-input)
+
+          (insert "alias gitbs='git for-each-ref --format=\" %(author) %09 %(authordate:short)   %(objectname:short)   (%(committerdate:relative)) %09 %(refname:short) \" --sort=authordate | grep -i \"hannes haglund\" | cut -f2-'")
+          (comint-send-input)
+          ))))
+
+  (advice-add 'shell :after 'windows-shell-advice))
 
 
 ;; ================================================================
@@ -897,10 +939,6 @@ When called in a program, it will use the project corresponding to directory DIR
 ;; Dabbrev settings
 (setq dabbrev-case-fold-search nil)
 (setq dabbrev-upcase-means-case-search t)
-
-;; Shell environment
-(setenv "PAGER"  "cat")
-(setenv "EDITOR" "emacs")
 
 ;; No backup/lock files
 (setq make-backup-files nil)
