@@ -371,8 +371,7 @@
   :config
   (setq whitespace-style '(face tabs lines-tail))
   (set-face-foreground 'whitespace-line nil)
-  (setq whitespace-line-column 120)
-  (global-whitespace-mode t))
+  (setq whitespace-line-column 120))
 
 ;; ----------------------------------------------------------------
 ;; expand-region
