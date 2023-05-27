@@ -10,7 +10,8 @@
 
 (defun add-to-joined-mark-ring (element)
   (unless (or (eq this-command 'pop-joined-mark-ring)
-              (eq this-command 'unpop-joined-mark-ring))
+              (eq this-command 'unpop-joined-mark-ring)
+              (not buffer-file-name))
     ;; Pop elements we've diverged from
     (while (> joined-mark-ring-index 0)
       (setq joined-mark-ring-index (- joined-mark-ring-index 1))
