@@ -575,14 +575,18 @@
 
   (defun my-emacs-gptel-post-response ()
     "Open gptel buffer and move the point to the end of it."
+    ;; Works even when window isn't visible
     (with-current-buffer gptel-default-session
-      (goto-char (point-max)))
+      (end-of-buffer))
     (when (get-buffer-window gptel-default-session)
       (with-current-buffer gptel-default-session
         (with-selected-window (get-buffer-window gptel-default-session)
+          (end-of-buffer)               ; I often need it here as well, not sure why.
           (recenter -1)))))
 
   (add-hook 'gptel-post-response-hook 'my-emacs-gptel-post-response)
+
+  (define-key gptel-mode-map (kbd "C-<return>") 'gptel-send)
 
   (setq gptel-max-tokens 400)
 
