@@ -457,7 +457,16 @@
 
 (use-package magit
   :commands (magit-dispatch magit-file-dispatch magit-status magit-toplevel)
-  :ensure t)
+  :ensure t
+  :config
+  (setq magit-refresh-verbose t)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-tags-header)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-status-headers)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-pushremote)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-upstream)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-upstream-or-recent)
+  (remove-hook 'magit-status-sections-hook 'magit-insert-stashes))
 
 (pretty-hydra-define hydra-vc (
                                :color teal
