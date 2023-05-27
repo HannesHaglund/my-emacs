@@ -254,7 +254,10 @@
 ;; ----------------------------------------------------------------
 (use-package company
   :ensure t
-  :hook (after-init . global-company-mode)
+  :hook
+  (prog-mode . company-mode)
+  (org-mode . company-mode)
+  (markdown-mode . company-mode)
   :bind (:map company-active-map
               ("SPC"      . nil)
               ("RET"      . nil)
@@ -268,9 +271,7 @@
   :config
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.05)
-  (setq company-eclim-auto-save nil)
-  (add-hook 'comint-mode-hook (lambda() (company-mode 0)))
-  (add-hook 'gptel-mode-hook  (lambda() (company-mode 0))))
+  (setq company-eclim-auto-save nil))
 
 (use-package company-box
   :ensure t
