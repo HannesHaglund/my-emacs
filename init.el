@@ -304,28 +304,8 @@
   (setq wgrep-enable-key "\C-c \C-e"))
 
 ;; ----------------------------------------------------------------
-;; lsp-mode
+;; flycheck
 ;; ----------------------------------------------------------------
-(use-package lsp-mode
-  :ensure t
-  :defer nil
-
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  ;; This is recommended by https://emacs-lsp.github.io/lsp-mode/page/performance/
-  (setq gc-cons-threshold (* 100 1000 1000))   ; 100mb
-  (setq read-process-output-max (* 1024 1024)) ; 1mb
-
-  :config
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-
-  ;; Unbind key so it doesn't override our basic-keybinds keybind
-  :bind (:map lsp-signature-mode-map ("M-p" . nil))
-  :bind (:map lsp-signature-mode-map ("M-n" . nil))
-
-  :hook ((python-mode . lsp))
-  :commands lsp)
-
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode)
@@ -335,18 +315,6 @@
     ;; Fixes a bug where the linters are not found on Windows
     (setq flycheck-python-pylint-executable "pylint")
     (setq flycheck-python-flake8-executable "flake8")))
-
-(use-package lsp-ui
-  :ensure t
-  :after lsp-mode
-  :commands lsp-ui-mode
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
-
-(use-package dap-mode
-  :ensure t
-  :after lsp-mode)
 
 ;; ----------------------------------------------------------------
 ;; basic-keybinds
@@ -358,7 +326,7 @@
   ("M-,"   .   pop-joined-mark-ring)
   ("C-M-," . unpop-joined-mark-ring)
   :config
-  (advice-add 'switch-to-buffer          :before 'joined-mark-ring-push-point)
+  (advice-add 'switch-to-buffer       :before 'joined-mark-ring-push-point)
   (advice-add 'pop-to-buffer          :before 'joined-mark-ring-push-point)
   (advice-add 'consult--jump          :before 'joined-mark-ring-push-point)
   (advice-add 'xref-push-marker-stack :before 'joined-mark-ring-push-point))
