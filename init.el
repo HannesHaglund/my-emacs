@@ -325,7 +325,11 @@
   :bind
   ("M-,"   .   xref-pop-marker-stack)
   ("M-."   .   xref-find-definitions)
-  ("M-?"   .   xref-find-references))
+  ("M-?"   .   xref-find-references)
+  :config
+  (defun my-emacs-xref-push-marker-stack (&optional _)
+    (xref-push-marker-stack (copy-marker (point-marker))))
+  (advice-add 'consult--jump :before 'my-emacs-xref-push-marker-stack))
 
 (use-package avy
   :ensure t)
