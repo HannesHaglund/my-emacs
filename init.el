@@ -772,7 +772,8 @@ When called in a program, it will use the project corresponding to directory DIR
   :ensure t
   :config
   (global-aggressive-indent-mode 1)
-  (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
+  (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+  (add-to-list 'aggressive-indent-excluded-modes 'gdscript-mode))
 
 ;; Delete trailing whitespace on save
 (use-package ws-butler
@@ -875,6 +876,15 @@ When called in a program, it will use the project corresponding to directory DIR
   :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
+
+;; ----------------------------------------------------------------
+;; gdscript-mode
+;; ----------------------------------------------------------------
+(use-package gdscript-mode
+  :ensure t
+  :commands (gdscript-mode)
+  :config
+  (add-to-list 'auto-mode-alist '("\\.gd\\'" . gdscript-mode)))
 
 ;; ----------------------------------------------------------------
 ;; dockerfile-mode
