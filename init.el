@@ -706,14 +706,13 @@ When called in a program, it will use the project corresponding to directory DIR
   "Return number of lines in current buffer."
   (with-current-buffer (current-buffer) (line-number-at-pos (point-max) t)))
 
-(defun enable-display-line-numbers-relative ()
+(defun enable-display-line-numbers ()
   "Turn on 'display-line-numbers-mode', and display relative."
   (display-line-numbers-mode 1)
-  (setq display-line-numbers 'relative)
   (setq display-line-numbers-width (max 3 (length (number-to-string (lines-buffer))))))
 
-(add-hook 'prog-mode-hook 'enable-display-line-numbers-relative)
-(add-hook 'org-mode-hook  'enable-display-line-numbers-relative)
+(add-hook 'prog-mode-hook 'enable-display-line-numbers)
+(add-hook 'org-mode-hook  'enable-display-line-numbers)
 
 ;; ----------------------------------------------------------------
 ;; Themes
