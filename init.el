@@ -268,7 +268,8 @@
   :config
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.05)
-  (setq company-eclim-auto-save nil))
+  (setq company-eclim-auto-save nil)
+  (add-hook 'comint-mode-hook (lambda() (company-mode 0))))
 
 (use-package company-box
   :ensure t
