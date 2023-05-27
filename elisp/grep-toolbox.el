@@ -6,7 +6,9 @@
 (defun grep-toolbox--consult-ripgrep-builder (input)
   "Build command line given INPUT."
   (pcase-let* ((cmd (split-string-and-unquote grep-toolbox--consult-ripgrep-builder-cmd))
-               (type (consult--ripgrep-regexp-type (car cmd)))
+               (type (or consult--ripgrep-regexp-type
+                         (setq consult--ripgrep-regexp-type
+                               (if (consult--grep-lookahead-p (car cmd) "-P") 'pcre 'extended))))
                (`(,arg . ,opts) (consult--command-split input))
                (`(,re . ,hl) (funcall consult--regexp-compiler arg type
                                       (if (member "--smart-case" cmd)
