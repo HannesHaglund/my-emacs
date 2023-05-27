@@ -810,18 +810,6 @@ When called in a program, it will use the project corresponding to directory DIR
   :commands org-sticky-header-mode
   :hook (org-mode . org-sticky-header-mode))
 
-(use-package org-chef
-  :after org
-  :ensure t)
-
-(use-package org-chef-week-planning
-  :after org-chef)
-
-(use-package org-vcfile-link
-  :after org
-  :config
-  (setq vc-find-revision-no-save t))
-
 ;; ----------------------------------------------------------------
 ;; c-mode
 ;; ----------------------------------------------------------------
