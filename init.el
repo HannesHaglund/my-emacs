@@ -661,12 +661,8 @@ When called in a program, it will use the project corresponding to directory DIR
 ;; Visuals
 ;; ================================================================
 
-;; Keep highlighted window at appropriate size
-(use-package zoom
-  :ensure t
-  :config
-  (setq zoom-size '(0.618 . 0.618))     ; Golden ratio
-  (zoom-mode t))
+;; Highlight current line
+(global-hl-line-mode 1)
 
 ;; Apply hack font
 (when (font-available-p "hack") (set-frame-font "hack"))
