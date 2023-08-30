@@ -1,8 +1,7 @@
 (require 'pretty-hydra)
-(require 'all-the-icons)
 
 (pretty-hydra-define hydra-macro (:color pink
-                                         :title (concat (all-the-icons-faicon "cogs") " Macro")
+                                         :title (concat " Macro")
                                          :quit-key "q"
                                          :pre
                                          (when defining-kbd-macro

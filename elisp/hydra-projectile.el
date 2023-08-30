@@ -1,6 +1,4 @@
 (require 'pretty-hydra)
-(require 'grep-toolbox)
-(require 'all-the-icons)
 (require 'shell-repl)
 (require 'projectile)
 
@@ -10,7 +8,7 @@
   (shell-repl (projectile-project-root)))
 
 (pretty-hydra-define hydra-projectile (:color teal :quit-key "q"
-                                              :title (concat (all-the-icons-faicon "folder-open")
+                                              :title (concat
                                                              " Projectile in "
                                                              (projectile-project-root)))
   ("Find file"
@@ -20,7 +18,7 @@
     ("d"   projectile-find-dir "dir"))
 
    "Search/Tags"
-   (("g"   grep-toolbox-consult-ripgrep "grep")
+   (("g"   consult-ripgrep-inherit-region "grep")
     ("t"   ggtags-update-tags "update gtags")
     ("o"   projectile-multi-occur "multi-occur"))
 

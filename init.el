@@ -40,9 +40,6 @@
 ;; to overwrite it again even if we get an error
 (use-package useful-commands)
 
-;; Also useful :)
-(use-package grep-toolbox)
-
 ;; ----------------------------------------------------------------
 ;; exec-path-from-shell
 ;; ----------------------------------------------------------------
@@ -51,21 +48,6 @@
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
-
-;; ----------------------------------------------------------------
-;; which-key
-;; ----------------------------------------------------------------
-(use-package which-key
-  :ensure t
-  :config
-  (which-key-mode)
-  (which-key-setup-side-window-right))
-
-(use-package which-key-posframe
-  :ensure t
-  :after which-key
-  :config
-  (which-key-posframe-mode))
 
 ;; ----------------------------------------------------------------
 ;; hydra
@@ -86,12 +68,6 @@
   (vertico-mode)
   :config
   (setq vertico-count 24))
-
-(use-package vertico-posframe
-  :ensure t
-  :after vertico
-  :config
-  (vertico-posframe-mode 1))
 
 ;; Keeps all history, especially useful for vertico,
 ;; since it ranks by history
@@ -173,7 +149,7 @@
   :config
   (pretty-hydra-define hydra-text-scale (
                                          :color red
-                                         :title (concat (all-the-icons-faicon "eye") " Zoom")
+                                         :title (concat " Zoom")
                                          quit-key "q"
                                          :pre (default-text-scale-mode))
     ("Actions"
@@ -185,7 +161,7 @@
 ;; ----------------------------------------------------------------
 (use-package multiple-cursors
   :ensure t
-  :after (pretty-hydra all-the-icons)
+  :after pretty-hydra
   :bind ("C-c m"   . hydra-multiple-cursors/body)
   :config
   (require 'multiple-cursors)
@@ -219,7 +195,7 @@
     (mc/add-default-cmds-to-run))
 
   (pretty-hydra-define hydra-multiple-cursors
-    (:title (concat (all-the-icons-faicon "i-cursor") " Multiple Cursors") :quit-key "q")
+    (:title (concat  " Multiple Cursors") :quit-key "q")
     ("Up"
      (("p" mc/mark-previous-like-this "next")
       ("P" mc/skip-to-previous-like-this "skip")
@@ -239,15 +215,6 @@
       ("a" mc/mark-all-like-this "mark all" :exit t)
       ("s" mc/mark-all-in-region-regexp "search" :exit t)
       ("c" mc/clear-cmds-to-run "clear commands")))))
-
-;; ----------------------------------------------------------------
-;; restart-emacs
-;; ----------------------------------------------------------------
-(use-package restart-emacs
-  :ensure t
-  :commands (restart-emacs)
-  :config
-  (setq restart-emacs-restore-frames t))
 
 ;; ----------------------------------------------------------------
 ;; company-mode
@@ -307,19 +274,6 @@
   (setq wgrep-enable-key "\C-c \C-e"))
 
 ;; ----------------------------------------------------------------
-;; flycheck
-;; ----------------------------------------------------------------
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode)
-  :config
-  (setq flycheck-checker-error-threshold (* 10 1000))
-  (when (eq system-type 'windows-nt)
-    ;; Fixes a bug where the linters are not found on Windows
-    (setq flycheck-python-pylint-executable "pylint")
-    (setq flycheck-python-flake8-executable "flake8")))
-
-;; ----------------------------------------------------------------
 ;; basic-keybinds
 ;; ----------------------------------------------------------------
 (use-package xref
@@ -332,14 +286,11 @@
     (xref-push-marker-stack (copy-marker (point-marker))))
   (advice-add 'consult--jump :before 'my-emacs-xref-push-marker-stack))
 
-(use-package avy
-  :ensure t)
-
 (use-package mwim
   :ensure t)
 
-(use-package basic-keybinds
-  :after (pretty-hydra consult grep-toolbox avy mwim)
+(use-package emacs
+  :after useful-commands
   :bind
   ("C-a" . mwim-beginning)
   ("C-e" . mwim-end)
@@ -349,7 +300,7 @@
   ("C-," . other-window)
   ("C-;" . other-frame)
   ("M-g" . goto-line)
-  ("C-o" . grep-toolbox-consult-line)
+  ("C-o" . consult-line-inherit-region)
   ("C-z" . undo)
   ("C-x C-b" . switch-to-buffer)
   ("C-x K" . kill-buffer-and-window)
@@ -363,7 +314,6 @@
   :bind (("M-!" . shell-repl)
          :map dired-mode-map
          ("M-!" . shell-repl)))
-
 
 ;; ----------------------------------------------------------------
 ;; whitespace
@@ -391,13 +341,6 @@
   :ensure t
   :config
   (projectile-mode))
-
-;; ----------------------------------------------------------------
-;; avy
-;; ----------------------------------------------------------------
-(use-package avy
-  :ensure t
-  :bind ("C-v" . avy-goto-char-timer))
 
 ;; ----------------------------------------------------------------
 ;; persistent-scratch
@@ -460,7 +403,7 @@
 
 (pretty-hydra-define hydra-vc (
                                :color teal
-                               :title (concat (all-the-icons-faicon "git") " Choose VC frontend...")
+                               :title (concat " Choose VC frontend...")
                                :quit-key "q")
   ("Available frontends"
    (("g" magit-status  "magit")
@@ -531,8 +474,8 @@
   (bind-key "C-d" 'open-file-directory dired-mode-map) ; d and D is taken
   (bind-key "b" 'shell-here            dired-mode-map) ; mnemonic: b for bash; s and S is taken
   (bind-key "i" 'dired-display-file    dired-mode-map)
-  (bind-key "o" 'grep-toolbox-consult-line dired-mode-map)
-  (bind-key "G" 'grep-toolbox-consult-ripgrep-default-directory dired-mode-map))
+  (bind-key "o" 'consult-line-inherit-region dired-mode-map)
+  (bind-key "G" 'consult-ripgrep-default-directory dired-mode-map))
 
 (use-package dired-subtree
   :ensure t
@@ -544,12 +487,6 @@
     (dired-subtree-cycle 999))          ; Arbitrary large number
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<C-tab>" #'dired-subtree-expand-recursive))
-
-(use-package all-the-icons-dired
-  :ensure t
-  :after (dired all-the-icons)
-  :config
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 ;; ----------------------------------------------------------------
 ;; context-menu
@@ -566,43 +503,6 @@
           context-menu-local
           context-menu-minor))
   (context-menu-mode +1))
-
-;; ----------------------------------------------------------------
-;; AI copilot
-;; ----------------------------------------------------------------
-(use-package gptel
-  :ensure t
-  :config
-
-  (defun my-emacs-gptel-post-response ()
-    "Open gptel buffer and move the point to the end of it."
-    ;; Works even when window isn't visible
-    (with-current-buffer gptel-default-session
-      (end-of-buffer))
-    (when (get-buffer-window gptel-default-session)
-      (with-current-buffer gptel-default-session
-        (with-selected-window (get-buffer-window gptel-default-session)
-          (end-of-buffer)               ; I often need it here as well, not sure why.
-          (recenter -1)))))
-
-  (add-hook 'gptel-post-response-hook 'my-emacs-gptel-post-response)
-
-  (define-key gptel-mode-map (kbd "C-<return>") 'gptel-send)
-
-  (setq gptel-max-tokens 400)
-
-  ;; On windows, give some instructions when API key is not set up.
-  (add-hook 'after-init-hook #'(lambda ()
-                                 (when (and (eq system-type 'windows-nt)
-                                            (eq gptel-api-key 'gptel-api-key-from-auth-source))
-                                   (display-warning :warning
-                                                    (concat
-                                                     "GPT API key not set up. "
-                                                     "Generate a key via https://platform.openai.com/account/api-keys")))))
-
-  ;; The preinstalled curl version doesn't work on windows
-  (when (eq system-type 'windows-nt)
-    (setq gptel-use-curl nil)))
 
 ;; ----------------------------------------------------------------
 ;; project
@@ -733,12 +633,6 @@ When called in a program, it will use the project corresponding to directory DIR
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 
-;; Nyan mode to highlight buffer scroll
-(use-package nyan-mode
-  :ensure t
-  :config
-  (nyan-mode 1))
-
 ;; ----------------------------------------------------------------
 ;; Relative line numbers
 ;; ----------------------------------------------------------------
@@ -753,39 +647,6 @@ When called in a program, it will use the project corresponding to directory DIR
 
 (add-hook 'prog-mode-hook 'enable-display-line-numbers)
 (add-hook 'org-mode-hook  'enable-display-line-numbers)
-
-;; ----------------------------------------------------------------
-;; Themes
-;; ----------------------------------------------------------------
-(use-package doom-themes
-  :ensure t
-  :config
-  (setq doom-themes-enable-bold t)
-  (setq doom-themes-enable-italic t)
-  (doom-themes-visual-bell-config)
-  (doom-themes-org-config)
-  (setq doom-vibrant-brighter-comments t)
-  (setq doom-vibrant-brighter-modeline t)
-  (load-theme 'doom-vibrant t))
-
-(use-package doom-modeline
-  :ensure t
-  :init
-  (doom-modeline-mode 1))
-
-;; ----------------------------------------------------------------
-;; All-the-icons
-;; ----------------------------------------------------------------
-(use-package all-the-icons
-  :ensure t
-  :if (display-graphic-p))
-
-(use-package all-the-icons-completion
-  :ensure t
-  :after all-the-icons
-  :config
-  (all-the-icons-completion-mode 1)
-  (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup))
 
 ;; ================================================================
 ;; Languages
@@ -814,7 +675,6 @@ When called in a program, it will use the project corresponding to directory DIR
 ;; org-mode
 ;; ----------------------------------------------------------------
 (use-package org
-  :after all-the-icons
   :mode (("\\.org$" . org-mode))
   :config
 
@@ -970,15 +830,7 @@ When called in a program, it will use the project corresponding to directory DIR
   (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php .")
   (ensure-system-package "gnuplot" "gnuplot.exe" "Please download and install it via http://www.gnuplot.info/download.html .")
   (ensure-pip-module "python-lsp-server==0.19.0")
-  (ensure-font-installed "hack" "Download it from https://github.com/source-foundry/Hack and install it.")
-  ;; all-the-icons fonts
-  (let ((all-the-icons-msg "Run M-x all-the-icons-install-fonts, and install the fonts downloaded."))
-    (ensure-font-installed "all-the-icons" all-the-icons-msg)
-    (ensure-font-installed "file-icons" all-the-icons-msg)
-    (ensure-font-installed "fontawesome" all-the-icons-msg)
-    (ensure-font-installed "Material Icons" all-the-icons-msg)
-    (ensure-font-installed "github-octicons" all-the-icons-msg)
-    (ensure-font-installed "Weather Icons Regular" all-the-icons-msg)))
+  (ensure-font-installed "hack" "Download it from https://github.com/source-foundry/Hack and install it."))
 
 
 (provide 'init)
