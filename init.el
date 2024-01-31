@@ -207,7 +207,6 @@
 ;; ----------------------------------------------------------------
 (use-package xref
   :bind
-  ("M-,"   .   xref-pop-marker-stack)
   ("M-."   .   xref-find-definitions)
   ("M-?"   .   xref-find-references)
   :config
@@ -272,6 +271,30 @@
   :demand t
   :init
   (persistent-scratch-setup-default))
+
+;; ----------------------------------------------------------------
+;; back-button
+;; ----------------------------------------------------------------
+(use-package back-button
+  :ensure t
+  :demand t
+  :after consult
+  :bind
+  ("M-,"   . back-button-global)
+  ("C-M-," . back-button-global-forward)
+
+  :config
+  (setq back-button-no-wrap t)
+  (setq back-button-index-timeout 8)    ; seconds
+
+  (advice-add 'consult--jump           :before 'back-button-push-mark-local-and-global)
+  (advice-add 'consult--jump           :after  'back-button-push-mark-local-and-global)
+  ;; (advice-add 'pop-to-buffer-same-window           :before 'back-button-push-mark-local-and-global)
+  ;; (advice-add 'pop-to-buffer-same-window           :after 'back-button-push-mark-local-and-global)
+  (advice-add 'find-generic-definition :before 'back-button-push-mark-local-and-global)
+  (advice-add 'find-generic-definition :after  'back-button-push-mark-local-and-global)
+
+  (back-button-mode 1))
 
 ;; ----------------------------------------------------------------
 ;; dumb-jump
