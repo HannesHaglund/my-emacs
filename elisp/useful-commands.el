@@ -50,6 +50,11 @@
   (interactive)
   (consult-ripgrep nil (region-when-active)))
 
+(defun consult-ripgrep-dir-inherit-region (dir)
+  "Run consult-ripgrep, but inherit region when active"
+  (interactive)
+  (consult-ripgrep dir (region-when-active)))
+
 (defun consult-line-inherit-region ()
   "Run consult-line, but inherit region if active"
   (interactive)
@@ -161,6 +166,26 @@
   """Run timeclock-out, but without any specified REASON."""
   (interactive)
   (timeclock-out ""))
+
+(defun timeclock-reread-and-status-string ()
+  "Reread log and show status."
+  (interactive)
+  (timeclock-reread-log)
+  (message (timeclock-status-string nil t)))
+
+;; ================================================================
+;; Align
+;; ================================================================
+(defun align-each (regexp)
+  "Align each occurence of REGEXP in region."
+  (interactive "sRegexp: ")
+  (align-regexp
+   (if (use-region-p) (region-beginning) (point-min))
+   (if (use-region-p) (region-end)       (point-max))
+   (concat "\\(\\s-*\\)" regexp)
+   1
+   align-default-spacing
+   1))
 
 ;; ================================================================
 ;; Other

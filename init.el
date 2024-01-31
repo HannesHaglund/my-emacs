@@ -50,16 +50,6 @@
     (exec-path-from-shell-initialize)))
 
 ;; ----------------------------------------------------------------
-;; hydra
-;; ----------------------------------------------------------------
-(use-package hydra
-  :ensure t)
-
-(use-package pretty-hydra
-  :ensure t
-  :after hydra)
-
-;; ----------------------------------------------------------------
 ;; vertico
 ;; ----------------------------------------------------------------
 (use-package vertico
@@ -90,6 +80,7 @@
 ;; ----------------------------------------------------------------
 (use-package consult
   :ensure t
+  :demand t
   :config
   ;; Bind live preview to a key for some modes.
   (consult-customize
@@ -111,76 +102,30 @@
         (assq-delete-all 'project-file marginalia-annotator-registry)))
 
 ;; ----------------------------------------------------------------
-;; embark
-;; ----------------------------------------------------------------
-(use-package embark
-  :ensure t
-  :bind
-  (("C-." . embark-act)
-   ("C-M-." . embark-dwim)
-   ("C-h B" . embark-bindings))
-
-  :init
-  ;; Replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
-
-  :config
-  ;; Hide the mode line of the Embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
-
-;; Consult users will also want the embark-consult package.
-(use-package embark-consult
-  :ensure t
-  :after (embark consult)
-  :demand t
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
-
-;; ----------------------------------------------------------------
 ;; default-text-scale
 ;; ----------------------------------------------------------------
 (use-package default-text-scale
   :ensure t
-  :after pretty-hydra
-  :bind ("C-c z" . hydra-text-scale/body)
+  :bind
+  ("C-c z i" . default-text-scale-increase)
+  ("C-c z o" . default-text-scale-decrease)
   :config
-  (pretty-hydra-define hydra-text-scale (
-                                         :color red
-                                         :title (concat " Zoom")
-                                         quit-key "q"
-                                         :pre (default-text-scale-mode))
-    ("Actions"
-     (("i" default-text-scale-increase "zoom in")
-      ("o" default-text-scale-decrease "zoom out")))))
+  (setq default-text-scale-amount 40))
 
 ;; ----------------------------------------------------------------
 ;; multiple-cursors
 ;; ----------------------------------------------------------------
 (use-package multiple-cursors
   :ensure t
-  :after pretty-hydra
-  :bind ("C-c m"   . hydra-multiple-cursors/body)
-  :config
-  (require 'multiple-cursors)
+  :bind
+  ("C-M-n" . mc/mark-next-like-this)
+  ("C-M-p" . mc/mark-previous-like-this)
+  ("C-M-f" . mc/skip-to-next-like-this)
+  ("C-M-b" . mc/skip-to-previous-like-this)
+  ("C-M-a" . mc/mark-all-like-this)
 
+  :config
   (defun mc/add-default-cmds-to-run ()
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-previous-like-this)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/skip-to-previous-like-this)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/unmark-previous-like-this)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-next-like-this)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/skip-to-next-like-this)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/unmark-next-like-this)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/insert-numbers)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/insert-numbers-and-exit)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/insert-letters)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/insert-letters-and-exit)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/edit-lines)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-like-this)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/mark-all-in-region-regexp)
-    (add-to-list 'mc/cmds-to-run-once 'hydra-multiple-cursors/mc/clear-cmds-to-run)
     (add-to-list 'mc/cmds-to-run-for-all 'org-delete-char)
     (add-to-list 'mc/cmds-to-run-for-all 'mwim-beginning)
     (add-to-list 'mc/cmds-to-run-for-all 'mwim-end)
@@ -192,29 +137,7 @@
     (interactive)
     (setq mc/cmds-to-run-once nil)
     (setq mc/cmds-to-run-for-all nil)
-    (mc/add-default-cmds-to-run))
-
-  (pretty-hydra-define hydra-multiple-cursors
-    (:title (concat  " Multiple Cursors") :quit-key "q")
-    ("Up"
-     (("p" mc/mark-previous-like-this "next")
-      ("P" mc/skip-to-previous-like-this "skip")
-      ("M-p" mc/unmark-previous-like-this "unmark"))
-
-     "Down"
-     (("n" mc/mark-next-like-this "next")
-      ("N" mc/skip-to-next-like-this "skip")
-      ("M-n" mc/unmark-next-like-this "unmark"))
-
-     "Insert"
-     (("0" mc/insert-numbers "insert numbers" :exit t)
-      ("A" mc/insert-letters "insert letters" :exit t))
-
-     "Miscellaneous"
-     (("l" mc/edit-lines "edit lines" :exit t)
-      ("a" mc/mark-all-like-this "mark all" :exit t)
-      ("s" mc/mark-all-in-region-regexp "search" :exit t)
-      ("c" mc/clear-cmds-to-run "clear commands")))))
+    (mc/add-default-cmds-to-run)))
 
 ;; ----------------------------------------------------------------
 ;; company-mode
@@ -242,7 +165,14 @@
 
 (use-package company-box
   :ensure t
+  :after company
   :hook (company-mode . company-box-mode))
+
+(use-package company-fuzzy
+  :ensure t
+  :after company
+  :config
+  (global-company-fuzzy-mode 1))
 
 ;; ----------------------------------------------------------------
 ;; wgrep
@@ -291,6 +221,7 @@
 
 (use-package emacs
   :after useful-commands
+  :demand t
   :bind
   ("C-a" . mwim-beginning)
   ("C-e" . mwim-end)
@@ -301,7 +232,7 @@
   ("C-;" . other-frame)
   ("M-g" . goto-line)
   ("C-o" . consult-line-inherit-region)
-  ("C-z" . undo)
+  ("C-z" . repeat)
   ("C-x C-b" . switch-to-buffer)
   ("C-x K" . kill-buffer-and-window)
   ("C-c C-f" . revert-buffer-no-confirm))
@@ -335,18 +266,11 @@
   (define-key lisp-interaction-mode-map (kbd "C-j") nil))
 
 ;; ----------------------------------------------------------------
-;; projectile
-;; ----------------------------------------------------------------
-(use-package projectile
-  :ensure t
-  :config
-  (projectile-mode))
-
-;; ----------------------------------------------------------------
 ;; persistent-scratch
 ;; ----------------------------------------------------------------
 (use-package persistent-scratch
   :ensure t
+  :demand t
   :init
   (persistent-scratch-setup-default))
 
@@ -356,7 +280,7 @@
 (use-package dumb-jump
   :ensure t
   :config
-  (add-to-list 'xref-backend-functions #'dumb-jump-xref-activate t)
+  (add-to-list 'xref-backend-functions #'dumb-jump-xref-activate)
   (setq dumb-jump-prefer-searcher 'rg))
 
 ;; ----------------------------------------------------------------
@@ -366,16 +290,13 @@
 ;; Display whether a line is changed in VC on fringe
 (use-package diff-hl
   :ensure t
+  :demand t
   :config
   (global-diff-hl-mode))
 
 (use-package git-timemachine
   :ensure t
   :commands git-timemachine)
-
-(use-package hydra-p4
-  :commands (hydra-p4/body)
-  :after pretty-hydra)
 
 (use-package p4
   :ensure t
@@ -393,80 +314,49 @@
   :ensure t
   :config
   (setq magit-refresh-verbose t)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-tags-header)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-status-headers)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-pushremote)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-upstream)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-upstream-or-recent)
-  (remove-hook 'magit-status-sections-hook 'magit-insert-stashes))
-
-(pretty-hydra-define hydra-vc (
-                               :color teal
-                               :title (concat " Choose VC frontend...")
-                               :quit-key "q")
-  ("Available frontends"
-   (("g" magit-status  "magit")
-    ("p" hydra-p4/body "p4"))))
-
-(defun appropriate-vc-hydra-body ()
-  "Try to open UI for the version control used in 'default-directory'.  Prompt the user with a hydra if this is not possible."
-  (interactive)
-  (if (or (string= (vc-backend buffer-file-name) "Git") (magit-toplevel default-directory))
-      ;; We are in a git project...
-      (magit-status)
-    ;; We are not. Prompt the user.
-    (hydra-vc/body)))
-
-(global-set-key (kbd "C-c v")   'appropriate-vc-hydra-body)
-
-(defun revert-vc-diff-buffer ()
-  "Revert *vc-diff* buffer."
-  (when (get-buffer "*vc-diff*")
-    ;; I would like to just wrap this in a save-excursion
-    ;; But it's not working for some reason...
-    (let ((orig-buf (current-buffer)))
-      (switch-to-buffer "*vc-diff*")
-      (revert-buffer t t t)
-      (switch-to-buffer orig-buf))))
-(add-hook 'after-save-hook 'revert-vc-diff-buffer)
+  ;; Magit is slow on windows. Remove sections to speed it up.
+  (when (eq system-type 'windows-nt)
+    (remove-hook 'magit-status-sections-hook 'magit-insert-tags-header)
+    (remove-hook 'magit-status-sections-hook 'magit-insert-status-headers)
+    (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-pushremote)
+    (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-pushremote)
+    (remove-hook 'magit-status-sections-hook 'magit-insert-unpulled-from-upstream)
+    (remove-hook 'magit-status-sections-hook 'magit-insert-unpushed-to-upstream-or-recent)
+    (remove-hook 'magit-status-sections-hook 'magit-insert-stashes)))
 
 (advice-add 'diff-apply-hunk :after #'(lambda () (interactive) (save-some-buffers t nil)))
 (bind-key "k" 'diff-apply-hunk diff-mode-shared-map)
 
 ;; ----------------------------------------------------------------
-;; misc. hydras
+;; Timeclock
 ;; ----------------------------------------------------------------
-(use-package hydra-registers
-  :after pretty-hydra
+(use-package timeclock
+  :after useful-commands
   :bind
-  ("C-x r" . hydra-registers/body))
-(use-package hydra-rectangle
-  :after pretty-hydra
+  ("C-c c i" . timeclock-in)
+  ("C-c c o" . timeclock-out-no-reason)
+  ("C-c c O" . timeclock-out)
+  ("C-c c s" . timeclock-change)
+  ("C-c c f" . timeclock-visit-timelog)
+  ("C-c c c" . timeclock-reread-and-status-string)
+  ("C-c c d" . timeclock-project-summary)
+  :config
+  )
+
+;; ----------------------------------------------------------------
+;; Macro
+;; ----------------------------------------------------------------
+(use-package macro
   :bind
-  ("C-c r" . hydra-rectangle/body))
-(use-package hydra-align
-  :after pretty-hydra
-  :bind
-  ("C-c a" . hydra-align/body))
-(use-package hydra-macro
-  :after pretty-hydra
-  :bind
-  ("C-c o" . hydra-macro/body))
-(use-package hydra-projectile
-  :after pretty-hydra
-  :bind
-  ("C-c p" . hydra-projectile/body))
-(use-package hydra-timeclock
-  :after pretty-hydra
-  :bind
-  ("C-c c" . hydra-timeclock/body))
+  ("C-c o a" . kmacro-start-macro)
+  ("C-c o e" . kmacro-end-or-call-macro-repeat)
+  ("C-c o x s" . insert-kbd-macro))
 
 ;; ----------------------------------------------------------------
 ;; dired-mode
 ;; ----------------------------------------------------------------
 (use-package dired
-  :after consult
+  :demand t
   :config
   (setq dired-listing-switches "-alh")    ; List file sizes in a human-readable format
   (defun dired-here () (interactive) (dired default-directory))
@@ -479,6 +369,7 @@
 
 (use-package dired-subtree
   :ensure t
+  :demand t
   :after dired
   :config
   (defun dired-subtree-expand-recursive ()
@@ -486,15 +377,14 @@
     (interactive)
     (dired-subtree-cycle 999))          ; Arbitrary large number
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
-  (bind-key "<C-tab>" #'dired-subtree-expand-recursive))
+  (bind-key "<M-tab>" #'dired-subtree-expand-recursive))
 
 ;; ----------------------------------------------------------------
 ;; context-menu
 ;; ----------------------------------------------------------------
 (use-package mouse
-  :demand t
   :bind ("<mouse-3>" . context-menu-open)
-  :config
+  :init
   (setq context-menu-functions
         '(context-menu-ffap
           context-menu-region
@@ -502,6 +392,7 @@
           context-menu-buffers
           context-menu-local
           context-menu-minor))
+  :config
   (context-menu-mode +1))
 
 ;; ----------------------------------------------------------------
@@ -509,16 +400,8 @@
 ;; ----------------------------------------------------------------
 (use-package project
   :demand t
-  :bind ("C-x p p" . project-find-project-then-find)
-  :bind ("C-x p g" . consult-ripgrep-inherit-region)
-  :init
-  (defun project-find-project-then-find (dir)
-    "\"Switch\" to another project by running an Emacs command.
-When called in a program, it will use the project corresponding to directory DIR."
-    (interactive (list (project-prompt-project-dir)))
-    (let ((default-directory dir)
-          (project-current-inhibit-prompt t))
-      (call-interactively 'project-find-file))))
+  :bind
+  ("C-x p g" . consult-ripgrep-inherit-region))
 
 ;; ----------------------------------------------------------------
 ;; git bash shell setup
@@ -626,27 +509,45 @@ When called in a program, it will use the project corresponding to directory DIR
 ;; No menu bar
 (menu-bar-mode -1)
 
-;; No scroll bar
-(scroll-bar-mode -1)
+;; Scroll bar
+(scroll-bar-mode 1)
 
 ;; Show paren
 (setq show-paren-delay 0)
 (show-paren-mode 1)
 
 ;; ----------------------------------------------------------------
-;; Relative line numbers
+;; Modeline
 ;; ----------------------------------------------------------------
-(defun lines-buffer ()
-  "Return number of lines in current buffer."
-  (with-current-buffer (current-buffer) (line-number-at-pos (point-max) t)))
+(setq-default
+ mode-line-format
+ '("%e"
+   mode-line-front-space
+   "%*%*%* "
+   mode-line-buffer-identification
+   "| "
+   "%l⬍"
+   (:eval (number-to-string (count-lines (point-min) (point-max))))
+   "  "
+   (:eval (propertize
+           (file-name-nondirectory (directory-file-name (file-name-directory (project-root (project-current)))))
+           'face 'mode-line-emphasis))
+   "/" ((:eval (string-trim-left default-directory (project-root (project-current)))))
+   "   ("
+   mode-name
+   (:eval (when (bound-and-true-p defining-kbd-macro) " kmacro"))
+   (:eval (when (bound-and-true-p multiple-cursors-mode)
+            (format " mc[%d]" (mc/num-cursors))))
+   (:eval (when (bound-and-true-p buffer-read-only) " readonly"))
+   (:eval (when (bound-and-true-p debug-on-error) " dbg"))
+   (:eval (when (and (fboundp 'timeclock-currently-in-p) (timeclock-currently-in-p))
+            (format " t[%s]" (timeclock-when-to-leave-string nil t))))
+   ") "
+   mode-line-misc-info mode-line-end-spaces))
 
-(defun enable-display-line-numbers ()
-  "Turn on 'display-line-numbers-mode', and display relative."
-  (display-line-numbers-mode 1)
-  (setq display-line-numbers-width (max 3 (length (number-to-string (lines-buffer))))))
-
-(add-hook 'prog-mode-hook 'enable-display-line-numbers)
-(add-hook 'org-mode-hook  'enable-display-line-numbers)
+;; Update all modelines when time changes
+(advice-add 'timeclock-in  :after 'timeclock-reread-log)
+(advice-add 'timeclock-reread-log :after #'(lambda () (force-mode-line-update t)))
 
 ;; ================================================================
 ;; Languages
@@ -708,11 +609,33 @@ When called in a program, it will use the project corresponding to directory DIR
   :config
   (setq org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-(use-package org-sticky-header
+(use-package org-chef
   :after org
   :ensure t
-  :commands org-sticky-header-mode
-  :hook (org-mode . org-sticky-header-mode))
+  :commands (org-chef-insert-recipe org-chef-edit-servings))
+
+;; ----------------------------------------------------------------
+;; markdown-mode
+;; ----------------------------------------------------------------
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown")
+  :bind (:map markdown-mode-map ("C-M-u" . markdown-do))
+  :config
+
+  ;; Disbale some keys from overriding global map
+  (bind-key "M-n" nil markdown-mode-map)
+  (bind-key "M-p" nil markdown-mode-map)
+
+  ;; Misc settings
+  (setq markdown-fontify-whole-heading-line t)
+  (setq markdown-fontify-code-blocks-natively t)
+
+  ;; Disable indent
+  (setq markdown-indent-function #'(lambda () (interactive)))
+  (setq markdown-indent-on-enter nil))
+
 
 ;; ----------------------------------------------------------------
 ;; c-mode
@@ -792,6 +715,9 @@ When called in a program, it will use the project corresponding to directory DIR
 (advice-add 'isearch-forward         :after 'isearch-region-to-advice)
 (advice-add 'isearch-backward-regexp :after 'isearch-region-to-advice)
 (advice-add 'isearch-backward        :after 'isearch-region-to-advice)
+
+;; Show num of matches in isearch
+(setq isearch-lazy-count t)
 
 ;; Dabbrev settings
 (setq dabbrev-case-fold-search nil)
