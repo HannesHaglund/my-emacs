@@ -753,7 +753,6 @@
   (ensure-system-package "ripgrep" "rg.exe"
                          "Please download a binary from https://github.com/BurntSushi/ripgrep/releases and copy it to somewhere under C:\\Program Files .")
   (ensure-system-package "imagemagick" "convert.exe" "Please download and install it via https://legacy.imagemagick.org/script/download.php .")
-  (ensure-system-package "gnuplot" "gnuplot.exe" "Please download and install it via http://www.gnuplot.info/download.html .")
   (ensure-pip-module "python-lsp-server==0.19.0")
   (ensure-font-installed "hack" "Download it from https://github.com/source-foundry/Hack and install it."))
 
