@@ -680,6 +680,10 @@
   :ensure t
   :commands (org-chef-insert-recipe org-chef-edit-servings))
 
+(use-package org-download
+  :after org
+  :ensure t)
+
 ;; ----------------------------------------------------------------
 ;; markdown-mode
 ;; ----------------------------------------------------------------
