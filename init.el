@@ -628,8 +628,44 @@
   (setq org-src-tab-acts-natively t)
   (setq org-link-file-path-type 'relative)
 
+  (setq org-todo-keywords '((sequence "TODO(!)" "WAITING(!)" "|" "DONE(!)")))
+  (setq org-todo-keyword-faces '(("WAITING" . warning)))
+  (setq org-agenda-skip-deadline-if-done t)
+
   (bind-key "C-," nil org-mode-map)
-  (bind-key "C-j" nil org-mode-map))
+  (bind-key "C-j" nil org-mode-map)
+
+  (defun org-fold-done ()
+    "Fold top-level headings in current buffer marked DONE."
+    (interactive)
+    (org-fold-show-all '(headings))
+    (save-excursion
+      (goto-char (point-min))
+      (while (< (point) (point-max))
+        (when (s-starts-with-p "DONE" (org-get-heading))
+          (org-cycle))
+        (org-next-visible-heading 1))))
+
+  (defun org-sort-todo-cur-buffer ()
+    "Sort entries in todo order in current buffer and go to point-min."
+    (interactive)
+    (save-mark-and-excursion
+      (set-mark (point-min))
+      (goto-char (point-max))
+      (activate-mark)
+      (org-sort-entries nil ?o))
+    ;; save-mark-and-excursion seems to still mess up point. Guess I can live with that.
+    (goto-char (point-min)))
+
+  ;; Works on find-file, but bugs on revert-buffer. Don't know why, but good enough I guess.
+  (defun org-try-todoorg-actions ()
+    "Actions on entering todo.org."
+    (when (string-equal (buffer-name (current-buffer)) "todo.org")
+      (org-sort-todo-cur-buffer)
+      (org-fold-done)
+      (goto-char (point-min))))
+
+  (add-hook 'find-file-hook #'org-try-todoorg-actions))
 
 (use-package org-bullets
   :after org
