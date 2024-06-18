@@ -241,6 +241,8 @@
 (use-package shell-repl
   :commands shell-repl
   :bind (("M-!" . shell-repl)
+         ("M-~" . shell-repl-store)
+         ("M-`" . shell-repl-run-stored)
          :map dired-mode-map
          ("M-!" . shell-repl)))
 
@@ -450,9 +452,9 @@
                              "It is recommended to point it to bash.exe "
                              "inside your git for windows installation.")))
 
-  (setq explicit-bash.exe-args '("--login" "-i")) ; Is this needed?
-  (setq explicit-bash-args     '("--login" "-i"))
-  (set-variable 'shell-command-switch "-ic")
+  (setq explicit-bash.exe-args '(""))
+  (setq explicit-bash-args     '(""))
+
   (prefer-coding-system 'utf-8)
 
   (setenv "PAGER"  "cat")
