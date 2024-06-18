@@ -391,5 +391,10 @@
            "[*.{md,py,c,h,cpp,hpp,sh}]"                                         "\n"
            "indent_size = 4"                                                    "\n")))
 
+(defun advice-unadvice (sym)
+  "Remove all advices from symbol SYM."
+  (interactive "aFunction symbol: ")
+  (advice-mapc (lambda (advice _props) (advice-remove sym advice)) sym))
+
 (provide 'useful-commands)
 ;;; useful-commands.el ends here
