@@ -286,6 +286,12 @@
   ("C-M-," . back-button-global-forward)
 
   :config
+
+  (defun back-button-push-mark-local-and-global-unless-from-back-button ()
+    (unless (or (eq this-command 'back-button-global)
+                (eq this-command 'back-button-global-forward))
+      (back-button-push-mark-local-and-global)))
+
   (setq back-button-no-wrap t)
   (setq back-button-index-timeout 8)    ; seconds
 
