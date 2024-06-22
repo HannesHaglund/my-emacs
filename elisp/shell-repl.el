@@ -44,7 +44,8 @@
 (defun shell-repl-command-to-string-and-cwd (input)
   "Run shell command INPUT and return a list containing output and CWD."
   (let* ((actual-input (format "%s ; pwd -W" input))
-         (output (s-replace "" "\n" (string-trim (shell-command-to-string actual-input))))
+         ;; (output (s-replace "" "\n" (string-trim (shell-command-to-string actual-input))))
+         (output (string-trim (shell-command-to-string actual-input)))
          (output-meat (shell-repl-string-all-except-last-line output))
          (output-pwd (shell-repl-string-last-line output)))
     (list output-meat output-pwd)))
