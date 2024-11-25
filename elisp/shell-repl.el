@@ -88,7 +88,9 @@
 (defun shell-repl (&optional dir)
   "Shell REPL - enter shell commands and get output.  Exit with empty input."
   (interactive)
-  (let* ((input nil)
+  (let* ((resize-mini-windows t)      ; Lets the minibuffer grow
+         (max-mini-window-height 1.0) ; Lets it fill the screen, pretty much
+         (input nil)
          (last-output "")
          (default-directory (if dir dir default-directory))) ; So we can change it later
     (while (not (string-blank-p (setq input (shell-repl-read-input last-output))))
