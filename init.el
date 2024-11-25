@@ -147,16 +147,17 @@
   (prog-mode . company-mode)
   (org-mode . company-mode)
   (markdown-mode . company-mode)
-  :bind (:map company-active-map
-              ("SPC"      . nil)
-              ("RET"      . nil)
-              ("<return>" . nil)
-              ("<tab>"    . 'company-complete-selection)
-              ("<C-tab>"  . 'company-select-next)
-              ("C-`"      . 'company-select-previous)
-              :map company-search-map
-              ("<C-tab>"  . 'company-select-next)
-              ("C-`"      . 'company-select-previous))
+  :bind (
+         :map company-active-map
+         ("SPC"      . nil)
+         ("RET"      . nil)
+         ("<return>" . nil)
+         ("<tab>"    . 'company-complete-selection)
+         ("<C-tab>"  . 'company-select-next)
+         ("C-`"      . 'company-select-previous)
+         :map company-search-map
+         ("<C-tab>"  . 'company-select-next)
+         ("C-`"      . 'company-select-previous))
   :config
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.05)
@@ -327,17 +328,6 @@
 (use-package git-timemachine
   :ensure t
   :commands git-timemachine)
-
-(use-package p4
-  :ensure t
-  :commands (p4-add p4-edit p4-move p4-delete p4-revert p4-opened p4-status p4-annotate
-                    p4-filelog p4-diff p4-submit p4-update p4-reconcile p4-client p4-branch p4-branches
-                    p4-changes p4-diff2 p4-describe p4-reopen p4-depot-find-file p4-files p4-get-client-name p4-help
-                    p4-integ p4-have p4-info p4-job p4-jobs p4-label p4-labels p4-labelsync
-                    p4-print p4-set-p4-port p4-refresh p4-resolve p4-toggle-vc-mode p4-user p4-users p4-version
-                    p4-where p4-fix p4-diff-all-opened p4-ediff)
-  :config
-  (setq p4-global-key-prefix nil))
 
 (use-package magit
   :commands (magit-dispatch magit-file-dispatch magit-status magit-toplevel)
@@ -607,6 +597,7 @@
 ;; ----------------------------------------------------------------
 (use-package org
   :mode (("\\.org$" . org-mode))
+  :bind (:map org-mode-map ("C-;" . org-time-stamp))
   :config
 
   ;; Adjust org heading face attributes
@@ -675,14 +666,13 @@
   :config
   (setq org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-(use-package org-chef
-  :after org
-  :ensure t
-  :commands (org-chef-insert-recipe org-chef-edit-servings))
-
 (use-package org-download
   :after org
-  :ensure t)
+  :ensure t
+  :config
+  (defun set-org-download-image-dir ()
+    (setq org-download-image-dir (concat "./org-media/" (buffer-name))))
+  (add-hook 'org-mode-hook #'set-org-download-image-dir))
 
 ;; ----------------------------------------------------------------
 ;; markdown-mode

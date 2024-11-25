@@ -387,8 +387,7 @@
            "charset                  = utf-8"                                   "\n"
            "indent_style             = space"                                   "\n"
            "indent_size              = 4"                                       "\n"
-           "trim_trailing_whitespace = true"                                    "\n\n"
-           "[*.{md,py,c,h,cpp,hpp,sh}]"                                         "\n"
+           "trim_trailing_whitespace = true"                                    "\n"
            "indent_size = 4"                                                    "\n")))
 
 (defun advice-unadvice (sym)
