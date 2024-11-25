@@ -350,7 +350,8 @@
   "Open the current file's directory however the OS would."
   (interactive)
   (if default-directory
-      (browse-url-of-file (concat "file:/" (expand-file-name default-directory)))
+      (if (eq system-type 'windows-nt) (browse-url-default-windows-browser (expand-file-name default-directory))
+        (browse-url-of-file (concat "file://" (expand-file-name default-directory))))
     (error "No `default-directory' to open")))
 
 (defun bind-caps-lock-to-ctrl ()
