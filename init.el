@@ -471,29 +471,7 @@
     "Face for lines that starts with minus in shell-mode.")
 
   (font-lock-add-keywords 'shell-mode '(("^\\+.*" . 'my-emacs-shell-plus-face)
-                                        ("^-.*"   . 'my-emacs-shell-minus-face)))
-
-  (defun windows-shell-advice (&optional a b c)
-    (when (get-buffer "*shell*")
-      (with-current-buffer "*shell*"
-        (goto-char (point-max))
-        (when (< (point) 16)          ; When the buffer is very short, i.e newly created
-
-          (insert "export PS1=\"\\\\n┃ \\\\w ➤ \"")
-          (comint-send-input)
-
-          (insert "export EDITOR='/c/windows/system32/notepad.exe'")
-          (comint-send-input)
-
-          (insert "alias gitlog='git log --pretty=format:\"%h%x09%an%x09%ad%x09%s\" --date=short --reverse | tail -48'")
-          (comint-send-input)
-
-          (insert "alias gitbs='git for-each-ref --format=\" %(author) %09 %(authordate:short)   %(objectname:short)   (%(committerdate:relative)) %09 %(refname:short) \" --sort=authordate | grep -i \"hannes haglund\" | cut -f2-'")
-          (comint-send-input)
-          ))))
-
-  (advice-add 'shell :after 'windows-shell-advice))
-
+                                        ("^-.*"   . 'my-emacs-shell-minus-face))))
 
 ;; ================================================================
 ;; Visuals
